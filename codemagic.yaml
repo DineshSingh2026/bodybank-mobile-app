@@ -1,0 +1,60 @@
+# Codemagic CI/CD — builds, signs, and ships the iOS app to TestFlight / App Store.
+# Runs on a cloud Mac, so nothing here needs macOS on your end.
+#
+# ONE-TIME SETUP IN THE CODEMAGIC UI (see IOS_SETUP.md for the full walkthrough):
+#   1. Connect this Git repo to a Codemagic app.
+#   2. Teams → Integrations → App Store Connect: add an API key (Issuer ID, Key ID,
+#      .p8 file). Give the integration a name and put that name below where it says
+#      <APP_STORE_CONNECT_KEY_NAME>.
+#   3. Fill in APP_STORE_APPLE_ID (the numeric Apple ID of the app record you create
+#      in App Store Connect — found under App Information → General → Apple ID).
+#
+# Codemagic auto-creates the signing certificate + provisioning profile from the
+# App Store Connect API key (distribution_type: app_store), so you do NOT need to
+# generate certificates by hand on a Mac.
+
+workflows:
+  ios-appstore:
+    name: BodyBank iOS — App Store
+    instance_type: mac_mini_m2
+    max_build_duration: 60
+    integrations:
+      app_store_connect: <APP_STORE_CONNECT_KEY_NAME>   # <-- name from Codemagic Integrations
+    environment:
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.bodybank.app
+      vars:
+        XCODE_WORKSPACE: "ios/App/App.xcworkspace"
+        XCODE_SCHEME: "App"
+        APP_STORE_APPLE_ID: 0000000000           # <-- numeric Apple ID of the app record
+      node: 22
+      xcode: latest
+      cocoapods: default
+    scripts:
+      - name: Install npm dependencies
+        script: npm ci
+      - name: Capacitor sync iOS (copies www/ into the Xcode project, runs pod install)
+        script: npx cap sync ios
+      - name: Set build number from Codemagic counter
+        script: |
+          cd ios/App
+          agvtool new-version -all "$BUILD_NUMBER"
+      - name: Set up provisioning profiles
+        script: xcode-project use-profiles
+      - name: Build signed .ipa
+        script: |
+          xcode-project build-ipa \
+            --workspace "$XCODE_WORKSPACE" \
+            --scheme "$XCODE_SCHEME"
+    artifacts:
+      - build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+    publishing:
+      app_store_connect:
+        auth: integration
+        # Uploads to TestFlight on every successful build.
+        submit_to_testflight: true
+        # When you're ready to push to App Store review, flip this to true (and
+        # uncomment) — start with TestFlight-only while you test.
+        # submit_to_app_store: false

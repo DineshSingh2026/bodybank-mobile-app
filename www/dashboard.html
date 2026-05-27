@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="/js/bb-app-config.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BodyBank Dashboard Feed Studio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/dashboard.css">
+</head>
+<body>
+  <div class="dash-back-bar">
+    <a href="/index.html" class="dash-back-link" id="dashBackLink">← Back to dashboard</a>
+  </div>
+  <div class="dash-shell">
+    <header class="dash-header">
+      <div>
+        <h1>BodyBank Elite Feed Studio</h1>
+        <p>Create a post in 3 steps: choose photo, write caption, publish.</p>
+      </div>
+      <div class="dash-actions">
+        <a class="brand-link" href="https://www.instagram.com/bodybank.fit/" target="_blank" rel="noopener noreferrer">BodyBank.fit</a>
+        <button id="captureNowTop" class="btn btn-accent" type="button">Open Camera</button>
+      </div>
+    </header>
+
+    <section class="camera-panel card">
+      <h2>Step 1: Choose Photo</h2>
+      <div class="camera-wrap">
+        <video id="cameraPreview" playsinline autoplay muted></video>
+        <canvas id="captureCanvas" class="hidden"></canvas>
+      </div>
+      <div class="camera-controls">
+        <button id="startCameraBtn" class="btn" type="button">Start Camera</button>
+        <button id="captureBtn" class="btn btn-accent" type="button">Capture Photo</button>
+        <button id="uploadImageBtn" class="btn" type="button">Upload from Phone</button>
+        <input id="imageUploadInput" type="file" accept="image/*" class="hidden" aria-label="Upload photo">
+      </div>
+    </section>
+
+    <section class="post-panel card">
+      <h2>Step 2: Caption and Publish</h2>
+      <img id="postPreview" alt="Captured preview with BodyBank overlay" class="post-preview hidden" loading="lazy">
+      <label for="captionInput">Caption</label>
+      <textarea id="captionInput" rows="3" maxlength="240" placeholder="Write your caption (required before posting)..."></textarea>
+      <div class="camera-controls">
+        <button id="retakeBtn" class="btn" type="button">Choose Another Photo</button>
+        <button id="postBtn" class="btn btn-accent" type="button">Publish Post</button>
+      </div>
+      <p id="postStatus" class="status-text"></p>
+    </section>
+
+    <section class="user-posts card">
+      <div class="user-posts-head">
+        <h2>Step 3: Recent Elite Feed Posts</h2>
+        <button id="refreshPostsBtn" class="btn btn-small" type="button">Refresh</button>
+      </div>
+      <div id="userPostsGrid" class="user-grid"></div>
+    </section>
+  </div>
+
+  <button class="capture-fab" id="captureFab" type="button" aria-label="Open camera">Open Camera</button>
+
+  <div id="loginWall" class="login-wall hidden">
+    <div class="login-wall-card">
+      <h3>Sign-in Required</h3>
+      <p>Please sign in through the main BodyBank website (member or admin) to continue to the Elite Feed Studio.</p>
+      <a href="/index.html#login" class="btn login-wall-cta">Go to Sign In</a>
+    </div>
+  </div>
+
+  <script src="/js/dashboard.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,30 @@
+{
+  "name": "bodybank-app",
+  "version": "1.0.0",
+  "private": true,
+  "description": "BodyBank Android/iOS wrapper (Capacitor). Wraps the existing BodyBank web app served from www/.",
+  "scripts": {
+    "build:www": "node scripts/build-www.js",
+    "build:assets": "node scripts/build-assets.js && npx capacitor-assets generate --android",
+    "build:assets:ios": "node scripts/build-assets.js && npx capacitor-assets generate --ios",
+    "build:store-assets": "node scripts/build-store-assets.js",
+    "sync": "npm run build:www && npx cap sync android",
+    "sync:ios": "npm run build:www && npx cap sync ios",
+    "build:release": "npm run sync && cd android && gradlew.bat bundleRelease",
+    "cap:open": "npx cap open android",
+    "cap:open:ios": "npx cap open ios",
+    "cap:run": "npx cap run android"
+  },
+  "dependencies": {
+    "@capacitor-community/apple-sign-in": "^7.1.0",
+    "@capacitor/android": "^7.6.5",
+    "@capacitor/core": "^7.6.5",
+    "@capacitor/ios": "^7.6.5",
+    "@capacitor/splash-screen": "^7.0.5",
+    "@capacitor/status-bar": "^7.0.6"
+  },
+  "devDependencies": {
+    "@capacitor/assets": "^3.0.5",
+    "@capacitor/cli": "^7.6.5"
+  }
+}

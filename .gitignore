@@ -1,0 +1,34 @@
+node_modules/
+
+# NOTE: www/ is intentionally NOT ignored.
+# It is the built web payload that the cloud CI (Codemagic) bundles into the iOS
+# app. CI cannot regenerate it because the source (../bodybank/public) is not in
+# this repo. Refresh it locally with `npm run sync:ios` before each release, then
+# commit the result.
+
+# Android build artifacts
+android/app/build/
+android/build/
+android/.gradle/
+android/local.properties
+android/keystore.properties
+android/app/release/
+android/app/debug/
+
+# iOS build artifacts (the cloud Mac regenerates these)
+ios/App/Pods/
+ios/App/build/
+ios/App/output/
+ios/App/App/public/
+ios/DerivedData/
+ios/**/xcuserdata/
+
+# Signing material — never commit
+*.keystore
+*.jks
+*.p8
+*.p12
+*.mobileprovision
+*.cer
+
+.DS_Store

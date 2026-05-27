@@ -1,0 +1,2934 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="/js/bb-app-config.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <title>BodyBank — AI Fitness Trainer</title>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js" crossorigin="anonymous"></script>
+  <style>
+    :root {
+      --bg: #09090c; --panel: #0f1117; --card: #161921; --line: #1f2433;
+      --txt: #eef0f7; --muted: #8a93a8;
+      --gold: #c8a44e; --gold-strong: #e4bb5a;
+      --red: #ff4f6a; --green: #3de68b; --amber: #e4bb5a;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--txt); font-family: Inter, Arial, sans-serif; min-height: 100vh; overflow-x: hidden; }
+
+    /* ── HEADER — grid keeps logo & link in separate tracks (no overlap on narrow widths) ── */
+    .hdr {
+      position: sticky; top: 0; z-index: 100;
+      display: grid;
+      grid-template-columns: minmax(0, auto) minmax(0, 1fr);
+      align-items: center;
+      gap: 12px;
+      min-height: 52px;
+      padding: max(8px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) 10px max(16px, env(safe-area-inset-left, 0px));
+      background: rgba(9,9,12,.96);
+      border-bottom: 1px solid var(--line);
+      isolation: isolate;
+    }
+    .logo {
+      display: inline-flex;
+      align-items: center;
+      flex-shrink: 0;
+      max-width: min(200px, 46vw);
+    }
+    .logo-img {
+      height: clamp(26px, 5vw, 30px);
+      width: auto;
+      max-width: 100%;
+      object-fit: contain;
+      filter: drop-shadow(0 0 8px rgba(200,164,78,.18));
+      display: block;
+    }
+    .hdr .back-link {
+      justify-self: end;
+      color: #9aa3b9;
+      text-decoration: none;
+      font-size: clamp(11px, 3.2vw, 13px);
+      transition: color .2s;
+      min-width: 0;
+      text-align: right;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+      padding: 6px 0 6px 8px;
+    }
+    .hdr .back-link:hover { color: var(--gold-strong); }
+
+    /* ── LAYOUT ── */
+    .wrap {
+      max-width: 1460px; margin: 0 auto; padding: 14px;
+      display: grid; grid-template-columns: 280px 1fr 280px; gap: 12px;
+      min-width: 0;
+    }
+    .left, .right, .stage-wrap { min-width: 0; }
+    @media(max-width:1200px) { .wrap { grid-template-columns: 280px 1fr; } .right { display: none; } }
+    @media(max-width:760px)  { .wrap { grid-template-columns: 1fr; } .left { order: 2; } .stage-wrap { order: 1; } }
+
+    /* ── CARDS ── */
+    .card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 12px; margin-bottom: 10px; }
+    .title { font-size: 11px; color: #5f6880; text-transform: uppercase; letter-spacing: .12em; margin-bottom: 10px; }
+
+    /* ── CONTROLS ── */
+    select, .btn, .set-btn { width: 100%; border-radius: 10px; font-size: 14px; }
+    select {
+      background: var(--card); color: var(--txt); border: 1px solid #2c3347;
+      padding: 10px 12px; cursor: pointer;
+      line-height: 1.35; min-height: 44px;
+      max-width: 100%;
+    }
+    #exSel { font-size: 14px; }
+    .btn { border: none; padding: 11px; font-weight: 700; cursor: pointer; transition: filter .15s, transform .12s; }
+    .btn-start { background: linear-gradient(180deg, var(--gold-strong), var(--gold)); color: #111; }
+    .btn-start:not(:disabled):hover { filter: brightness(1.09); }
+    .btn-start:not(:disabled):active { transform: scale(.98); }
+    .btn-stop { background: transparent; border: 1px solid var(--red); color: var(--red); margin-top: 7px; }
+    .btn-stop:not(:disabled):hover { background: rgba(255,79,106,.1); }
+    .btn:disabled { opacity: .35; cursor: not-allowed; pointer-events: none; }
+    .set-btn {
+      margin-top: 7px; background: transparent; border: 1px dashed #2c3347;
+      color: var(--muted); padding: 10px; cursor: pointer; transition: border-color .2s, color .2s;
+    }
+    .set-btn:not(:disabled):hover { border-color: var(--gold); color: var(--gold); }
+    .set-btn:disabled { opacity: .35; cursor: not-allowed; }
+
+    /* ── STATS — scoped so large figures never collide with global/header typography ── */
+    .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .stat { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 10px; text-align: center; min-width: 0; }
+    .stat .stat-num { font-size: 26px; color: var(--gold-strong); font-weight: 800; line-height: 1.1; word-break: break-all; }
+    .lbl { font-size: 11px; color: #5f6880; text-transform: uppercase; letter-spacing: .1em; margin-top: 3px; }
+
+    /* ── FEEDBACK ── */
+    .feedback { font-size: 14px; color: var(--muted); line-height: 1.5; }
+    .feedback.good  { color: var(--green); }
+    .feedback.warn  { color: var(--amber); }
+    .feedback.error { color: var(--red); }
+    .bar { height: 6px; border-radius: 99px; background: #08090d; margin-top: 10px; overflow: hidden; }
+    .fill {
+      height: 100%; width: 0%;
+      background: linear-gradient(90deg, #a27f2f, var(--gold-strong));
+      transition: width .35s ease, background .35s;
+    }
+    .fill.good { background: linear-gradient(90deg, #1ea85a, #3de68b); }
+    .fill.bad  { background: linear-gradient(90deg, #c43040, #ff4f6a); }
+    .bar-row { display: flex; justify-content: space-between; font-size: 11px; color: #5f6880; margin-top: 5px; }
+
+    /* ── SCORE CHIP ── */
+    .score-chip {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 12px; font-weight: 700;
+      padding: 4px 12px; border-radius: 999px; margin-top: 8px;
+      border: 1px solid transparent;
+    }
+    .score-chip.good  { background: rgba(61,230,139,.12);  border-color: rgba(61,230,139,.35);  color: var(--green); }
+    .score-chip.warn  { background: rgba(228,187,90,.12);  border-color: rgba(228,187,90,.35);  color: var(--amber); }
+    .score-chip.bad   { background: rgba(255,79,106,.12);  border-color: rgba(255,79,106,.35);  color: var(--red); }
+    .score-chip.hidden { display: none !important; }
+
+    /* ── CAMERA STAGE ── */
+    /* Sticky offset ≈ header block (padding + bar + safe area) */
+    .stage-wrap { position: sticky; top: calc(70px + env(safe-area-inset-top, 0px)); }
+    .stage {
+      position: relative; aspect-ratio: 4/3;
+      background: var(--panel); border: 1px solid var(--line);
+      border-radius: 14px; overflow: hidden;
+      box-shadow: 0 8px 40px rgba(0,0,0,.55);
+    }
+    #vid, #cvs { position: absolute; inset: 0; width: 100%; height: 100%; transform: scaleX(-1); }
+    #vid { object-fit: cover; opacity: 0; }
+
+    /* ── OVERLAYS ── */
+    .overlay { position: absolute; inset: 0; z-index: 5; display: flex; align-items: center; justify-content: center; background: rgba(9,9,12,.9); }
+    .overlay.hidden { display: none !important; }
+    .ov { max-width: 320px; text-align: center; padding: 24px; color: var(--muted); }
+    .ov h3 { margin-bottom: 10px; color: var(--txt); font-size: 18px; }
+    .ov p  { font-size: 14px; line-height: 1.5; }
+
+    /* ── STAGE BADGES ── */
+    .badge {
+      position: absolute; top: 12px; left: 12px; z-index: 4;
+      background: rgba(200,164,78,.95); color: #111;
+      padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 800; letter-spacing: .05em;
+    }
+    .phase-badge {
+      position: absolute; top: 12px; right: 12px; z-index: 4;
+      padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 800; letter-spacing: .05em;
+      opacity: 0; transition: opacity .25s, background .25s, color .25s;
+    }
+    .phase-badge.visible { opacity: 1; }
+    .phase-badge.down    { background: rgba(61,230,139,.88); color: #001a0b; }
+    .phase-badge.up      { background: rgba(255,255,255,.18); border: 1px solid rgba(255,255,255,.35); color: #fff; }
+    .warn-banner {
+      position: absolute; bottom: 13px; left: 50%; transform: translateX(-50%); z-index: 4;
+      background: rgba(255,79,106,.9); padding: 6px 16px; border-radius: 999px;
+      font-size: 12px; font-weight: 600; white-space: nowrap;
+    }
+    .hidden { display: none !important; }
+
+    /* ── HISTORY & TIPS ── */
+    .hist { max-height: 220px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--line) transparent; }
+    .hist::-webkit-scrollbar { width: 4px; }
+    .hist::-webkit-scrollbar-thumb { background: var(--line); border-radius: 4px; }
+    .row {
+      display: flex; justify-content: space-between; align-items: center;
+      background: var(--card); border: 1px solid var(--line);
+      padding: 7px 10px; border-radius: 8px; font-size: 12px; margin-bottom: 6px;
+    }
+    .tip {
+      font-size: 13px; color: var(--muted); background: var(--card);
+      border: 1px solid var(--line); border-radius: 8px;
+      padding: 8px 8px 8px 20px; margin-bottom: 6px;
+      line-height: 1.4; position: relative;
+    }
+    .tip::before { content: '▸'; position: absolute; left: 7px; top: 9px; color: var(--gold); font-size: 11px; }
+
+    /* ── FULLSCREEN WORKOUT MODE ── */
+    body.in-workout .hdr { opacity: 0; pointer-events: none; transition: opacity .3s; }
+    body.in-workout .left,
+    body.in-workout .right { display: none !important; }
+    body.in-workout .wrap  { display: block; padding: 0; max-width: none; }
+    body.in-workout .stage-wrap {
+      position: fixed; inset: 0; z-index: 500;
+      width: 100%; height: 100%;
+    }
+    body.in-workout .stage {
+      position: absolute; inset: 0;
+      aspect-ratio: unset; border-radius: 0; border: none;
+      width: 100% !important; height: 100% !important;
+    }
+    /* Hide stage-level badges in workout mode — HUD already shows them */
+    body.in-workout .badge,
+    body.in-workout .phase-badge { display: none !important; }
+
+    /* ── PRE-START COUNTDOWN OVERLAY ── */
+    #prepOv {
+      position: absolute; inset: 0; z-index: 12;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(9,9,12,.82); backdrop-filter: blur(6px);
+    }
+    #prepOv.hidden { display: none !important; }
+    .prep-inner { text-align: center; padding: 32px 28px; max-width: 320px; }
+    .prep-num {
+      font-size: 100px; font-weight: 900; line-height: 1;
+      color: var(--gold-strong);
+      text-shadow: 0 0 50px rgba(228,187,90,.55), 0 0 100px rgba(228,187,90,.2);
+      animation: pulse 1s infinite;
+      display: block; margin-bottom: 12px;
+    }
+    @keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.08); } }
+    .prep-head { font-size: 20px; font-weight: 800; color: var(--txt); margin-bottom: 8px; }
+    .prep-hint { font-size: 14px; color: var(--muted); line-height: 1.6; }
+    .vc-row-top {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 12px; margin-bottom: 12px; flex-wrap: wrap;
+    }
+    .vc-voice-label { font-size: 13px; color: var(--muted); letter-spacing: .02em; }
+    .vc-switch {
+      position: relative; width: 48px; height: 28px; flex-shrink: 0;
+      border-radius: 999px; background: #252a36; border: 1px solid #3a4154;
+      cursor: pointer; transition: background .2s, border-color .2s, box-shadow .2s;
+      padding: 0;
+    }
+    .vc-switch:hover { border-color: rgba(200,164,78,.45); }
+    .vc-switch[aria-pressed="true"] {
+      background: rgba(200,164,78,.22); border-color: rgba(200,164,78,.55);
+      box-shadow: 0 0 0 1px rgba(200,164,78,.15) inset;
+    }
+    .vc-switch::after {
+      content: ''; position: absolute; top: 4px; left: 4px;
+      width: 18px; height: 18px; border-radius: 50%;
+      background: linear-gradient(180deg, #fff, #e8e8ec);
+      box-shadow: 0 2px 6px rgba(0,0,0,.35);
+      transition: transform .22s cubic-bezier(.22,.68,0,1);
+    }
+    .vc-switch[aria-pressed="true"]::after { transform: translateX(20px); }
+    .vc-vol-row { display: flex; align-items: center; gap: 10px; transition: opacity .2s; }
+    .vc-vol-row.is-muted { opacity: .42; pointer-events: none; }
+
+    /* ── WORKOUT HUD ── */
+    #wkHud {
+      position: absolute; inset: 0; z-index: 8;
+      pointer-events: none;
+      display: flex; flex-direction: column; justify-content: space-between;
+    }
+    #wkHud.hidden { display: none !important; }
+    .hud-top {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: max(12px, env(safe-area-inset-top, 0px)) 14px 12px 14px; gap: 8px;
+      background: linear-gradient(180deg, rgba(0,0,0,.72) 0%, transparent 100%);
+      pointer-events: auto;
+    }
+    .hud-ex-badge {
+      background: rgba(200,164,78,.92); color: #111;
+      padding: 5px 12px; border-radius: 20px;
+      font-size: 12px; font-weight: 800; letter-spacing: .05em;
+    }
+    .hud-phase-badge {
+      padding: 5px 12px; border-radius: 20px;
+      font-size: 12px; font-weight: 800;
+      opacity: 0; transition: opacity .25s, background .25s;
+    }
+    .hud-phase-badge.visible { opacity: 1; }
+    .hud-phase-badge.down { background: rgba(61,230,139,.88); color: #001a0b; }
+    .hud-phase-badge.up   { background: rgba(255,255,255,.18); border: 1px solid rgba(255,255,255,.35); color: #fff; }
+    .hud-mid {
+      display: flex; justify-content: center; padding: 0 20px;
+      pointer-events: none;
+    }
+    .hud-feedback-pill {
+      background: rgba(5,5,12,.78); backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,.1);
+      padding: 9px 22px; border-radius: 999px;
+      font-size: 14px; font-weight: 600; color: var(--muted);
+      max-width: 360px; text-align: center; line-height: 1.4;
+      transition: color .2s, border-color .2s;
+    }
+    .hud-feedback-pill.good  { color: var(--green); border-color: rgba(61,230,139,.4); }
+    .hud-feedback-pill.warn  { color: var(--amber); border-color: rgba(228,187,90,.4); }
+    .hud-feedback-pill.error { color: var(--red);   border-color: rgba(255,79,106,.4); }
+    .hud-bottom {
+      padding: 14px 16px max(14px, env(safe-area-inset-bottom, 0px)) 16px;
+      background: linear-gradient(0deg, rgba(0,0,0,.75) 0%, transparent 100%);
+      pointer-events: auto;
+    }
+    .hud-stats-row {
+      display: flex; align-items: stretch; gap: 0; margin-bottom: 10px;
+    }
+    .hud-stat {
+      flex: 1; text-align: center;
+      border-right: 1px solid rgba(255,255,255,.1); padding: 4px 0;
+    }
+    .hud-stat:last-of-type { border-right: none; }
+    .hud-stat-num {
+      font-size: 28px; font-weight: 900; color: var(--gold-strong);
+      line-height: 1; display: block;
+    }
+    .hud-stat-lbl {
+      font-size: 10px; color: #5f6880; text-transform: uppercase;
+      letter-spacing: .1em; margin-top: 3px; display: block;
+    }
+    .hud-form-row {
+      display: flex; align-items: center; gap: 10px; margin-bottom: 12px;
+    }
+    .hud-form-bar-wrap {
+      flex: 1; height: 5px; background: rgba(255,255,255,.1);
+      border-radius: 99px; overflow: hidden;
+    }
+    .hud-form-bar-fill {
+      height: 100%; width: 0%;
+      background: linear-gradient(90deg, #a27f2f, var(--gold-strong));
+      transition: width .35s ease, background .35s;
+    }
+    .hud-form-bar-fill.good { background: linear-gradient(90deg, #1ea85a, #3de68b); }
+    .hud-form-bar-fill.bad  { background: linear-gradient(90deg, #c43040, #ff4f6a); }
+    .hud-form-pct { font-size: 12px; font-weight: 700; color: var(--muted); min-width: 34px; text-align: right; }
+    .hud-btn-row { display: flex; gap: 10px; }
+    .hud-set-btn {
+      flex: 1; background: rgba(200,164,78,.12); border: 1px dashed rgba(200,164,78,.4);
+      color: var(--gold); padding: 12px; border-radius: 10px;
+      font-size: 14px; font-weight: 700; cursor: pointer; transition: background .2s;
+    }
+    .hud-set-btn:hover { background: rgba(200,164,78,.25); }
+    .hud-set-btn:disabled { opacity: .35; cursor: not-allowed; }
+    .hud-stop-btn {
+      flex: 1; background: rgba(255,79,106,.12); border: 1px solid rgba(255,79,106,.4);
+      color: #ff4f6a; padding: 12px; border-radius: 10px;
+      font-size: 14px; font-weight: 700; cursor: pointer; transition: background .2s;
+    }
+    .hud-stop-btn:hover { background: rgba(255,79,106,.25); }
+
+    /* ── SESSION SUMMARY MODAL ── */
+    #summaryModal {
+      position: fixed; inset: 0; z-index: 2000;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(0,0,0,.88); backdrop-filter: blur(14px);
+      padding: 20px;
+    }
+    #summaryModal.hidden { display: none !important; }
+    .sum-card {
+      background: var(--panel); border: 1px solid rgba(200,164,78,.3);
+      border-radius: 22px; padding: 34px 28px;
+      max-width: 400px; width: 100%; text-align: center;
+      box-shadow: 0 28px 70px rgba(0,0,0,.65), 0 0 0 1px rgba(200,164,78,.12);
+      animation: sumIn .38s cubic-bezier(.22,.68,0,1.2);
+    }
+    @keyframes sumIn {
+      from { opacity: 0; transform: scale(.88) translateY(20px); }
+      to   { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    .sum-trophy { font-size: 56px; line-height: 1; margin-bottom: 14px; display: block; }
+    .sum-title  { font-size: 26px; font-weight: 900; color: var(--txt); margin-bottom: 6px; }
+    .sum-ex-lbl {
+      font-size: 12px; color: var(--gold); font-weight: 700;
+      text-transform: uppercase; letter-spacing: .1em; margin-bottom: 26px;
+    }
+    .sum-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 16px;
+    }
+    .sum-stat-box {
+      background: var(--card); border: 1px solid var(--line);
+      border-radius: 12px; padding: 14px 6px;
+    }
+    .sum-stat-num {
+      font-size: 24px; font-weight: 900; color: var(--gold-strong);
+      line-height: 1; display: block;
+    }
+    .sum-stat-lbl {
+      font-size: 10px; color: #5f6880; text-transform: uppercase;
+      letter-spacing: .08em; margin-top: 4px; display: block;
+    }
+    .sum-form-label {
+      display: flex; justify-content: space-between;
+      font-size: 12px; color: var(--muted); margin-bottom: 6px; margin-top: 4px;
+    }
+    .sum-form-bar-wrap {
+      height: 6px; background: var(--card); border-radius: 99px;
+      overflow: hidden; margin-bottom: 26px;
+    }
+    .sum-form-bar-fill {
+      height: 100%; border-radius: 99px; width: 0%;
+      background: linear-gradient(90deg, var(--gold), var(--gold-strong));
+      transition: width 1.1s cubic-bezier(.22,.68,0,1);
+    }
+    .sum-save-btn {
+      width: 100%; padding: 15px; border-radius: 12px; border: none;
+      background: linear-gradient(180deg, var(--gold-strong), var(--gold));
+      color: #111; font-size: 16px; font-weight: 800; cursor: pointer;
+      transition: filter .15s, transform .12s; margin-bottom: 10px;
+    }
+    .sum-save-btn:hover  { filter: brightness(1.1); }
+    .sum-save-btn:active { transform: scale(.98); }
+    .sum-save-btn:disabled { opacity: .45; cursor: not-allowed; }
+    .sum-again-btn {
+      width: 100%; padding: 13px; border-radius: 12px;
+      background: transparent; border: 1px solid var(--line);
+      color: var(--muted); font-size: 14px; font-weight: 700; cursor: pointer;
+      transition: border-color .2s, color .2s; margin-bottom: 14px;
+    }
+    .sum-again-btn:hover { border-color: rgba(200,164,78,.45); color: var(--txt); }
+    .sum-back { font-size: 13px; color: #5f6880; text-decoration: none; transition: color .2s; }
+    .sum-back:hover { color: var(--gold); }
+    .sum-status {
+      font-size: 13px; min-height: 22px; margin-top: 10px; color: var(--muted);
+    }
+    .sum-status.ok  { color: var(--green); }
+    .sum-status.err { color: var(--red); }
+    @media(max-width:440px) {
+      .sum-card { padding: 26px 18px; }
+      .sum-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+<header class="hdr">
+  <div class="logo"><img class="logo-img" src="/img/logo.png" alt="BodyBank" /></div>
+  <a href="/index.html" class="back-link">← Back to Dashboard</a>
+</header>
+
+<div class="wrap">
+
+  <!-- LEFT PANEL -->
+  <aside class="left">
+    <div class="card">
+      <p class="title">Exercise</p>
+      <select id="exSel">
+        <option value="squat">🦵 Squat</option>
+        <option value="pushup">💪 Push-up</option>
+        <option value="plank">🧘 Plank</option>
+        <option value="jumpingjack">⚡ Jumping Jack</option>
+        <option value="biccurl">💪 Bicep Curl</option>
+        <option value="shoulderpress">🏋️ Shoulder Press</option>
+        <option value="bentoverrow">🔄 Bent-over Row</option>
+        <option value="lunge">🦵 Lunge</option>
+        <option value="calfraise">👟 Calf Raise</option>
+        <option value="lateralraise">🪽 Lateral Raise</option>
+        <option value="tricepsdip">💺 Triceps Dip</option>
+        <option value="frontraise">⬆️ Front Raise</option>
+      </select>
+    </div>
+    <div class="card">
+      <p class="title">Controls</p>
+      <button id="startBtn" class="btn btn-start">▶ Start Workout</button>
+      <button id="stopBtn"  class="btn btn-stop"  disabled>■ Stop Workout</button>
+      <button id="setBtn"   class="set-btn"        disabled>+ Complete Set</button>
+    </div>
+    <div class="card">
+      <p class="title">Session Stats</p>
+      <div class="stats">
+        <div class="stat"><div id="repCount" class="stat-num">0</div><div class="lbl">Reps</div></div>
+        <div class="stat"><div id="setCount" class="stat-num">0</div><div class="lbl">Sets</div></div>
+        <div class="stat"><div id="timerEl"  class="stat-num">0:00</div><div class="lbl">Time</div></div>
+        <div class="stat"><div id="fpsEl"    class="stat-num">--</div><div class="lbl">FPS</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <p class="title">Live Feedback</p>
+      <p id="fbText" class="feedback">Waiting to start…</p>
+      <div class="bar"><div id="formFill" class="fill"></div></div>
+      <div class="bar-row"><span>Form quality</span><span id="formPct">—</span></div>
+      <div id="scoreChip" class="score-chip hidden"></div>
+    </div>
+    <div class="card">
+      <p class="title">Voice Coach</p>
+      <div class="vc-row-top">
+        <span class="vc-voice-label">Coach voice</span>
+        <button type="button" class="vc-switch" id="vcVoiceToggle" aria-pressed="true" title="Turn coach voice on or off" aria-label="Toggle coach voice"></button>
+      </div>
+      <div class="vc-vol-row" id="vcVolRow">
+        <span style="font-size:11px;color:#5f6880;white-space:nowrap">Volume</span>
+        <input type="range" id="vcVolume" min="0" max="1" step="0.1" value="0.9"
+               style="flex:1;accent-color:var(--gold);cursor:pointer" />
+      </div>
+      <div id="vcStatus" style="font-size:11px;color:#5f6880;margin-top:8px;text-align:center">Ready</div>
+      <button type="button" id="vcTestBtn" onclick="VC.test()" style="margin-top:8px;width:100%;padding:8px;border-radius:8px;background:transparent;border:1px dashed #2c3347;color:var(--muted);font-size:12px;font-weight:600;cursor:pointer" onmouseover="this.style.borderColor='var(--gold)';this.style.color='var(--gold)'" onmouseout="this.style.borderColor='#2c3347';this.style.color='var(--muted)'">Test voice</button>
+    </div>
+  </aside>
+
+  <!-- CAMERA STAGE -->
+  <main class="stage-wrap">
+    <div class="stage" id="stage">
+      <div id="badgeEx"    class="badge">🦵 Squat</div>
+      <div id="phaseBadge" class="phase-badge">UP</div>
+      <div id="noPerson"   class="warn-banner hidden">👤 No person — step into frame</div>
+      <div id="idleOv"  class="overlay">
+        <div class="ov">
+          <h3>Ready to Train</h3>
+          <p>Select an exercise and tap <strong>Start Workout</strong>.</p>
+          <p style="margin-top:12px;font-size:14px;line-height:1.45;color:#9aa3b8">Your coach speaks in a calm, steady voice throughout each session. You can tap anywhere once for an early hello — or press Start and he will greet you first, then count you in.</p>
+        </div>
+      </div>
+      <div id="loadOv" class="overlay hidden">
+        <div class="ov"><h3>Loading AI Model…</h3><p>Initialising camera. A few seconds.</p></div>
+      </div>
+      <div id="errOv" class="overlay hidden">
+        <div class="ov"><h3 id="errTitle">Camera Error</h3><p id="errMsg"></p></div>
+      </div>
+
+      <!-- PRE-START COUNTDOWN — same copy & timing for every workout -->
+      <div id="prepOv" class="hidden">
+        <div class="prep-inner">
+          <span id="prepNum" class="prep-num">3</span>
+          <div id="prepHead" class="prep-head">Prepare</div>
+          <p id="prepHint" class="prep-hint">Full body in frame. Soft, even lighting.</p>
+        </div>
+      </div>
+
+      <!-- IN-WORKOUT HUD -->
+      <div id="wkHud" class="hidden">
+        <div class="hud-top">
+          <div id="hudExBadge" class="hud-ex-badge">🦵 Squat</div>
+          <div id="hudPhaseBadge" class="hud-phase-badge"></div>
+        </div>
+        <div class="hud-mid">
+          <div id="hudFeedback" class="hud-feedback-pill">Waiting to start…</div>
+        </div>
+        <div class="hud-bottom">
+          <div class="hud-stats-row">
+            <div class="hud-stat"><span id="hudReps" class="hud-stat-num">0</span><span class="hud-stat-lbl">Reps</span></div>
+            <div class="hud-stat"><span id="hudSets" class="hud-stat-num">0</span><span class="hud-stat-lbl">Sets</span></div>
+            <div class="hud-stat"><span id="hudTime" class="hud-stat-num">0:00</span><span class="hud-stat-lbl">Time</span></div>
+          </div>
+          <div class="hud-form-row">
+            <div class="hud-form-bar-wrap"><div id="hudFormFill" class="hud-form-bar-fill"></div></div>
+            <span id="hudFormPct" class="hud-form-pct">—</span>
+          </div>
+          <div class="hud-btn-row">
+            <button id="hudSetBtn" class="hud-set-btn" disabled>+ Complete Set</button>
+            <button id="hudStopBtn" class="hud-stop-btn">■ Stop Workout</button>
+          </div>
+        </div>
+      </div>
+
+      <video id="vid" autoplay playsinline muted></video>
+      <canvas id="cvs"></canvas>
+    </div>
+  </main>
+
+  <!-- SESSION SUMMARY MODAL -->
+  <div id="summaryModal" class="hidden">
+    <div class="sum-card">
+      <span class="sum-trophy">🏆</span>
+      <div class="sum-title">Session Complete</div>
+      <div id="sumExLbl" class="sum-ex-lbl">Squat</div>
+      <div class="sum-grid">
+        <div class="sum-stat-box"><span id="sumReps" class="sum-stat-num">0</span><span class="sum-stat-lbl">Reps</span></div>
+        <div class="sum-stat-box"><span id="sumSets" class="sum-stat-num">0</span><span class="sum-stat-lbl">Sets</span></div>
+        <div class="sum-stat-box"><span id="sumTime" class="sum-stat-num">0:00</span><span class="sum-stat-lbl">Time</span></div>
+        <div class="sum-stat-box"><span id="sumForm" class="sum-stat-num">—</span><span class="sum-stat-lbl">Avg Form</span></div>
+      </div>
+      <div class="sum-form-label"><span>Form quality</span><span id="sumFormPct">—</span></div>
+      <div class="sum-form-bar-wrap"><div id="sumFormFill" class="sum-form-bar-fill"></div></div>
+      <button id="sumSaveBtn" class="sum-save-btn">💾 Save to Workout Log</button>
+      <button id="sumAgainBtn" class="sum-again-btn">🔄 Train Again</button>
+      <a href="/index.html" class="sum-back">← Back to Dashboard</a>
+      <div id="sumStatus" class="sum-status"></div>
+    </div>
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <aside class="right">
+    <div class="card">
+      <p class="title">Rep History</p>
+      <div id="repHist" class="hist"><div class="tip">No reps yet.</div></div>
+    </div>
+    <div class="card">
+      <p class="title">Exercise Tips</p>
+      <div id="tipsEl"></div>
+    </div>
+  </aside>
+
+</div><!-- /wrap -->
+
+<script>
+// ════════════════════════════════════════════════════════════════
+//  CONSTANTS
+// ════════════════════════════════════════════════════════════════
+const LM = { LS:11,RS:12, LE:13,RE:14, LW:15,RW:16, LH:23,RH:24, LK:25,RK:26, LA:27,RA:28 };
+
+// Per-status colors (joint fill / bone stroke variants)
+const CLR = {
+  GOOD:    '#3de68b',  WARN:    '#e4bb5a',  BAD:    '#ff4f6a',  NEUT: 'rgba(255,255,255,0.32)',
+  BG_GOOD: 'rgba(61,230,139,0.80)',
+  BG_WARN: 'rgba(228,187,90,0.80)',
+  BG_BAD:  'rgba(255,79,106,0.80)',
+  BG_NEUT: 'rgba(255,255,255,0.18)',
+};
+function byStatus(st, isBone) {
+  if (st==='good') return isBone ? CLR.BG_GOOD : CLR.GOOD;
+  if (st==='warn') return isBone ? CLR.BG_WARN : CLR.WARN;
+  if (st==='bad')  return isBone ? CLR.BG_BAD  : CLR.BAD;
+  return isBone ? CLR.BG_NEUT : CLR.NEUT;
+}
+
+// Bone definitions: each bone has a status "key" so it inherits the joint color
+const BONES = [
+  { a:LM.LS, b:LM.RS,  k:'torso'   }, { a:LM.LS, b:LM.LH,  k:'torso'   },
+  { a:LM.RS, b:LM.RH,  k:'torso'   }, { a:LM.LH, b:LM.RH,  k:'hip'     },
+  { a:LM.LS, b:LM.LE,  k:'L_elbow' }, { a:LM.LE, b:LM.LW,  k:'L_elbow' },
+  { a:LM.RS, b:LM.RE,  k:'R_elbow' }, { a:LM.RE, b:LM.RW,  k:'R_elbow' },
+  { a:LM.LH, b:LM.LK,  k:'L_knee'  }, { a:LM.LK, b:LM.LA,  k:'L_knee'  },
+  { a:LM.RH, b:LM.RK,  k:'R_knee'  }, { a:LM.RK, b:LM.RA,  k:'R_knee'  },
+];
+const JOINT_KEY = {
+  [LM.LS]:'torso',   [LM.RS]:'torso',
+  [LM.LH]:'hip',     [LM.RH]:'hip',
+  [LM.LE]:'L_elbow', [LM.LW]:'L_elbow',
+  [LM.RE]:'R_elbow', [LM.RW]:'R_elbow',
+  [LM.LK]:'L_knee',  [LM.LA]:'L_knee',
+  [LM.RK]:'R_knee',  [LM.RA]:'R_knee',
+};
+const ALL_JOINT_IDS = [LM.LS,LM.RS,LM.LE,LM.RE,LM.LW,LM.RW,LM.LH,LM.RH,LM.LK,LM.RK,LM.LA,LM.RA];
+
+const TIPS = {
+  squat:       ['Keep chest up and back neutral.','Push knees outward — never inward.','Drive up through your heels.','Aim below parallel for full range.'],
+  pushup:      ['Keep body in one straight line.','Lower until elbows hit ~90°.','Exhale as you push up explosively.','Hands slightly wider than shoulders.'],
+  plank:       ['Squeeze core and glutes throughout.','Keep hips level — not sagging or piked.','Breathe steadily; never hold your breath.','Gaze slightly forward, not straight down.'],
+  jumpingjack:   ['Land with softly bent knees.','Arms fully extend overhead each rep.','Keep a smooth, steady rhythm.','Stay upright and controlled.'],
+  biccurl:       ['Keep upper arm pinned to your side — no swinging.','Curl until your forearm is vertical.','Lower slowly — 2 sec down for max tension.','Squeeze hard at the top of every rep.'],
+  shoulderpress: ['Keep your core braced and back straight.','Press directly overhead — not in front.','Lower until elbows reach 90° each rep.','Keep both arms moving at the same speed.'],
+  bentoverrow:   ['Turn sideways to camera for best tracking.','Hinge at hips to ~45° — back flat, not rounded.','Pull elbow past your hip — squeeze the back.','Lower slowly and fully extend each rep.'],
+  lunge:         ['Face the camera — one foot clearly in front.','Keep torso tall — chest up, core braced.','Lower until front thigh is near parallel.','Drive up through the front heel every rep.'],
+  calfraise:     ['Stand tall — full body in frame.','Keep knees soft-straight — do not squat the rep.','Rise onto the balls of both feet, pause briefly.','Lower heels slowly with control.'],
+  lateralraise:  ['Stand with feet hip-width, slight bend in elbows.','Raise arms out to the sides to shoulder height.','Lead with elbows — wrists level with or below elbows at top.','Lower slowly — no shrugging or swinging.'],
+  tricepsdip:    ['Hands on a stable chair or bench behind you.','Keep elbows pointing back — not flared wide.','Lower until elbows reach ~90°, then press up.','Face the camera so arms stay visible.'],
+  frontraise:    ['Stand tall with palms facing your thighs.','Raise both arms straight out in front to shoulder height.','Keep a slight elbow bend — do not lock aggressively.','Lower with control — no leaning back.'],
+};
+
+/** Short exercise name for badges when landmarks are missing or mode is unknown */
+const EX_LABEL_BY_MODE = {
+  squat: 'Squat', pushup: 'Push-up', plank: 'Plank', jumpingjack: 'Jumping Jack',
+  biccurl: 'Bicep Curl', shoulderpress: 'Shoulder Press', bentoverrow: 'Bent-over Row',
+  lunge: 'Lunge', calfraise: 'Calf Raise', lateralraise: 'Lateral Raise', tricepsdip: 'Triceps Dip', frontraise: 'Front Raise',
+};
+
+// ════════════════════════════════════════════════════════════════
+//  HELPERS
+// ════════════════════════════════════════════════════════════════
+const $   = id => document.getElementById(id);
+const vis = (lm, i, t=0.38) => lm[i] && lm[i].visibility > t;
+
+function angle(A, B, C) {
+  const r = Math.atan2(C.y - B.y, C.x - B.x) - Math.atan2(A.y - B.y, A.x - B.x);
+  let a = Math.abs(r * 180 / Math.PI);
+  if (a > 180) a = 360 - a;
+  return a;
+}
+
+// ════════════════════════════════════════════════════════════════
+//  DOM REFERENCES
+// ════════════════════════════════════════════════════════════════
+const exSel      = $('exSel'),    startBtn   = $('startBtn'), stopBtn    = $('stopBtn'), setBtn     = $('setBtn');
+const repCount   = $('repCount'), setCount   = $('setCount'), timerEl    = $('timerEl'), fpsEl      = $('fpsEl');
+const fbText     = $('fbText'),   formFill   = $('formFill'), formPct    = $('formPct'), scoreChip  = $('scoreChip');
+const vid        = $('vid'),      cvs        = $('cvs'),      badgeEx    = $('badgeEx'), phaseBadge = $('phaseBadge'), noPerson = $('noPerson');
+const idleOv     = $('idleOv'),   loadOv     = $('loadOv'),   errOv      = $('errOv'),   errTitle   = $('errTitle'), errMsg   = $('errMsg');
+const repHist    = $('repHist'),  tipsEl     = $('tipsEl');
+
+let cam=null, pose=null, stream=null, detector=null, running=false, sessionStart=null, timerId=null;
+let fpsFrames=0, fpsLast=performance.now(), currentFps=0, noPersonFrames=0;
+
+// Form quality tracking for session average
+let formScoreSum = 0, formScoreCount = 0;
+// Snapshot of session data for summary save
+let _savedSessionData = null;
+
+// ════════════════════════════════════════════════════════════════
+//  VOICE COACH ENGINE  — Professional · Motivational · Attentive
+// ════════════════════════════════════════════════════════════════
+const VC = {
+  synth:    window.speechSynthesis || null,
+  voice:    null,
+
+  // State tracking
+  lastSpoken:            0,
+  lastPhase:             null,
+  badFrames:             0,
+  goodFrames:            0,
+  noPersonSpoken:        false,
+  lastRepCount:          0,
+  lastEncouragementAt:   0,
+  lastPhaseCueAt:        0,
+  introSpoken:           false,
+  _keepAliveId:          null,
+  _muted:                false,
+
+  /** Polite landing message — played once per tab session after first user gesture (browser speech policy). */
+  WELCOME_TEXT:
+    "Welcome to BodyBank's AI Trainer. I'm glad you're here. I'll stay with you through every rep — clear guidance, steady encouragement, and respectful form feedback. Choose your exercise and press Start when you're ready. Let's make this a session you can be proud of.",
+
+  get enabled() { return !this._muted; },
+  get volume()  { const el = $('vcVolume'); return el ? parseFloat(el.value) : 0.9; },
+
+  _STORAGE_MUTE: 'bb_ai_trainer_voice_muted',
+
+  setMuted(muted) {
+    this._muted = !!muted;
+    try { localStorage.setItem(this._STORAGE_MUTE, this._muted ? '1' : '0'); } catch (_) {}
+    if (this._muted && this.synth) try { this.synth.cancel(); } catch (_) {}
+    this._syncVoiceUi();
+  },
+
+  _syncVoiceUi() {
+    const btn = $('vcVoiceToggle');
+    if (btn) btn.setAttribute('aria-pressed', this._muted ? 'false' : 'true');
+    const row = $('vcVolRow');
+    if (row) row.classList.toggle('is-muted', this._muted);
+    const st = $('vcStatus');
+    if (st && this.synth) {
+      if (this._muted) st.textContent = 'Voice off';
+      else if (this.voice) st.textContent = '✓ ' + this.voice.name.slice(0, 22);
+    }
+  },
+
+  // ── Cue Library ──────────────────────────────────────────────
+  CUES: {
+
+    // Exercise introduction — spoken once when the session starts
+    intro: {
+      squat:         'Alright, let\'s do squats! Stand feet shoulder-width apart, chest up, and back straight. I\'m watching every rep — let\'s go!',
+      pushup:        'Push-up time! Get into a strong plank position. Hands just wider than your shoulders. Keep that body in a perfect straight line. Let\'s move!',
+      plank:         'Plank hold! Engage your core, squeeze your glutes, and keep those hips perfectly level. I\'ll be watching your alignment the whole time. Hold strong!',
+      jumpingjack:   'Jumping jacks! Stay light on your feet and get those arms fully overhead on every single rep. Let\'s keep a nice steady rhythm. Here we go!',
+      biccurl:       'Bicep curls! Pin those upper arms tight to your sides — no swinging. Control every inch of the movement. Let\'s build those biceps!',
+      shoulderpress: 'Shoulder press! Core braced, back straight. Press directly overhead and lock those arms out at the top. Let\'s build strong shoulders!',
+      bentoverrow:   'Bent-over rows! Hinge at the hips, keep that back flat, and pull with your back — not your arms. Full extension on every rep. Let\'s go!',
+      lunge:         'Lunges! One foot forward, chest tall, core tight. I\'ll count every clean rep — control the descent and drive up strong!',
+      calfraise:     'Calf raises! Knees stay tall and straight, rise onto the balls of your feet, squeeze at the top, and lower slowly. Let\'s build those calves!',
+      lateralraise:  'Lateral raises! Arms out to the sides like wings — shoulder height, soft elbows, no swinging. Smooth up, smooth down!',
+      tricepsdip:    'Triceps dips! Hands anchored, elbows tracking back, lower with control and press away. Let\'s hit those triceps!',
+      frontraise:    'Front raises! Arms straight out in front to shoulder height — no leaning back. Control every inch!',
+    },
+
+    // Countdown — digits + fast TTS (most engines read quickly); brief go
+    countdown: {
+      3: '3',
+      2: '2',
+      1: '1',
+      go: 'Go!',
+    },
+
+    // Phase cues — spoken on every phase transition
+    phase: {
+      squat:         { down: 'Down you go!',           up: 'Drive up! Push through those heels!' },
+      pushup:        { down: 'Lower with control.',    up: 'Push it up! Full extension!' },
+      plank:         { hold: 'Hold it! Core tight, breathe steady.' },
+      jumpingjack:   { open: 'Out!',                  close: 'Together!' },
+      biccurl:       { up:   'Curl it up! Squeeze hard at the top!', down: 'Lower slowly — feel that stretch.' },
+      shoulderpress: { up:   'Press! Lock those arms out!',          down: 'Lower with control. Back to start.' },
+      bentoverrow:   { up:   'Row! Pull that elbow back — squeeze!', down: 'Lower fully. Full range of motion.' },
+      lunge:         { down: 'Lower steady — front knee tracks over toes.', up: 'Drive up! Push through that front heel!' },
+      calfraise:     { down: 'Rise up! Balls of the feet — squeeze!', up: 'Lower heels slowly — full control.' },
+      lateralraise:  { up: 'Lift out wide — shoulder height!', down: 'Lower slowly — fight the gravity.' },
+      tricepsdip:    { down: 'Lower with control — feel the triceps.', up: 'Press up! Straighten those arms!' },
+      frontraise:    { up: 'Raise straight out in front!', down: 'Lower with control — stay tall.' },
+    },
+
+    // Rep praise — two pools, rotated randomly
+    repPraiseGood: [
+      'Beautiful rep! Keep that form!',
+      'Perfect! Exactly like that — keep going!',
+      'Outstanding rep! You\'re doing brilliantly!',
+      'Excellent! Textbook form — don\'t stop!',
+      'Yes! That\'s exactly how it\'s done!',
+      'Superb! Stay focused and keep pushing!',
+    ],
+    repPraiseOk: [
+      'Good rep! Stay consistent!',
+      'Nice one! Keep that rhythm going!',
+      'That\'s it! One more just like that!',
+      'Well done! Don\'t slow down now!',
+      'Good work! Keep the momentum!',
+      'Keep going! You\'ve got more in you!',
+    ],
+
+    // Rep milestones — celebrated at key numbers
+    milestones: {
+      5:  'Five reps in! Excellent start — keep that pace!',
+      10: 'Ten reps! You are absolutely on fire right now — don\'t stop!',
+      15: 'Fifteen reps! Incredible discipline! Push for even more!',
+      20: 'Twenty reps! That is outstanding dedication — keep it up!',
+      25: 'Twenty five reps! You are a machine! Stay strong!',
+      30: 'Thirty reps! Unbelievable! You should be very proud of this effort!',
+    },
+
+    // Form corrections — polite, specific, actionable
+    correction: {
+      squat:         'Come on — get a little lower! Chest up and push those knees outward. You can do it!',
+      pushup:        'Watch your body alignment. Keep everything in one straight line and that core tight throughout!',
+      plank:         'Careful — keep those hips perfectly level. Don\'t let them drop or pike. Hold it steady!',
+      jumpingjack:   'Get those arms all the way up overhead on every rep — full range of motion!',
+      biccurl:       'Keep that upper arm pinned to your side! No swinging — the slower the better!',
+      shoulderpress: 'Press all the way to full lockout! Straighten those arms completely at the top!',
+      bentoverrow:   'Pull that elbow past your torso and squeeze your back hard at the top of every rep!',
+      lunge:         'Stay tall — do not lean forward. Push the front knee out and drive through the heel!',
+      calfraise:     'Keep those knees straight — this is calves only, not a squat. Rise higher on the toes!',
+      lateralraise:  'No shrugging! Lead with the elbows and stop at shoulder height — slow and controlled.',
+      tricepsdip:    'Keep elbows pointing backward — do not let them flare wide. Use full range every rep!',
+      frontraise:    'Do not lean back — brace your core and lift only to shoulder height with soft elbows!',
+    },
+
+    // Periodic encouragement — spoken when nothing else fires for ~30 s
+    encouragement: [
+      'Looking strong! Stay focused and keep that quality high!',
+      'I can see you working hard — don\'t you dare stop now!',
+      'Fantastic effort! Your consistency is what makes champions!',
+      'Keep it up! Every rep is making you stronger — trust the process!',
+      'You\'ve got this! Stay with it — I believe in you!',
+      'Great work! Stay present, stay focused, and keep pushing!',
+      'You are doing brilliantly! Don\'t let up — finish strong!',
+    ],
+
+    // Good form streak acknowledgement
+    goodStreak: [
+      'Your form is absolutely spot on right now — keep it exactly like that!',
+      'Perfect technique! That\'s the standard right there — maintain it!',
+      'Excellent form! Your coach is very pleased — stay sharp!',
+    ],
+
+    // No person detected
+    noPerson: [
+      'I can\'t quite see you. Please step fully into the frame so I can guide you.',
+      'Step into the frame — I need to see your full body to coach you properly.',
+    ],
+
+    // Set complete
+    setDone: 'Excellent set! Take a short breath, shake it out, and get ready for the next one. You earned that rest!',
+
+    // Session complete
+    sessionDone: 'Session complete! That was a truly outstanding effort today. Check your stats and be incredibly proud of what you just achieved!',
+  },
+
+  // ── Voice init ───────────────────────────────────────────────
+  init() {
+    try { this._muted = localStorage.getItem(this._STORAGE_MUTE) === '1'; } catch (_) { this._muted = false; }
+    const btn = $('vcVoiceToggle');
+    if (btn) {
+      btn.addEventListener('click', () => this.setMuted(!this._muted));
+    }
+    this._syncVoiceUi();
+
+    if (!this.synth) {
+      const el = $('vcStatus'); if (el) el.textContent = 'Not supported in this browser'; return;
+    }
+    const load = () => {
+      const voices = this.synth.getVoices();
+      if (!voices.length) return;
+      const prefer = [
+        v => /male/i.test(v.name) && /en[-_]/i.test(v.lang),
+        v => /david|mark|alex|google uk english male|microsoft david|microsoft mark|daniel|james|fred/i.test(v.name),
+        v => /en[-_]/i.test(v.lang),
+      ];
+      for (const fn of prefer) {
+        const found = voices.find(fn);
+        if (found) { this.voice = found; break; }
+      }
+      if (!this.voice) this.voice = voices[0] || null;
+      const el = $('vcStatus');
+      if (el && !this._muted) el.textContent = this.voice ? '✓ ' + this.voice.name.slice(0, 22) : 'No voice found';
+      this._syncVoiceUi();
+    };
+    load();
+    this.synth.onvoiceschanged = load;
+    setTimeout(load, 500);
+  },
+
+  // Polite but responsive (defaults; callers may override)
+  _humanRate:  0.93,
+  _humanPitch: 0.87,
+
+  // ── Core speak (Chrome-safe) ──────────────────────────────────
+  /** @param opts.noCancel If true, queues after current speech (use for countdown chains). */
+  /** @param opts.queueDelay Ms before enqueue (default 40/60); use 0 for tight countdown chains. */
+  /** @param opts.bypassCooldown If true, ignore spacing guard (countdown / scripted chains). */
+  speak(text, opts = {}) {
+    const cb = typeof opts.onEnd === 'function' ? opts.onEnd : null;
+    let endFired = false;
+    function fireEnd() {
+      if (endFired || !cb) return;
+      endFired = true;
+      try { cb(); } catch (_) {}
+    }
+    if (this._muted || !this.synth || !text) {
+      setTimeout(fireEnd, 0);
+      return;
+    }
+    const now = Date.now();
+    const cd = opts.cooldown !== undefined ? opts.cooldown : 2200;
+    if (!opts.bypassCooldown && now - this.lastSpoken < cd) {
+      setTimeout(fireEnd, 0);
+      return;
+    }
+    this.lastSpoken = now;
+    if (!opts.noCancel) this.synth.cancel();
+    const delayMs = opts.queueDelay !== undefined ? opts.queueDelay : (opts.noCancel ? 40 : 60);
+    setTimeout(() => {
+      if (!this.synth) {
+        fireEnd();
+        return;
+      }
+      const u = new SpeechSynthesisUtterance(text);
+      if (this.voice) u.voice = this.voice;
+      u.volume = this.volume;
+      u.rate   = opts.rate  !== undefined ? opts.rate  : this._humanRate;
+      u.pitch  = opts.pitch !== undefined ? opts.pitch : this._humanPitch;
+      u.lang   = 'en-US';
+      let safety = null;
+      const done = () => {
+        if (safety) {
+          clearTimeout(safety);
+          safety = null;
+        }
+        fireEnd();
+      };
+      if (cb) safety = setTimeout(done, 8000);
+      u.onend = done;
+      u.onerror = done;
+      this.synth.speak(u);
+    }, delayMs);
+  },
+
+  // Pick a random item from an array
+  _pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; },
+
+  // ── Chrome keepalive ──────────────────────────────────────────
+  startKeepAlive() {
+    this.stopKeepAlive();
+    this._keepAliveId = setInterval(() => {
+      if (this.synth && this.synth.speaking) this.synth.resume();
+    }, 10000);
+  },
+  stopKeepAlive() {
+    if (this._keepAliveId) { clearInterval(this._keepAliveId); this._keepAliveId = null; }
+  },
+
+  // ── Test button ───────────────────────────────────────────────
+  test() {
+    if (!this.synth) { const el=$('vcStatus'); if(el) el.textContent='Not supported'; return; }
+    if (this._muted) { const el = $('vcStatus'); if (el) el.textContent = 'Unmute to test'; return; }
+    const el = $('vcStatus'); if (el) el.textContent = 'Speaking…';
+    const prev = this.lastSpoken; this.lastSpoken = 0;
+    const restore = () => {
+      this.lastSpoken = prev;
+      if (el) el.textContent = this.voice ? '✓ ' + this.voice.name.slice(0, 22) : 'No voice found';
+    };
+    this.speak("Hey there — I'm your coach. Whenever you're ready, we'll take it one rep at a time, together.", { cooldown: 0, bypassCooldown: true, rate: this._humanRate, pitch: this._humanPitch, onEnd: restore });
+  },
+
+  _welcomeKey: 'bb_ai_trainer_welcome_done',
+  _welcomeInFlight: null,
+
+  /** One polite welcome per tab; safe to call from multiple places (dedupes in-flight). */
+  awaitWelcomeOnce() {
+    const KEY = this._welcomeKey;
+    try {
+      if (sessionStorage.getItem(KEY)) return Promise.resolve();
+    } catch (_) { return Promise.resolve(); }
+    if (this._welcomeInFlight) return this._welcomeInFlight;
+    this._welcomeInFlight = new Promise((resolve) => {
+      if (!this.synth) {
+        try { sessionStorage.setItem(KEY, '1'); } catch (_) {}
+        this._welcomeInFlight = null;
+        resolve();
+        return;
+      }
+      const st = $('vcStatus'); if (st) st.textContent = 'Speaking…';
+      const prev = this.lastSpoken; this.lastSpoken = 0;
+      const finish = () => {
+        try { sessionStorage.setItem(KEY, '1'); } catch (_) {}
+        this.lastSpoken = prev;
+        const el = $('vcStatus');
+        if (el) el.textContent = this.voice ? '✓ ' + this.voice.name.slice(0, 22) : 'No voice found';
+        this._welcomeInFlight = null;
+        resolve();
+      };
+      this.speak(this.WELCOME_TEXT, { cooldown: 0, rate: 0.9, pitch: 0.87, bypassCooldown: true, onEnd: finish });
+    });
+    return this._welcomeInFlight;
+  },
+
+  // ── Speak exercise intro (called once at session start) ───────
+  speakIntro(exKey) {
+    if (this.introSpoken) return;
+    this.introSpoken = true;
+    if (this._muted) return;
+    const cue = this.CUES.intro[exKey] || this.CUES.intro.squat;
+    this.speak(cue, { cooldown: 0, bypassCooldown: true, rate: 0.93, pitch: this._humanPitch });
+  },
+
+  // ── Main per-frame handler ────────────────────────────────────
+  onFrame(out, lm, repCountNow) {
+    if (!this.enabled) return;
+    const exKey = out.exKey || 'squat';
+    const phase = out.phase || 'up';
+    const kind  = out.kind  || '';
+    const now   = Date.now();
+
+    // 1 ── No person in frame
+    if (!lm) {
+      if (!this.noPersonSpoken) {
+        this.speak(this._pick(this.CUES.noPerson), { cooldown: 8000 });
+        this.noPersonSpoken = true;
+      }
+      return;
+    }
+    this.noPersonSpoken = false;
+
+    // 2 ── Rep milestone (checked before per-rep praise so milestone wins)
+    const reps = repCountNow || 0;
+    const PHASE_CUE_GAP_MS = 2800;
+    const REP_PRAISE_EVERY = 3;
+
+    if (reps > this.lastRepCount) {
+      const milestone = this.CUES.milestones[reps];
+      if (milestone) {
+        this.speak(milestone, { cooldown: 0, rate: 0.95, pitch: this._humanPitch });
+        this.lastRepCount = reps;
+        this.lastPhase = phase;
+        return;
+      }
+      this.lastRepCount = reps;
+      this.lastPhase = phase;
+      if (reps > 0 && reps % REP_PRAISE_EVERY === 0) {
+        const pool = (kind === 'good') ? this.CUES.repPraiseGood : this.CUES.repPraiseOk;
+        this.speak(this._pick(pool), { cooldown: 3800, rate: 0.93, pitch: this._humanPitch });
+      }
+      return;
+    }
+
+    // 3 ── Phase change (direction cue) — spaced so the coach is not constant
+    if (phase !== this.lastPhase && this.lastPhase !== null) {
+      const exCues = this.CUES.phase[exKey] || {};
+      const cue = exCues[phase] || exCues.hold || null;
+      if (cue) {
+        if (now - this.lastPhaseCueAt < PHASE_CUE_GAP_MS) {
+          this.lastPhase = phase;
+        } else {
+          this.speak(cue, { cooldown: PHASE_CUE_GAP_MS, rate: 0.94, pitch: this._humanPitch });
+          this.lastPhaseCueAt = now;
+          this.lastPhase = phase;
+        }
+        return;
+      }
+    }
+    this.lastPhase = phase;
+
+    // 4 ── Sustained bad form → correction (after ~3 s of bad form)
+    if (kind === 'error' || kind === 'bad') {
+      this.badFrames++;
+      this.goodFrames = 0;
+      if (this.badFrames === 92) {
+        const cue = this.CUES.correction[exKey];
+        if (cue) { this.speak(cue, { cooldown: 5200, rate: 0.9, pitch: this._humanPitch }); }
+        this.badFrames = 0;
+      }
+      return;
+    }
+    this.badFrames = 0;
+
+    // 5 ── Sustained great form → praise streak (~7 s of good form)
+    if (kind === 'good') {
+      this.goodFrames++;
+      if (this.goodFrames === 200) {
+        this.speak(this._pick(this.CUES.goodStreak), { cooldown: 6500, rate: 0.93, pitch: this._humanPitch });
+        this.goodFrames = 0;
+        return;
+      }
+    } else {
+      this.goodFrames = 0;
+    }
+
+    // 6 ── Periodic encouragement (long gaps — calm, not chatty)
+    const ENC_GAP_MS = 52000;
+    if (now - this.lastSpoken > ENC_GAP_MS && now - this.lastEncouragementAt > ENC_GAP_MS) {
+      this.speak(this._pick(this.CUES.encouragement), { cooldown: 4200, rate: 0.92, pitch: this._humanPitch });
+      this.lastEncouragementAt = now;
+    }
+  },
+
+  // ── Reset between sessions ────────────────────────────────────
+  reset() {
+    this.lastPhase = null; this.badFrames = 0; this.goodFrames = 0;
+    this.noPersonSpoken = false; this.lastSpoken = 0; this.lastRepCount = 0;
+    this.lastEncouragementAt = 0; this.lastPhaseCueAt = 0; this.introSpoken = false;
+    if (this.synth) this.synth.cancel();
+  },
+};
+
+VC.init();
+
+// Optional early welcome on first tap (Start waits for welcome inside startWorkout).
+(function bindWelcomeGesture() {
+  const KEY = VC._welcomeKey;
+  function done() {
+    try { window.removeEventListener('pointerdown', onFirst, true); } catch (_) {}
+  }
+  function onFirst(ev) {
+    let skipWelcome = false;
+    try {
+      const t = ev.target;
+      if (t && t.closest) {
+        if (t.closest('#startBtn') || t.closest('#vcTestBtn')) skipWelcome = true;
+      }
+    } catch (_) {}
+    try {
+      if (sessionStorage.getItem(KEY)) { done(); return; }
+    } catch (_) { done(); return; }
+    done();
+    if (skipWelcome) return;
+    void VC.awaitWelcomeOnce();
+  }
+  try {
+    if (sessionStorage.getItem(KEY)) return;
+  } catch (_) { return; }
+  window.addEventListener('pointerdown', onFirst, true);
+})();
+
+// ════════════════════════════════════════════════════════════════
+//  JOINT STATUS EVALUATOR
+//  Returns a map of key → 'good'|'warn'|'bad'|'neut'
+//  that drives per-bone and per-joint colors.
+// ════════════════════════════════════════════════════════════════
+function evaluateJoints(lm, exKey, phase) {
+  const s = { L_knee:'neut', R_knee:'neut', L_elbow:'neut', R_elbow:'neut', torso:'neut', hip:'neut' };
+
+  if (exKey === 'squat') {
+    // Knees always colored — green when deep, amber when partial, red when barely bending
+    if (vis(lm,LM.LH) && vis(lm,LM.LK) && vis(lm,LM.LA)) {
+      const k = angle(lm[LM.LH], lm[LM.LK], lm[LM.LA]);
+      // standing upright (>155): neutral; starting descent: warn; deep: good
+      s.L_knee = k > 155 ? 'neut' : k < 95 ? 'good' : k < 130 ? 'warn' : 'bad';
+    }
+    if (vis(lm,LM.RH) && vis(lm,LM.RK) && vis(lm,LM.RA)) {
+      const k = angle(lm[LM.RH], lm[LM.RK], lm[LM.RA]);
+      s.R_knee = k > 155 ? 'neut' : k < 95 ? 'good' : k < 130 ? 'warn' : 'bad';
+    }
+    // Torso upright check (always on)
+    if (vis(lm,LM.LS) && vis(lm,LM.LH)) {
+      const lean = Math.abs(lm[LM.LS].x - lm[LM.LH].x);
+      s.torso = lean < 0.10 ? 'good' : lean < 0.20 ? 'warn' : 'bad';
+    }
+  }
+
+  if (exKey === 'pushup') {
+    // Elbows always colored — shows form at every point
+    if (vis(lm,LM.LS) && vis(lm,LM.LE) && vis(lm,LM.LW)) {
+      const e = angle(lm[LM.LS], lm[LM.LE], lm[LM.LW]);
+      // fully extended (>155): neutral ready; bending: color by depth
+      s.L_elbow = e > 155 ? 'neut' : e < 90 ? 'good' : e < 120 ? 'warn' : 'bad';
+    }
+    if (vis(lm,LM.RS) && vis(lm,LM.RE) && vis(lm,LM.RW)) {
+      const e = angle(lm[LM.RS], lm[LM.RE], lm[LM.RW]);
+      s.R_elbow = e > 155 ? 'neut' : e < 90 ? 'good' : e < 120 ? 'warn' : 'bad';
+    }
+    // Body alignment — always active
+    if (vis(lm,LM.LS) && vis(lm,LM.LH) && vis(lm,LM.LA)) {
+      const d = Math.abs(angle(lm[LM.LS], lm[LM.LH], lm[LM.LA]) - 175);
+      const st = d < 8 ? 'good' : d < 16 ? 'warn' : 'bad';
+      s.torso = st; s.hip = st; s.L_knee = st; s.R_knee = st;
+    }
+  }
+
+  if (exKey === 'plank') {
+    // Shoulder-hip-ankle line should be ~170°
+    if (vis(lm,LM.LS) && vis(lm,LM.LH) && vis(lm,LM.LA)) {
+      const d = Math.abs(angle(lm[LM.LS], lm[LM.LH], lm[LM.LA]) - 170);
+      const st = d < 8 ? 'good' : d < 18 ? 'warn' : 'bad';
+      s.torso = st; s.hip = st; s.L_knee = st; s.R_knee = st;
+    }
+  }
+
+  if (exKey === 'jumpingjack') {
+    const armsUp = vis(lm,LM.LW) && vis(lm,LM.RW) &&
+                   lm[LM.LW].y < lm[LM.LS].y - 0.04 &&
+                   lm[LM.RW].y < lm[LM.RS].y - 0.04;
+    s.L_elbow = armsUp ? 'good' : 'warn';
+    s.R_elbow = armsUp ? 'good' : 'warn';
+    if (vis(lm,LM.LA) && vis(lm,LM.RA) && vis(lm,LM.LS) && vis(lm,LM.RS)) {
+      const sw = Math.abs(lm[LM.LS].x - lm[LM.RS].x);
+      const aw = Math.abs(lm[LM.LA].x - lm[LM.RA].x);
+      const st = aw > sw * 1.1 ? 'good' : 'warn';
+      s.L_knee = st; s.R_knee = st; s.hip = st;
+    }
+  }
+
+  // ── BICEP CURL ──────────────────────────────────────────────
+  if (exKey === 'biccurl') {
+    // Elbow angle: Shoulder → Elbow → Wrist
+    if (vis(lm,LM.LS) && vis(lm,LM.LE) && vis(lm,LM.LW)) {
+      const e = angle(lm[LM.LS], lm[LM.LE], lm[LM.LW]);
+      // Extended (>150): neutral; curling (80–150): warn; peak curl (<50): good; mid-bad: amber
+      s.L_elbow = e > 150 ? 'neut' : e < 50 ? 'good' : e < 100 ? 'warn' : 'bad';
+    }
+    if (vis(lm,LM.RS) && vis(lm,LM.RE) && vis(lm,LM.RW)) {
+      const e = angle(lm[LM.RS], lm[LM.RE], lm[LM.RW]);
+      s.R_elbow = e > 150 ? 'neut' : e < 50 ? 'good' : e < 100 ? 'warn' : 'bad';
+    }
+    // Torso sway check — upper arm must not swing
+    if (vis(lm,LM.LS) && vis(lm,LM.LH)) {
+      const lean = Math.abs(lm[LM.LS].x - lm[LM.LH].x);
+      s.torso = lean < 0.08 ? 'good' : lean < 0.18 ? 'warn' : 'bad';
+    }
+  }
+
+  // ── SHOULDER PRESS ──────────────────────────────────────────
+  if (exKey === 'shoulderpress') {
+    // Elbow angle at both sides
+    if (vis(lm,LM.LS) && vis(lm,LM.LE) && vis(lm,LM.LW)) {
+      const e = angle(lm[LM.LS], lm[LM.LE], lm[LM.LW]);
+      // Bottom (elbows ~90°): warn; pressing (100–155°): warn; locked out (>155°): good
+      s.L_elbow = e < 80 ? 'warn' : e > 155 ? 'good' : 'warn';
+    }
+    if (vis(lm,LM.RS) && vis(lm,LM.RE) && vis(lm,LM.RW)) {
+      const e = angle(lm[LM.RS], lm[LM.RE], lm[LM.RW]);
+      s.R_elbow = e < 80 ? 'warn' : e > 155 ? 'good' : 'warn';
+    }
+    // Wrists above shoulders = locked-out good position → colour torso green
+    if (vis(lm,LM.LW) && vis(lm,LM.LS) && vis(lm,LM.RW) && vis(lm,LM.RS)) {
+      const lwAbove = lm[LM.LW].y < lm[LM.LS].y - 0.05;
+      const rwAbove = lm[LM.RW].y < lm[LM.RS].y - 0.05;
+      s.torso = (lwAbove && rwAbove) ? 'good' : 'warn';
+    }
+    // Back lean check
+    if (vis(lm,LM.LS) && vis(lm,LM.LH)) {
+      const lean = Math.abs(lm[LM.LS].x - lm[LM.LH].x);
+      if (lean > 0.20) { s.torso = 'bad'; s.hip = 'bad'; }
+    }
+  }
+
+  // ── BENT-OVER ROW ────────────────────────────────────────────
+  if (exKey === 'bentoverrow') {
+    // Elbow pull angle: Shoulder → Elbow → Wrist
+    if (vis(lm,LM.LS) && vis(lm,LM.LE) && vis(lm,LM.LW)) {
+      const e = angle(lm[LM.LS], lm[LM.LE], lm[LM.LW]);
+      // Hanging (>145°): neutral; mid-pull (80–145°): warn; peak row (<75°): good
+      s.L_elbow = e > 145 ? 'neut' : e < 75 ? 'good' : 'warn';
+    }
+    if (vis(lm,LM.RS) && vis(lm,LM.RE) && vis(lm,LM.RW)) {
+      const e = angle(lm[LM.RS], lm[LM.RE], lm[LM.RW]);
+      s.R_elbow = e > 145 ? 'neut' : e < 75 ? 'good' : 'warn';
+    }
+    // Torso hinge: shoulder–hip–knee angle should be 45–90° (bent over)
+    if (vis(lm,LM.LS) && vis(lm,LM.LH) && vis(lm,LM.LK)) {
+      const ta = angle(lm[LM.LS], lm[LM.LH], lm[LM.LK]);
+      s.torso = (ta > 40 && ta < 100) ? 'good' : ta < 40 ? 'warn' : 'bad';
+      s.hip   = s.torso;
+    }
+  }
+
+  if (exKey === 'lunge') {
+    if (vis(lm,LM.LH) && vis(lm,LM.LK) && vis(lm,LM.LA)) {
+      const k = angle(lm[LM.LH], lm[LM.LK], lm[LM.LA]);
+      s.L_knee = k > 155 ? 'warn' : k < 95 ? 'good' : k < 130 ? 'warn' : 'bad';
+    }
+    if (vis(lm,LM.RH) && vis(lm,LM.RK) && vis(lm,LM.RA)) {
+      const k = angle(lm[LM.RH], lm[LM.RK], lm[LM.RA]);
+      s.R_knee = k > 155 ? 'warn' : k < 95 ? 'good' : k < 130 ? 'warn' : 'bad';
+    }
+    if (vis(lm,LM.LS) && vis(lm,LM.LH)) {
+      const lean = Math.abs(lm[LM.LS].x - lm[LM.LH].x);
+      s.torso = lean < 0.12 ? 'good' : lean < 0.22 ? 'warn' : 'bad';
+    }
+  }
+
+  if (exKey === 'calfraise') {
+    if (vis(lm,LM.LH) && vis(lm,LM.LK) && vis(lm,LM.LA)) {
+      const k = angle(lm[LM.LH], lm[LM.LK], lm[LM.LA]);
+      s.L_knee = k > 160 ? 'good' : k > 145 ? 'warn' : 'bad';
+    }
+    if (vis(lm,LM.RH) && vis(lm,LM.RK) && vis(lm,LM.RA)) {
+      const k = angle(lm[LM.RH], lm[LM.RK], lm[LM.RA]);
+      s.R_knee = k > 160 ? 'good' : k > 145 ? 'warn' : 'bad';
+    }
+    if (vis(lm,LM.LH) && vis(lm,LM.LA)) {
+      const lift = lm[LM.LA].y - lm[LM.LH].y;
+      if (phase === 'down') s.hip = lift > 0.33 ? 'good' : lift > 0.29 ? 'warn' : 'bad';
+      else s.hip = lift > 0.31 ? 'warn' : 'warn';
+    }
+  }
+
+  if (exKey === 'lateralraise') {
+    if (vis(lm,LM.LS) && vis(lm,LM.LE) && vis(lm,LM.LW)) {
+      const e = angle(lm[LM.LS], lm[LM.LE], lm[LM.LW]);
+      if (phase === 'up') {
+        s.L_elbow = (e >= 142 && e <= 178) ? 'good' : (e < 105 ? 'bad' : 'warn');
+      } else {
+        s.L_elbow = 'warn';
+      }
+    }
+    if (vis(lm,LM.RS) && vis(lm,LM.RE) && vis(lm,LM.RW)) {
+      const e = angle(lm[LM.RS], lm[LM.RE], lm[LM.RW]);
+      if (phase === 'up') {
+        s.R_elbow = (e >= 142 && e <= 178) ? 'good' : (e < 105 ? 'bad' : 'warn');
+      } else {
+        s.R_elbow = 'warn';
+      }
+    }
+    if (vis(lm,LM.LS) && vis(lm,LM.RS)) {
+      const sh = Math.abs(lm[LM.LS].y - lm[LM.RS].y);
+      s.torso = sh < 0.045 ? 'good' : sh < 0.09 ? 'warn' : 'bad';
+    }
+  }
+
+  if (exKey === 'frontraise') {
+    if (vis(lm,LM.LS) && vis(lm,LM.LE) && vis(lm,LM.LW)) {
+      const e = angle(lm[LM.LS], lm[LM.LE], lm[LM.LW]);
+      if (phase === 'up') {
+        s.L_elbow = (e >= 145 && e <= 178) ? 'good' : (e < 108 ? 'bad' : 'warn');
+      } else {
+        s.L_elbow = 'warn';
+      }
+    }
+    if (vis(lm,LM.RS) && vis(lm,LM.RE) && vis(lm,LM.RW)) {
+      const e = angle(lm[LM.RS], lm[LM.RE], lm[LM.RW]);
+      if (phase === 'up') {
+        s.R_elbow = (e >= 145 && e <= 178) ? 'good' : (e < 108 ? 'bad' : 'warn');
+      } else {
+        s.R_elbow = 'warn';
+      }
+    }
+    if (vis(lm,LM.LS) && vis(lm,LM.RS)) {
+      const sh = Math.abs(lm[LM.LS].y - lm[LM.RS].y);
+      s.torso = sh < 0.045 ? 'good' : sh < 0.09 ? 'warn' : 'bad';
+    }
+  }
+
+  if (exKey === 'tricepsdip') {
+    if (vis(lm,LM.LS) && vis(lm,LM.LE) && vis(lm,LM.LW)) {
+      const e = angle(lm[LM.LS], lm[LM.LE], lm[LM.LW]);
+      s.L_elbow = e > 158 ? 'warn' : e < 92 ? 'good' : e < 128 ? 'warn' : 'bad';
+    }
+    if (vis(lm,LM.RS) && vis(lm,LM.RE) && vis(lm,LM.RW)) {
+      const e = angle(lm[LM.RS], lm[LM.RE], lm[LM.RW]);
+      s.R_elbow = e > 158 ? 'warn' : e < 92 ? 'good' : e < 128 ? 'warn' : 'bad';
+    }
+    if (vis(lm,LM.LS) && vis(lm,LM.LH) && vis(lm,LM.LA)) {
+      const ba = angle(lm[LM.LS], lm[LM.LH], lm[LM.LA]);
+      const d = Math.abs(ba - 175);
+      const st = d < 12 ? 'good' : d < 22 ? 'warn' : 'bad';
+      s.torso = st; s.hip = st;
+    }
+  }
+
+  return s;
+}
+
+// ════════════════════════════════════════════════════════════════
+//  DRAWING ENGINE
+// ════════════════════════════════════════════════════════════════
+
+// Draws the skeleton with per-bone status coloring + glow
+function drawSmartSkeleton(ctx, lm, jStatus, w, h) {
+  ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+
+  // Bones
+  for (const bone of BONES) {
+    const A = lm[bone.a], B = lm[bone.b];
+    if (!A || !B || A.visibility < 0.28 || B.visibility < 0.28) continue;
+    const c = byStatus(jStatus[bone.k] || 'neut', true);
+    const active = jStatus[bone.k] !== 'neut';
+    ctx.strokeStyle  = c;
+    ctx.lineWidth    = active ? 4.5 : 3;
+    ctx.shadowColor  = c;
+    ctx.shadowBlur   = active ? 9 : 2;
+    ctx.beginPath();
+    ctx.moveTo(A.x * w, A.y * h);
+    ctx.lineTo(B.x * w, B.y * h);
+    ctx.stroke();
+  }
+  ctx.shadowBlur = 0;
+
+  // Joint circles
+  for (const i of ALL_JOINT_IDS) {
+    const pt = lm[i];
+    if (!pt || pt.visibility < 0.30) continue;
+    const st = jStatus[JOINT_KEY[i]] || 'neut';
+    const c  = byStatus(st, false);
+    const active = st !== 'neut';
+
+    // Core dot
+    ctx.beginPath();
+    ctx.arc(pt.x * w, pt.y * h, active ? 6.5 : 5, 0, Math.PI * 2);
+    ctx.fillStyle   = c;
+    ctx.shadowColor = c;
+    ctx.shadowBlur  = active ? 16 : 5;
+    ctx.fill();
+    ctx.shadowBlur = 0;
+
+    // Outer ring (status indicator halo)
+    const [r, g, b2] = st==='good'?[61,230,139]:st==='warn'?[228,187,90]:st==='bad'?[255,79,106]:[255,255,255];
+    ctx.beginPath();
+    ctx.arc(pt.x * w, pt.y * h, 13, 0, Math.PI * 2);
+    ctx.strokeStyle = `rgba(${r},${g},${b2},${active ? 0.30 : 0.08})`;
+    ctx.lineWidth   = 2;
+    ctx.stroke();
+  }
+
+  // Head dot
+  const nose = lm[0];
+  if (nose && nose.visibility > 0.4) {
+    ctx.beginPath();
+    ctx.arc(nose.x * w, nose.y * h, 4, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(255,255,255,0.8)';
+    ctx.fill();
+  }
+}
+
+// Draw the angle arc between segments A-B and B-C at joint B
+function drawAngleArc(ctx, A, B, C, w, h, radius, color) {
+  const bx = B.x * w, by = B.y * h;
+  const sa = Math.atan2(A.y * h - by, A.x * w - bx);
+  const ea = Math.atan2(C.y * h - by, C.x * w - bx);
+  let diff = ea - sa;
+  while (diff >  Math.PI) diff -= 2 * Math.PI;
+  while (diff < -Math.PI) diff += 2 * Math.PI;
+  ctx.beginPath();
+  ctx.arc(bx, by, radius, sa, ea, diff < 0);
+  ctx.strokeStyle = color;
+  ctx.lineWidth   = 2.5;
+  ctx.shadowColor = color;
+  ctx.shadowBlur  = 8;
+  ctx.stroke();
+  ctx.shadowBlur  = 0;
+}
+
+// Draw a readable text pill on a horizontally-flipped canvas (CSS scaleX(-1))
+// The key trick: ctx.scale(-1,1) + draw at negated x = text appears correctly
+function drawPill(ctx, cx, cy, text, color) {
+  ctx.save();
+  ctx.scale(-1, 1);
+  const mx = -cx;
+  ctx.font = 'bold 11px Inter, Arial, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  const tw = ctx.measureText(text).width;
+  const pw = tw + 16, ph = 21, r = 6;
+  const bx = mx - pw / 2, by = cy - ph / 2;
+  // Background
+  ctx.fillStyle = 'rgba(5,5,10,0.82)';
+  ctx.beginPath();
+  ctx.moveTo(bx + r, by); ctx.lineTo(bx + pw - r, by);
+  ctx.quadraticCurveTo(bx + pw, by,      bx + pw, by + r);
+  ctx.lineTo(bx + pw, by + ph - r);
+  ctx.quadraticCurveTo(bx + pw, by + ph, bx + pw - r, by + ph);
+  ctx.lineTo(bx + r, by + ph);
+  ctx.quadraticCurveTo(bx, by + ph,      bx, by + ph - r);
+  ctx.lineTo(bx, by + r);
+  ctx.quadraticCurveTo(bx, by,           bx + r, by);
+  ctx.closePath();
+  ctx.fill();
+  // Text
+  ctx.fillStyle = color;
+  ctx.fillText(text, mx, cy);
+  ctx.restore();
+}
+
+// Exercise-specific coaching overlays (guide lines, angle labels, cues)
+function drawCoachingOverlay(ctx, lm, exKey, jStatus, w, h) {
+
+  // ── SQUAT ────────────────────────────────────────────────────
+  if (exKey === 'squat') {
+    // Left knee angle arc + value label
+    if (vis(lm,LM.LH) && vis(lm,LM.LK) && vis(lm,LM.LA)) {
+      const k  = angle(lm[LM.LH], lm[LM.LK], lm[LM.LA]);
+      const kc = byStatus(jStatus.L_knee || 'neut', false);
+      drawAngleArc(ctx, lm[LM.LH], lm[LM.LK], lm[LM.LA], w, h, 24, kc);
+      drawPill(ctx, lm[LM.LK].x * w, lm[LM.LK].y * h - 32, `${Math.round(k)}°`, kc);
+    }
+    // Right knee angle arc + value label
+    if (vis(lm,LM.RH) && vis(lm,LM.RK) && vis(lm,LM.RA)) {
+      const k  = angle(lm[LM.RH], lm[LM.RK], lm[LM.RA]);
+      const kc = byStatus(jStatus.R_knee || 'neut', false);
+      drawAngleArc(ctx, lm[LM.RH], lm[LM.RK], lm[LM.RA], w, h, 24, kc);
+      drawPill(ctx, lm[LM.RK].x * w, lm[LM.RK].y * h - 32, `${Math.round(k)}°`, kc);
+    }
+    // Dashed depth guide at hip height
+    if (vis(lm,LM.LH) && vis(lm,LM.RH)) {
+      const hy = ((lm[LM.LH].y + lm[LM.RH].y) / 2) * h;
+      ctx.save();
+      ctx.setLineDash([7, 5]);
+      ctx.strokeStyle = 'rgba(255,255,255,0.11)';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(0, hy); ctx.lineTo(w, hy);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.restore();
+    }
+  }
+
+  // ── PUSH-UP ──────────────────────────────────────────────────
+  if (exKey === 'pushup') {
+    // Left elbow angle arc + label
+    if (vis(lm,LM.LS) && vis(lm,LM.LE) && vis(lm,LM.LW)) {
+      const e  = angle(lm[LM.LS], lm[LM.LE], lm[LM.LW]);
+      const ec = byStatus(jStatus.L_elbow || 'neut', false);
+      drawAngleArc(ctx, lm[LM.LS], lm[LM.LE], lm[LM.LW], w, h, 22, ec);
+      drawPill(ctx, lm[LM.LE].x * w, lm[LM.LE].y * h - 30, `${Math.round(e)}°`, ec);
+    }
+    // Right elbow angle arc + label
+    if (vis(lm,LM.RS) && vis(lm,LM.RE) && vis(lm,LM.RW)) {
+      const e  = angle(lm[LM.RS], lm[LM.RE], lm[LM.RW]);
+      const ec = byStatus(jStatus.R_elbow || 'neut', false);
+      drawAngleArc(ctx, lm[LM.RS], lm[LM.RE], lm[LM.RW], w, h, 22, ec);
+      drawPill(ctx, lm[LM.RE].x * w, lm[LM.RE].y * h - 30, `${Math.round(e)}°`, ec);
+    }
+    // Body alignment dashed line + cue
+    if (vis(lm,LM.LS) && vis(lm,LM.LA)) {
+      const ba  = vis(lm,LM.LH) ? angle(lm[LM.LS], lm[LM.LH], lm[LM.LA]) : 175;
+      const d   = Math.abs(ba - 175);
+      const lnC = d < 8 ? CLR.BG_GOOD : d < 16 ? CLR.BG_WARN : CLR.BG_BAD;
+      ctx.save();
+      ctx.setLineDash([6, 4]);
+      ctx.strokeStyle = lnC;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(lm[LM.LS].x * w, lm[LM.LS].y * h);
+      ctx.lineTo(lm[LM.LA].x * w, lm[LM.LA].y * h);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.restore();
+      if (d >= 8) {
+        const mx = (lm[LM.LS].x + lm[LM.LA].x) / 2 * w;
+        const my = (lm[LM.LS].y + lm[LM.LA].y) / 2 * h;
+        drawPill(ctx, mx, my, d < 16 ? 'Tighten core' : 'Fix body alignment', lnC);
+      }
+    }
+  }
+
+  // ── PLANK ────────────────────────────────────────────────────
+  if (exKey === 'plank') {
+    if (vis(lm,LM.LS) && vis(lm,LM.LH) && vis(lm,LM.LA)) {
+      const ba  = angle(lm[LM.LS], lm[LM.LH], lm[LM.LA]);
+      const d   = Math.abs(ba - 170);
+      const lnC = d < 8 ? CLR.BG_GOOD : d < 18 ? CLR.BG_WARN : CLR.BG_BAD;
+      // Alignment line shoulder → ankle
+      ctx.save();
+      ctx.setLineDash([9, 5]);
+      ctx.strokeStyle = lnC;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(lm[LM.LS].x * w, lm[LM.LS].y * h);
+      ctx.lineTo(lm[LM.LA].x * w, lm[LM.LA].y * h);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.restore();
+      // Angle label near hip
+      drawPill(ctx, lm[LM.LH].x * w, lm[LM.LH].y * h - 28,
+               `${Math.round(ba)}° (target 170°)`, lnC);
+      // Corrective cue below hip
+      const cue = ba < 162 ? '▲ Raise hips' : ba > 178 ? '▼ Lower hips' : '✓ Perfect';
+      drawPill(ctx, lm[LM.LH].x * w, lm[LM.LH].y * h + 26, cue, lnC);
+    }
+  }
+
+  // ── JUMPING JACK ─────────────────────────────────────────────
+  if (exKey === 'jumpingjack') {
+    const armsUp = vis(lm,LM.LW) && vis(lm,LM.RW) &&
+                   lm[LM.LW].y < lm[LM.LS].y - 0.04 &&
+                   lm[LM.RW].y < lm[LM.RS].y - 0.04;
+    // Wrist cues
+    if (vis(lm,LM.LW))
+      drawPill(ctx, lm[LM.LW].x*w, lm[LM.LW].y*h - 24, armsUp ? '✓' : '↑ Raise', armsUp ? CLR.GOOD : CLR.WARN);
+    if (vis(lm,LM.RW))
+      drawPill(ctx, lm[LM.RW].x*w, lm[LM.RW].y*h - 24, armsUp ? '✓' : '↑ Raise', armsUp ? CLR.GOOD : CLR.WARN);
+    // Ankle spread cues
+    if (vis(lm,LM.LA) && vis(lm,LM.RA) && vis(lm,LM.LS) && vis(lm,LM.RS)) {
+      const sw = Math.abs(lm[LM.LS].x - lm[LM.RS].x);
+      const aw = Math.abs(lm[LM.LA].x - lm[LM.RA].x);
+      const lo = aw > sw * 1.1;
+      drawPill(ctx, lm[LM.LA].x*w, lm[LM.LA].y*h + 24, lo ? '✓' : '→ Out', lo ? CLR.GOOD : CLR.WARN);
+      drawPill(ctx, lm[LM.RA].x*w, lm[LM.RA].y*h + 24, lo ? '✓' : '← Out', lo ? CLR.GOOD : CLR.WARN);
+    }
+  }
+
+  // ── BICEP CURL ───────────────────────────────────────────────
+  if (exKey === 'biccurl') {
+    // Left elbow angle arc + label
+    if (vis(lm,LM.LS) && vis(lm,LM.LE) && vis(lm,LM.LW)) {
+      const e  = angle(lm[LM.LS], lm[LM.LE], lm[LM.LW]);
+      const ec = byStatus(jStatus.L_elbow || 'neut', false);
+      drawAngleArc(ctx, lm[LM.LS], lm[LM.LE], lm[LM.LW], w, h, 22, ec);
+      drawPill(ctx, lm[LM.LE].x * w, lm[LM.LE].y * h - 30, `${Math.round(e)}°`, ec);
+    }
+    // Right elbow angle arc + label
+    if (vis(lm,LM.RS) && vis(lm,LM.RE) && vis(lm,LM.RW)) {
+      const e  = angle(lm[LM.RS], lm[LM.RE], lm[LM.RW]);
+      const ec = byStatus(jStatus.R_elbow || 'neut', false);
+      drawAngleArc(ctx, lm[LM.RS], lm[LM.RE], lm[LM.RW], w, h, 22, ec);
+      drawPill(ctx, lm[LM.RE].x * w, lm[LM.RE].y * h - 30, `${Math.round(e)}°`, ec);
+    }
+    // Dashed vertical guide line from shoulder downward — "keep upper arm here"
+    if (vis(lm,LM.LS) && vis(lm,LM.LH)) {
+      const lean = Math.abs(lm[LM.LS].x - lm[LM.LH].x);
+      const lnC  = lean < 0.08 ? CLR.BG_GOOD : lean < 0.18 ? CLR.BG_WARN : CLR.BG_BAD;
+      ctx.save();
+      ctx.setLineDash([5, 4]);
+      ctx.strokeStyle = lnC;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(lm[LM.LS].x * w, lm[LM.LS].y * h);
+      ctx.lineTo(lm[LM.LS].x * w, lm[LM.LH].y * h);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.restore();
+      if (lean >= 0.18)
+        drawPill(ctx, lm[LM.LS].x * w, (lm[LM.LS].y + lm[LM.LH].y) / 2 * h, 'Keep upper arm still', CLR.BAD);
+    }
+  }
+
+  // ── SHOULDER PRESS ───────────────────────────────────────────
+  if (exKey === 'shoulderpress') {
+    // Left elbow angle arc + label
+    if (vis(lm,LM.LS) && vis(lm,LM.LE) && vis(lm,LM.LW)) {
+      const e  = angle(lm[LM.LS], lm[LM.LE], lm[LM.LW]);
+      const ec = byStatus(jStatus.L_elbow || 'neut', false);
+      drawAngleArc(ctx, lm[LM.LS], lm[LM.LE], lm[LM.LW], w, h, 22, ec);
+      drawPill(ctx, lm[LM.LE].x * w, lm[LM.LE].y * h - 30, `${Math.round(e)}°`, ec);
+    }
+    // Right elbow angle arc + label
+    if (vis(lm,LM.RS) && vis(lm,LM.RE) && vis(lm,LM.RW)) {
+      const e  = angle(lm[LM.RS], lm[LM.RE], lm[LM.RW]);
+      const ec = byStatus(jStatus.R_elbow || 'neut', false);
+      drawAngleArc(ctx, lm[LM.RS], lm[LM.RE], lm[LM.RW], w, h, 22, ec);
+      drawPill(ctx, lm[LM.RE].x * w, lm[LM.RE].y * h - 30, `${Math.round(e)}°`, ec);
+    }
+    // Dashed target-height line above head when wrists are near lockout
+    if (vis(lm,LM.LW) && vis(lm,LM.RW) && vis(lm,LM.LS) && vis(lm,LM.RS)) {
+      const lwAbove = lm[LM.LW].y < lm[LM.LS].y - 0.05;
+      const rwAbove = lm[LM.RW].y < lm[LM.RS].y - 0.05;
+      const targetY = Math.min(lm[LM.LW].y, lm[LM.RW].y) * h - 14;
+      const lnC = (lwAbove && rwAbove) ? CLR.BG_GOOD : CLR.BG_WARN;
+      ctx.save();
+      ctx.setLineDash([8, 5]);
+      ctx.strokeStyle = lnC;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(0, targetY); ctx.lineTo(w, targetY);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.restore();
+      const cue = (lwAbove && rwAbove) ? '✓ Arms locked out' : '↑ Press to full extension';
+      drawPill(ctx, w / 2, targetY + 18, cue, lnC);
+    }
+    // Symmetry warning if elbows differ by > 20°
+    if (vis(lm,LM.LS) && vis(lm,LM.LE) && vis(lm,LM.LW) && vis(lm,LM.RS) && vis(lm,LM.RE) && vis(lm,LM.RW)) {
+      const le = angle(lm[LM.LS], lm[LM.LE], lm[LM.LW]);
+      const re = angle(lm[LM.RS], lm[LM.RE], lm[LM.RW]);
+      if (Math.abs(le - re) > 20)
+        drawPill(ctx, w / 2, (lm[LM.LS].y + 0.06) * h, 'Keep arms even', CLR.WARN);
+    }
+  }
+
+  // ── BENT-OVER ROW ────────────────────────────────────────────
+  if (exKey === 'bentoverrow') {
+    // Left elbow angle arc + label
+    if (vis(lm,LM.LS) && vis(lm,LM.LE) && vis(lm,LM.LW)) {
+      const e  = angle(lm[LM.LS], lm[LM.LE], lm[LM.LW]);
+      const ec = byStatus(jStatus.L_elbow || 'neut', false);
+      drawAngleArc(ctx, lm[LM.LS], lm[LM.LE], lm[LM.LW], w, h, 22, ec);
+      drawPill(ctx, lm[LM.LE].x * w, lm[LM.LE].y * h - 30, `${Math.round(e)}°`, ec);
+    }
+    // Right elbow angle arc + label
+    if (vis(lm,LM.RS) && vis(lm,LM.RE) && vis(lm,LM.RW)) {
+      const e  = angle(lm[LM.RS], lm[LM.RE], lm[LM.RW]);
+      const ec = byStatus(jStatus.R_elbow || 'neut', false);
+      drawAngleArc(ctx, lm[LM.RS], lm[LM.RE], lm[LM.RW], w, h, 22, ec);
+      drawPill(ctx, lm[LM.RE].x * w, lm[LM.RE].y * h - 30, `${Math.round(e)}°`, ec);
+    }
+    // Torso hinge angle label near hip + posture dashed line
+    if (vis(lm,LM.LS) && vis(lm,LM.LH) && vis(lm,LM.LK)) {
+      const ta   = angle(lm[LM.LS], lm[LM.LH], lm[LM.LK]);
+      const taC  = (ta > 40 && ta < 100) ? CLR.BG_GOOD : ta < 40 ? CLR.BG_WARN : CLR.BG_BAD;
+      ctx.save();
+      ctx.setLineDash([8, 5]);
+      ctx.strokeStyle = taC;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(lm[LM.LS].x * w, lm[LM.LS].y * h);
+      ctx.lineTo(lm[LM.LH].x * w, lm[LM.LH].y * h);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.restore();
+      drawPill(ctx, lm[LM.LH].x * w, lm[LM.LH].y * h - 28,
+               `Torso ${Math.round(ta)}° (target 45–90°)`, taC);
+      const postCue = ta > 100 ? '↓ Hinge more at hips' : ta < 35 ? '↑ Raise torso slightly' : '✓ Good hinge';
+      drawPill(ctx, lm[LM.LH].x * w, lm[LM.LH].y * h + 26, postCue, taC);
+    }
+  }
+
+  if (exKey === 'lunge') {
+    if (vis(lm,LM.LH) && vis(lm,LM.LK) && vis(lm,LM.LA)) {
+      const k  = angle(lm[LM.LH], lm[LM.LK], lm[LM.LA]);
+      const kc = byStatus(jStatus.L_knee || 'neut', false);
+      drawAngleArc(ctx, lm[LM.LH], lm[LM.LK], lm[LM.LA], w, h, 24, kc);
+      drawPill(ctx, lm[LM.LK].x * w, lm[LM.LK].y * h - 32, `${Math.round(k)}°`, kc);
+    }
+    if (vis(lm,LM.RH) && vis(lm,LM.RK) && vis(lm,LM.RA)) {
+      const k  = angle(lm[LM.RH], lm[LM.RK], lm[LM.RA]);
+      const kc = byStatus(jStatus.R_knee || 'neut', false);
+      drawAngleArc(ctx, lm[LM.RH], lm[LM.RK], lm[LM.RA], w, h, 24, kc);
+      drawPill(ctx, lm[LM.RK].x * w, lm[LM.RK].y * h - 32, `${Math.round(k)}°`, kc);
+    }
+    if (vis(lm,LM.LH) && vis(lm,LM.LK) && vis(lm,LM.LA) && vis(lm,LM.RH) && vis(lm,LM.RK) && vis(lm,LM.RA)) {
+      const lk = angle(lm[LM.LH], lm[LM.LK], lm[LM.LA]);
+      const rk = angle(lm[LM.RH], lm[LM.RK], lm[LM.RA]);
+      if (Math.abs(lk - rk) > 12)
+        drawPill(ctx, w / 2, (lm[LM.LH].y + 0.05) * h, 'Front leg deeper', CLR.WARN);
+    }
+  }
+
+  if (exKey === 'calfraise') {
+    if (vis(lm,LM.LH) && vis(lm,LM.LA)) {
+      const lift = lm[LM.LA].y - lm[LM.LH].y;
+      const k = vis(lm,LM.LK) ? angle(lm[LM.LH], lm[LM.LK], lm[LM.LA]) : 180;
+      const kc = byStatus(jStatus.L_knee || 'neut', false);
+      drawPill(ctx, lm[LM.LA].x * w, lm[LM.LA].y * h - 22, `Lift ${(lift * 100).toFixed(0)}`, kc);
+      drawPill(ctx, lm[LM.LK].x * w, lm[LM.LK].y * h - 36, `${Math.round(k)}° knee`, kc);
+    }
+    if (vis(lm,LM.LH) && vis(lm,LM.LA)) {
+      ctx.save();
+      ctx.setLineDash([6, 4]);
+      ctx.strokeStyle = 'rgba(255,255,255,0.14)';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(lm[LM.LH].x * w, lm[LM.LH].y * h);
+      ctx.lineTo(lm[LM.LA].x * w, lm[LM.LA].y * h);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.restore();
+    }
+  }
+
+  if (exKey === 'lateralraise') {
+    if (vis(lm,LM.LS) && vis(lm,LM.LE) && vis(lm,LM.LW)) {
+      const e  = angle(lm[LM.LS], lm[LM.LE], lm[LM.LW]);
+      const ec = byStatus(jStatus.L_elbow || 'neut', false);
+      drawAngleArc(ctx, lm[LM.LS], lm[LM.LE], lm[LM.LW], w, h, 22, ec);
+      drawPill(ctx, lm[LM.LE].x * w, lm[LM.LE].y * h - 30, `${Math.round(e)}°`, ec);
+    }
+    if (vis(lm,LM.RS) && vis(lm,LM.RE) && vis(lm,LM.RW)) {
+      const e  = angle(lm[LM.RS], lm[LM.RE], lm[LM.RW]);
+      const ec = byStatus(jStatus.R_elbow || 'neut', false);
+      drawAngleArc(ctx, lm[LM.RS], lm[LM.RE], lm[LM.RW], w, h, 22, ec);
+      drawPill(ctx, lm[LM.RE].x * w, lm[LM.RE].y * h - 30, `${Math.round(e)}°`, ec);
+    }
+    if (vis(lm,LM.LS) && vis(lm,LM.LW)) {
+      const spread = Math.abs(lm[LM.LW].x - lm[LM.LS].x);
+      drawPill(ctx, lm[LM.LW].x * w, lm[LM.LW].y * h + 22, `W ${(spread * 100).toFixed(0)}`, spread > 0.17 ? CLR.GOOD : CLR.WARN);
+    }
+    if (vis(lm,LM.RS) && vis(lm,LM.RW)) {
+      const spread = Math.abs(lm[LM.RW].x - lm[LM.RS].x);
+      drawPill(ctx, lm[LM.RW].x * w, lm[LM.RW].y * h + 22, `W ${(spread * 100).toFixed(0)}`, spread > 0.17 ? CLR.GOOD : CLR.WARN);
+    }
+  }
+
+  if (exKey === 'tricepsdip') {
+    if (vis(lm,LM.LS) && vis(lm,LM.LE) && vis(lm,LM.LW)) {
+      const e  = angle(lm[LM.LS], lm[LM.LE], lm[LM.LW]);
+      const ec = byStatus(jStatus.L_elbow || 'neut', false);
+      drawAngleArc(ctx, lm[LM.LS], lm[LM.LE], lm[LM.LW], w, h, 22, ec);
+      drawPill(ctx, lm[LM.LE].x * w, lm[LM.LE].y * h - 30, `${Math.round(e)}°`, ec);
+    }
+    if (vis(lm,LM.RS) && vis(lm,LM.RE) && vis(lm,LM.RW)) {
+      const e  = angle(lm[LM.RS], lm[LM.RE], lm[LM.RW]);
+      const ec = byStatus(jStatus.R_elbow || 'neut', false);
+      drawAngleArc(ctx, lm[LM.RS], lm[LM.RE], lm[LM.RW], w, h, 22, ec);
+      drawPill(ctx, lm[LM.RE].x * w, lm[LM.RE].y * h - 30, `${Math.round(e)}°`, ec);
+    }
+  }
+
+  if (exKey === 'frontraise') {
+    if (vis(lm,LM.LS) && vis(lm,LM.LE) && vis(lm,LM.LW)) {
+      const e  = angle(lm[LM.LS], lm[LM.LE], lm[LM.LW]);
+      const ec = byStatus(jStatus.L_elbow || 'neut', false);
+      drawAngleArc(ctx, lm[LM.LS], lm[LM.LE], lm[LM.LW], w, h, 22, ec);
+      drawPill(ctx, lm[LM.LE].x * w, lm[LM.LE].y * h - 30, `${Math.round(e)}°`, ec);
+    }
+    if (vis(lm,LM.RS) && vis(lm,LM.RE) && vis(lm,LM.RW)) {
+      const e  = angle(lm[LM.RS], lm[LM.RE], lm[LM.RW]);
+      const ec = byStatus(jStatus.R_elbow || 'neut', false);
+      drawAngleArc(ctx, lm[LM.RS], lm[LM.RE], lm[LM.RW], w, h, 22, ec);
+      drawPill(ctx, lm[LM.RE].x * w, lm[LM.RE].y * h - 30, `${Math.round(e)}°`, ec);
+    }
+    if (vis(lm,LM.LS) && vis(lm,LM.LW) && vis(lm,LM.RS) && vis(lm,LM.RW)) {
+      const lh = lm[LM.LS].y - lm[LM.LW].y;
+      const rh = lm[LM.RS].y - lm[LM.RW].y;
+      const avg = (lh + rh) / 2;
+      const hc = avg > 0.055 ? CLR.GOOD : avg > 0.02 ? CLR.WARN : CLR.WARN;
+      drawPill(ctx, w / 2, (lm[LM.LS].y + 0.08) * h, `Height ${(avg * 100).toFixed(0)}`, hc);
+    }
+  }
+}
+
+// ════════════════════════════════════════════════════════════════
+//  EXERCISE DETECTOR  — hysteresis + frame streaks + min rep interval
+// ════════════════════════════════════════════════════════════════
+class Detector {
+  static get MIN_REP_MS() { return 420; }
+  static get FR_DOWN() { return 2; }
+  static get FR_STAND() { return 3; }
+
+  constructor() {
+    this.reps = 0; this.sets = 0; this.phase = 'up'; this.jj = 'closed';
+    this._lastRepMs = 0;
+    this._resetJitter();
+  }
+
+  _resetJitter() {
+    this._lastRepMs = 0;
+    this._sqDn = this._sqSt = 0;
+    this._puDn = this._puSt = 0;
+    this._jjOS = this._jjCS = 0;
+    this._bcUS = this._bcES = 0;
+    this._shLo = this._shBt = 0;
+    this._roUS = this._roES = 0;
+    this._lgDn = this._lgSt = 0;
+    this._cfToe = this._cfFlat = 0;
+    this._cfEma = null;
+    this._cfPeak = 0;
+    this._lrUp = this._lrDn = 0;
+    this._lrSynced = false;
+    this._frUp = this._frDn = 0;
+    this._frSynced = false;
+    this._tdDn = this._tdSt = 0;
+  }
+
+  markSet() {
+    if (this.reps > 0) this.sets++;
+    this.reps = 0; this.phase = 'up'; this.jj = 'closed';
+    this._resetJitter();
+  }
+
+  process(lm, mode) {
+    if (!lm || lm.length < 29) {
+      const ex = EX_LABEL_BY_MODE[mode] || 'Exercise';
+      return { text:'No landmarks — position yourself.', kind:'error', score:0, repAdded:false, ex, exKey: mode, phase:this.phase };
+    }
+    const exKey = mode;
+    const r = exKey==='squat'         ? this._squat(lm)
+            : exKey==='pushup'        ? this._pushup(lm)
+            : exKey==='plank'         ? this._plank(lm)
+            : exKey==='jumpingjack'   ? this._jj(lm)
+            : exKey==='biccurl'       ? this._biccurl(lm)
+            : exKey==='shoulderpress' ? this._shoulderpress(lm)
+            : exKey==='bentoverrow'   ? this._bentoverrow(lm)
+            : exKey==='lunge'         ? this._lunge(lm)
+            : exKey==='calfraise'     ? this._calfraise(lm)
+            : exKey==='lateralraise'  ? this._lateralraise(lm)
+            : exKey==='tricepsdip'    ? this._tricepsdip(lm)
+            : exKey==='frontraise'    ? this._frontraise(lm)
+            : { text:'Select an exercise.', kind:'warn', score:0, repAdded:false, ex:'Exercise' };
+    return { ...r, exKey, phase: this.phase };
+  }
+
+  _squat(lm) {
+    if (!(vis(lm,LM.LH) && vis(lm,LM.LK) && vis(lm,LM.LA)))
+      return { text:'Lower body not visible — step back.', kind:'error', score:0, repAdded:false, ex:'Squat' };
+    const lk = angle(lm[LM.LH], lm[LM.LK], lm[LM.LA]);
+    const rk = (vis(lm,LM.RH)&&vis(lm,LM.RK)&&vis(lm,LM.RA)) ? angle(lm[LM.RH],lm[LM.RK],lm[LM.RA]) : lk;
+    const k  = (lk + rk) / 2;
+    let repAdded = false;
+    const DOWN_TH = 94, STAND_TH = 156;
+    const t = performance.now();
+    if (this.phase === 'up') {
+      if (k < DOWN_TH) this._sqDn++; else this._sqDn = 0;
+      if (this._sqDn >= Detector.FR_DOWN) {
+        this.phase = 'down';
+        this._sqDn = 0;
+        this._sqSt = 0;
+      }
+    } else {
+      if (k > STAND_TH) {
+        this._sqSt++;
+        if (this._sqSt >= Detector.FR_STAND) {
+          if (t - this._lastRepMs >= Detector.MIN_REP_MS) {
+            this.phase = 'up';
+            this.reps++;
+            repAdded = true;
+            this._lastRepMs = t;
+          }
+          this._sqSt = 0;
+        }
+      } else {
+        this._sqSt = 0;
+      }
+    }
+    const deep = k < 90, perfect = k < 80;
+    const score = this.phase === 'down' ? Math.max(20, 100 - Math.abs(85 - k) * 1.5) : 60;
+    const text  = this.phase === 'up'   ? 'Go down to start your squat.'
+                : perfect               ? '✓ Deep squat — drive up hard!'
+                : deep                  ? '✓ Good depth — keep going!'
+                :                         '↓ Go lower — target 90° or below.';
+    return { text, kind: this.phase==='up'?'warn': deep?'good':'warn', score:Math.round(score), repAdded, ex:'Squat' };
+  }
+
+  _pushup(lm) {
+    if (!(vis(lm,LM.LS) && vis(lm,LM.LE) && vis(lm,LM.LW)))
+      return { text:'Upper body not visible.', kind:'error', score:0, repAdded:false, ex:'Push-up' };
+    const le = angle(lm[LM.LS], lm[LM.LE], lm[LM.LW]);
+    const re = (vis(lm,LM.RS)&&vis(lm,LM.RE)&&vis(lm,LM.RW)) ? angle(lm[LM.RS],lm[LM.RE],lm[LM.RW]) : le;
+    const e  = (le + re) / 2;
+    let repAdded = false;
+    const DOWN_TH = 97, STAND_TH = 154;
+    const t = performance.now();
+    if (this.phase === 'up') {
+      if (e < DOWN_TH) this._puDn++; else this._puDn = 0;
+      if (this._puDn >= Detector.FR_DOWN) {
+        this.phase = 'down';
+        this._puDn = 0;
+        this._puSt = 0;
+      }
+    } else {
+      if (e > STAND_TH) {
+        this._puSt++;
+        if (this._puSt >= Detector.FR_STAND) {
+          if (t - this._lastRepMs >= Detector.MIN_REP_MS) {
+            this.phase = 'up';
+            this.reps++;
+            repAdded = true;
+            this._lastRepMs = t;
+          }
+          this._puSt = 0;
+        }
+      } else {
+        this._puSt = 0;
+      }
+    }
+    let bodyScore = 75;
+    if (vis(lm,LM.LS) && vis(lm,LM.LH) && vis(lm,LM.LA))
+      bodyScore = Math.max(0, 100 - Math.abs(angle(lm[LM.LS],lm[LM.LH],lm[LM.LA]) - 175) * 4);
+    const deep  = e < 90;
+    const depth = this.phase === 'down' ? Math.max(20, 100 - Math.abs(80 - e) * 1.4) : 60;
+    const score = Math.round(depth * 0.6 + bodyScore * 0.4);
+    const text  = this.phase === 'up' ? 'Lower your body under control.'
+                : deep                ? '✓ Great depth — push up!'
+                :                       '↓ Lower chest to 90° elbow angle.';
+    return { text, kind: this.phase==='up'?'warn': deep?'good':'warn', score, repAdded, ex:'Push-up' };
+  }
+
+  _plank(lm) {
+    if (!(vis(lm,LM.LS) && vis(lm,LM.LH) && vis(lm,LM.LA)))
+      return { text:'Full side view needed — turn sideways.', kind:'error', score:0, repAdded:false, ex:'Plank' };
+    const ba    = angle(lm[LM.LS], lm[LM.LH], lm[LM.LA]);
+    const delta = Math.abs(ba - 170);
+    const good  = delta < 8, ok = delta < 18;
+    const score = Math.max(20, 100 - delta * 4.5);
+    const text  = good            ? '✓ Perfect plank — keep holding!'
+                : ba < 162        ? '▲ Raise your hips slightly.'
+                : ba > 178        ? '▼ Lower your hips slightly.'
+                :                   '↔ Adjust alignment.';
+    return { text, kind: good?'good':ok?'warn':'error', score:Math.round(score), repAdded:false, ex:'Plank' };
+  }
+
+  _jj(lm) {
+    if (!(vis(lm,LM.LW) && vis(lm,LM.RW) && vis(lm,LM.LS) && vis(lm,LM.RS)))
+      return { text:'Arms not visible.', kind:'error', score:0, repAdded:false, ex:'Jumping Jack' };
+    const armsUp = lm[LM.LW].y < lm[LM.LS].y - 0.04 && lm[LM.RW].y < lm[LM.RS].y - 0.04;
+    let legsOut = false;
+    if (vis(lm,LM.LA) && vis(lm,LM.RA)) {
+      const sw = Math.abs(lm[LM.LS].x - lm[LM.RS].x);
+      const aw = Math.abs(lm[LM.LA].x - lm[LM.RA].x);
+      legsOut = aw > sw * 1.1;
+    }
+    const isOpen = armsUp && legsOut;
+    let repAdded = false;
+    const t = performance.now();
+    if (this.jj === 'closed' && isOpen) {
+      this._jjOS++;
+      if (this._jjOS >= 2) { this.jj = 'open'; this._jjOS = 0; }
+    } else this._jjOS = 0;
+
+    if (this.jj === 'open' && !isOpen) {
+      this._jjCS++;
+      if (this._jjCS >= 2) {
+        if (t - this._lastRepMs >= Detector.MIN_REP_MS) {
+          this.jj = 'closed';
+          this.reps++;
+          repAdded = true;
+          this._lastRepMs = t;
+        }
+        this._jjCS = 0;
+      }
+    } else this._jjCS = 0;
+    const score = armsUp ? (legsOut ? 95 : 65) : 40;
+    const text  = isOpen ? '✓ Open — return to start.' : '↑ Jump! Arms overhead, legs out.';
+    return { text, kind: isOpen?'good':'warn', score, repAdded, ex:'Jumping Jack' };
+  }
+
+  // ── BICEP CURL ───────────────────────────────────────────────
+  _biccurl(lm) {
+    if (!(vis(lm,LM.LS) && vis(lm,LM.LE) && vis(lm,LM.LW)))
+      return { text:'Upper body not visible — face the camera.', kind:'error', score:0, repAdded:false, ex:'Bicep Curl' };
+
+    const le = angle(lm[LM.LS], lm[LM.LE], lm[LM.LW]);
+    const re = (vis(lm,LM.RS)&&vis(lm,LM.RE)&&vis(lm,LM.RW)) ? angle(lm[LM.RS],lm[LM.RE],lm[LM.RW]) : le;
+    const e  = (le + re) / 2;
+    let repAdded = false;
+    const t = performance.now();
+    const CURL_TH = 58, EXT_TH = 142;
+
+    if (this.phase === 'down') {
+      if (e < CURL_TH) this._bcUS++; else this._bcUS = 0;
+      if (this._bcUS >= Detector.FR_DOWN) {
+        this.phase = 'up';
+        this._bcUS = 0;
+        this._bcES = 0;
+      }
+    } else {
+      if (e > EXT_TH) this._bcES++; else this._bcES = 0;
+      if (this._bcES >= Detector.FR_DOWN) {
+        if (t - this._lastRepMs >= Detector.MIN_REP_MS) {
+          this.phase = 'down';
+          this.reps++;
+          repAdded = true;
+          this._lastRepMs = t;
+        }
+        this._bcES = 0;
+      }
+    }
+
+    // Upper-arm sway penalty
+    let swayScore = 100;
+    if (vis(lm,LM.LS) && vis(lm,LM.LH)) {
+      const lean = Math.abs(lm[LM.LS].x - lm[LM.LH].x);
+      swayScore = Math.max(30, 100 - lean * 400);
+    }
+
+    const peakBonus = this.phase === 'up' ? Math.max(30, 100 - Math.abs(40 - e) * 1.8) : 55;
+    const score = Math.round(peakBonus * 0.65 + swayScore * 0.35);
+
+    const text = this.phase === 'down' ? 'Curl both arms up — squeeze the biceps.'
+               : e < 55               ? '✓ Peak curl — hold and lower slowly.'
+               :                        '↑ Curl higher — target below 50°.';
+    return { text, kind: this.phase==='up' && e < 55 ? 'good' : 'warn', score, repAdded, ex:'Bicep Curl' };
+  }
+
+  // ── SHOULDER PRESS ───────────────────────────────────────────
+  _shoulderpress(lm) {
+    if (!(vis(lm,LM.LS) && vis(lm,LM.LE) && vis(lm,LM.LW)))
+      return { text:'Upper body not visible — face the camera.', kind:'error', score:0, repAdded:false, ex:'Shoulder Press' };
+
+    const le = angle(lm[LM.LS], lm[LM.LE], lm[LM.LW]);
+    const re = (vis(lm,LM.RS)&&vis(lm,LM.RE)&&vis(lm,LM.RW)) ? angle(lm[LM.RS],lm[LM.RE],lm[LM.RW]) : le;
+    const e  = (le + re) / 2;
+
+    // Wrists must be above shoulders for lockout detection
+    const lwAbove = vis(lm,LM.LW) && lm[LM.LW].y < lm[LM.LS].y - 0.05;
+    const rwAbove = vis(lm,LM.RW) && lm[LM.RW].y < lm[LM.RS].y - 0.05;
+    const lockedOut = e > 155 && lwAbove && rwAbove;
+    const atBottom  = e < 100;
+    let repAdded = false;
+    const t = performance.now();
+
+    if (this.phase === 'down' && lockedOut) {
+      this._shLo++;
+      if (this._shLo >= Detector.FR_DOWN) {
+        this.phase = 'up';
+        this._shLo = 0;
+        this._shBt = 0;
+      }
+    } else this._shLo = 0;
+
+    if (this.phase === 'up' && atBottom) {
+      this._shBt++;
+      if (this._shBt >= Detector.FR_DOWN) {
+        if (t - this._lastRepMs >= Detector.MIN_REP_MS) {
+          this.phase = 'down';
+          this.reps++;
+          repAdded = true;
+          this._lastRepMs = t;
+        }
+        this._shBt = 0;
+      }
+    } else this._shBt = 0;
+
+    // Back lean penalty
+    let backScore = 100;
+    if (vis(lm,LM.LS) && vis(lm,LM.LH)) {
+      const lean = Math.abs(lm[LM.LS].x - lm[LM.LH].x);
+      backScore = Math.max(30, 100 - lean * 350);
+    }
+
+    // Symmetry score
+    let symScore = 100;
+    if (vis(lm,LM.RS)&&vis(lm,LM.RE)&&vis(lm,LM.RW))
+      symScore = Math.max(40, 100 - Math.abs(le - re) * 2);
+
+    const extensionScore = lockedOut ? 100 : Math.max(30, 100 - Math.abs(165 - e) * 2);
+    const score = Math.round(extensionScore * 0.5 + backScore * 0.3 + symScore * 0.2);
+
+    const text = this.phase === 'down' ? 'Press the bar overhead — full extension.'
+               : lockedOut             ? '✓ Locked out — lower with control.'
+               :                        '↑ Push to full lockout — straighten arms.';
+    return { text, kind: lockedOut ? 'good' : atBottom ? 'warn' : 'warn', score, repAdded, ex:'Shoulder Press' };
+  }
+
+  // ── BENT-OVER ROW ────────────────────────────────────────────
+  _bentoverrow(lm) {
+    if (!(vis(lm,LM.LS) && vis(lm,LM.LE) && vis(lm,LM.LW)))
+      return { text:'Upper body not visible — step back or turn sideways.', kind:'error', score:0, repAdded:false, ex:'Bent-over Row' };
+
+    const le = angle(lm[LM.LS], lm[LM.LE], lm[LM.LW]);
+    const re = (vis(lm,LM.RS)&&vis(lm,LM.RE)&&vis(lm,LM.RW)) ? angle(lm[LM.RS],lm[LM.RE],lm[LM.RW]) : le;
+    const e  = (le + re) / 2;
+    let repAdded = false;
+    const t = performance.now();
+    const PULL_TH = 82, EXT_TH = 138;
+
+    if (this.phase === 'down') {
+      if (e < PULL_TH) this._roUS++; else this._roUS = 0;
+      if (this._roUS >= Detector.FR_DOWN) {
+        this.phase = 'up';
+        this._roUS = 0;
+        this._roES = 0;
+      }
+    } else {
+      if (e > EXT_TH) this._roES++; else this._roES = 0;
+      if (this._roES >= Detector.FR_DOWN) {
+        if (t - this._lastRepMs >= Detector.MIN_REP_MS) {
+          this.phase = 'down';
+          this.reps++;
+          repAdded = true;
+          this._lastRepMs = t;
+        }
+        this._roES = 0;
+      }
+    }
+
+    // Torso hinge quality: shoulder–hip–knee angle should be 40–100°
+    let torsoScore = 75;
+    if (vis(lm,LM.LS) && vis(lm,LM.LH) && vis(lm,LM.LK)) {
+      const ta = angle(lm[LM.LS], lm[LM.LH], lm[LM.LK]);
+      torsoScore = (ta > 40 && ta < 100) ? 100 : Math.max(20, 100 - Math.abs(70 - ta) * 2.5);
+    }
+
+    const pullDepth = this.phase === 'up' ? Math.max(30, 100 - Math.abs(65 - e) * 1.6) : 50;
+    const score = Math.round(pullDepth * 0.55 + torsoScore * 0.45);
+
+    const text = this.phase === 'down' ? 'Pull elbow to hip — squeeze your back.'
+               : e < 80               ? '✓ Peak row — lower slowly to full extension.'
+               :                        '↑ Pull higher — get elbow past your torso.';
+    return { text, kind: this.phase==='up' && e < 80 ? 'good' : 'warn', score, repAdded, ex:'Bent-over Row' };
+  }
+
+  _lunge(lm) {
+    if (!(vis(lm,LM.LH) && vis(lm,LM.LK) && vis(lm,LM.LA)))
+      return { text:'Lower body not visible — step back.', kind:'error', score:0, repAdded:false, ex:'Lunge' };
+    const lk = angle(lm[LM.LH], lm[LM.LK], lm[LM.LA]);
+    const rk = (vis(lm,LM.RH) && vis(lm,LM.RK) && vis(lm,LM.RA)) ? angle(lm[LM.RH], lm[LM.RK], lm[LM.RA]) : lk;
+    const kF = Math.min(lk, rk);
+    const kB = Math.max(lk, rk);
+    const asym = Math.abs(lk - rk);
+    let repAdded = false;
+    const DOWN_ENTER = 100, DOWN_HOLD = 94, UP_EXIT = 150, UP_STAND = 136;
+    const t = performance.now();
+    const lungeShape = asym > 8 || (kF < 112 && kB > kF + 11);
+
+    if (this.phase === 'up') {
+      if (kF < DOWN_ENTER && lungeShape) this._lgDn++; else this._lgDn = 0;
+      if (this._lgDn >= Detector.FR_DOWN) {
+        this.phase = 'down';
+        this._lgDn = 0;
+        this._lgSt = 0;
+      }
+    } else {
+      if (kF > UP_EXIT && kB > UP_STAND - 10) {
+        this._lgSt++;
+        if (this._lgSt >= Detector.FR_STAND) {
+          if (t - this._lastRepMs >= Detector.MIN_REP_MS) {
+            this.phase = 'up';
+            this.reps++;
+            repAdded = true;
+            this._lastRepMs = t;
+          }
+          this._lgSt = 0;
+        }
+      } else {
+        this._lgSt = 0;
+      }
+    }
+    const deep = kF < 90;
+    const score = this.phase === 'down'
+      ? Math.max(25, Math.min(100, 100 - Math.abs(88 - kF) * 1.35 - (lungeShape ? 0 : 22)))
+      : 62;
+    const text = this.phase === 'up'
+      ? (lungeShape ? 'Step out — lower until front knee bends clearly.' : 'Stagger feet — one leg clearly in front.')
+      : deep ? '✓ Solid depth — drive up through the front heel!'
+             : kF < DOWN_HOLD ? '✓ Good lunge — stand tall to finish the rep.'
+             : '↓ Go deeper — front thigh toward parallel.';
+    return { text, kind: this.phase === 'down' && deep ? 'good' : this.phase === 'down' ? 'warn' : 'warn', score: Math.round(score), repAdded, ex:'Lunge' };
+  }
+
+  _calfraise(lm) {
+    if (!(vis(lm,LM.LH) && vis(lm,LM.LK) && vis(lm,LM.LA)))
+      return { text:'Lower body not visible — step back.', kind:'error', score:0, repAdded:false, ex:'Calf Raise' };
+    const lk = angle(lm[LM.LH], lm[LM.LK], lm[LM.LA]);
+    const rk = (vis(lm,LM.RH) && vis(lm,LM.RK) && vis(lm,LM.RA)) ? angle(lm[LM.RH], lm[LM.RK], lm[LM.RA]) : lk;
+    const kneeAvg = (lk + rk) / 2;
+    if (kneeAvg < 138)
+      return { text:'Straighten knees slightly — calf raise, not a squat.', kind:'warn', score:45, repAdded:false, ex:'Calf Raise' };
+    const hy = (lm[LM.LH].y + lm[LM.RH].y) / 2;
+    const ay = (vis(lm,LM.LA) && vis(lm,LM.RA)) ? (lm[LM.LA].y + lm[LM.RA].y) / 2 : lm[LM.LA].y;
+    const m = ay - hy;
+    if (this._cfEma == null) this._cfEma = m;
+    else this._cfEma = this._cfEma * 0.9 + m * 0.1;
+    let repAdded = false;
+    const t = performance.now();
+    const toeLift = m > this._cfEma + 0.017;
+    const heelDown = this._cfPeak > 0 && m < this._cfPeak - 0.014;
+
+    if (this.phase === 'up') {
+      if (toeLift) {
+        this._cfToe++;
+        if (this._cfToe >= 3) {
+          this.phase = 'down';
+          this._cfPeak = m;
+          this._cfToe = 0;
+          this._cfFlat = 0;
+        }
+      } else this._cfToe = 0;
+    } else {
+      if (m > this._cfPeak) this._cfPeak = m;
+      if (heelDown) {
+        this._cfFlat++;
+        if (this._cfFlat >= 3) {
+          if (t - this._lastRepMs >= Detector.MIN_REP_MS) {
+            this.phase = 'up';
+            this.reps++;
+            repAdded = true;
+            this._lastRepMs = t;
+            this._cfEma = this._cfEma * 0.65 + m * 0.35;
+          }
+          this._cfFlat = 0;
+          this._cfPeak = 0;
+        }
+      } else this._cfFlat = 0;
+    }
+    const onToes = this.phase === 'down';
+    const score = onToes ? Math.round(Math.max(30, Math.min(100, 60 + (m - this._cfEma) * 900))) : 58;
+    const text = this.phase === 'up'
+      ? 'Rise onto the balls of your feet — squeeze at the top.'
+      : onToes && m > this._cfEma + 0.022 ? '✓ Nice height — lower heels slowly.'
+      : 'Lower with control — full range.';
+    return { text, kind: onToes && m > this._cfEma + 0.020 ? 'good' : 'warn', score, repAdded, ex:'Calf Raise' };
+  }
+
+  _latArmsDown(lm) {
+    if (!(vis(lm,LM.LW) && vis(lm,LM.RW) && vis(lm,LM.LS) && vis(lm,LM.RS))) return false;
+    const lSpread = Math.abs(lm[LM.LW].x - lm[LM.LS].x);
+    const rSpread = Math.abs(lm[LM.RW].x - lm[LM.RS].x);
+    const lLow = lm[LM.LW].y > lm[LM.LS].y - 0.04;
+    const rLow = lm[LM.RW].y > lm[LM.RS].y - 0.04;
+    return lSpread < 0.14 && rSpread < 0.14 && lLow && rLow;
+  }
+
+  _latArmsUp(lm) {
+    if (!(vis(lm,LM.LW) && vis(lm,LM.RW) && vis(lm,LM.LS) && vis(lm,LM.RS))) return false;
+    const lSpread = Math.abs(lm[LM.LW].x - lm[LM.LS].x);
+    const rSpread = Math.abs(lm[LM.RW].x - lm[LM.RS].x);
+    const lH = Math.abs(lm[LM.LW].y - lm[LM.LS].y) < 0.10;
+    const rH = Math.abs(lm[LM.RW].y - lm[LM.RS].y) < 0.10;
+    return lSpread > 0.18 && rSpread > 0.18 && lH && rH;
+  }
+
+  _lateralraise(lm) {
+    if (!(vis(lm,LM.LW) && vis(lm,LM.RW) && vis(lm,LM.LS) && vis(lm,LM.RS)))
+      return { text:'Upper body not visible — face the camera.', kind:'error', score:0, repAdded:false, ex:'Lateral Raise' };
+    if (!this._lrSynced) {
+      this._lrSynced = true;
+      this.phase = this._latArmsUp(lm) ? 'up' : 'down';
+    }
+    const le = vis(lm,LM.LE) ? angle(lm[LM.LS], lm[LM.LE], lm[LM.LW]) : 180;
+    const re = vis(lm,LM.RE) ? angle(lm[LM.RS], lm[LM.RE], lm[LM.RW]) : 180;
+    let repAdded = false;
+    const t = performance.now();
+
+    if (this.phase === 'down') {
+      if (this._latArmsUp(lm)) {
+        this._lrUp++;
+        if (this._lrUp >= Detector.FR_DOWN) {
+          this.phase = 'up';
+          this._lrUp = 0;
+          this._lrDn = 0;
+        }
+      } else this._lrUp = 0;
+    } else {
+      if (this._latArmsDown(lm)) {
+        this._lrDn++;
+        if (this._lrDn >= Detector.FR_STAND) {
+          if (t - this._lastRepMs >= Detector.MIN_REP_MS) {
+            this.phase = 'down';
+            this.reps++;
+            repAdded = true;
+            this._lastRepMs = t;
+          }
+          this._lrDn = 0;
+        }
+      } else this._lrDn = 0;
+    }
+    const sym = Math.max(40, 100 - Math.abs(le - re) * 2.2);
+    const ext = ((le + re) / 2);
+    const score = Math.round(this.phase === 'up' ? sym * 0.55 + Math.min(100, ext * 0.45) : sym * 0.7 + 25);
+    const text = this.phase === 'down'
+      ? 'Raise arms out to the sides — wrists near shoulder height.'
+      : (ext > 153 ? '✓ Strong top — lower slowly with control.' : '↑ Reach a bit higher — soft elbows, full wings.');
+    return { text, kind: this.phase === 'up' && ext > 151 ? 'good' : 'warn', score, repAdded, ex:'Lateral Raise' };
+  }
+
+  _tricepsdip(lm) {
+    if (!(vis(lm,LM.LS) && vis(lm,LM.LE) && vis(lm,LM.LW)))
+      return { text:'Arms not visible — adjust camera or position.', kind:'error', score:0, repAdded:false, ex:'Triceps Dip' };
+    const le = angle(lm[LM.LS], lm[LM.LE], lm[LM.LW]);
+    const re = (vis(lm,LM.RS) && vis(lm,LM.RE) && vis(lm,LM.RW)) ? angle(lm[LM.RS], lm[LM.RE], lm[LM.RW]) : le;
+    const e = (le + re) / 2;
+    let repAdded = false;
+    const DOWN_TH = 99, STAND_TH = 154;
+    const t = performance.now();
+    if (this.phase === 'up') {
+      if (e < DOWN_TH) this._tdDn++; else this._tdDn = 0;
+      if (this._tdDn >= Detector.FR_DOWN) {
+        this.phase = 'down';
+        this._tdDn = 0;
+        this._tdSt = 0;
+      }
+    } else {
+      if (e > STAND_TH) {
+        this._tdSt++;
+        if (this._tdSt >= Detector.FR_STAND) {
+          if (t - this._lastRepMs >= Detector.MIN_REP_MS) {
+            this.phase = 'up';
+            this.reps++;
+            repAdded = true;
+            this._lastRepMs = t;
+          }
+          this._tdSt = 0;
+        }
+      } else {
+        this._tdSt = 0;
+      }
+    }
+    let align = 78;
+    if (vis(lm,LM.LS) && vis(lm,LM.LH) && vis(lm,LM.LA))
+      align = Math.max(25, 100 - Math.abs(angle(lm[LM.LS], lm[LM.LH], lm[LM.LA]) - 176) * 3.2);
+    const deep = e < 94;
+    const depth = this.phase === 'down' ? Math.max(22, 100 - Math.abs(90 - e) * 1.35) : 58;
+    const score = Math.round(depth * 0.62 + align * 0.38);
+    const text = this.phase === 'up' ? 'Lower by bending elbows — keep them tracking back.'
+               : deep ? '✓ Solid depth — press away to full extension.'
+               : '↓ Lower a bit more — aim near 90° at the elbows.';
+    return { text, kind: this.phase === 'down' && deep ? 'good' : 'warn', score, repAdded, ex:'Triceps Dip' };
+  }
+
+  _frArmsDown(lm) {
+    if (!(vis(lm,LM.LW) && vis(lm,LM.RW) && vis(lm,LM.LS) && vis(lm,LM.RS))) return false;
+    const lOk = lm[LM.LW].y > lm[LM.LS].y - 0.03 && Math.abs(lm[LM.LW].x - lm[LM.LS].x) < 0.14;
+    const rOk = lm[LM.RW].y > lm[LM.RS].y - 0.03 && Math.abs(lm[LM.RW].x - lm[LM.RS].x) < 0.14;
+    return lOk && rOk;
+  }
+
+  _frArmsUp(lm) {
+    if (!(vis(lm,LM.LW) && vis(lm,LM.RW) && vis(lm,LM.LS) && vis(lm,LM.RS))) return false;
+    const lUp = lm[LM.LW].y < lm[LM.LS].y - 0.052;
+    const rUp = lm[LM.RW].y < lm[LM.RS].y - 0.052;
+    const lNarrow = Math.abs(lm[LM.LW].x - lm[LM.LS].x) < 0.13;
+    const rNarrow = Math.abs(lm[LM.RW].x - lm[LM.RS].x) < 0.13;
+    return lUp && rUp && lNarrow && rNarrow;
+  }
+
+  _frontraise(lm) {
+    if (!(vis(lm,LM.LW) && vis(lm,LM.RW) && vis(lm,LM.LS) && vis(lm,LM.RS)))
+      return { text:'Upper body not visible — face the camera.', kind:'error', score:0, repAdded:false, ex:'Front Raise' };
+    if (!this._frSynced) {
+      this._frSynced = true;
+      this.phase = this._frArmsUp(lm) ? 'up' : 'down';
+    }
+    const le = vis(lm,LM.LE) ? angle(lm[LM.LS], lm[LM.LE], lm[LM.LW]) : 175;
+    const re = vis(lm,LM.RE) ? angle(lm[LM.RS], lm[LM.RE], lm[LM.RW]) : 175;
+    let repAdded = false;
+    const t = performance.now();
+
+    if (this.phase === 'down') {
+      if (this._frArmsUp(lm)) {
+        this._frUp++;
+        if (this._frUp >= Detector.FR_DOWN) {
+          this.phase = 'up';
+          this._frUp = 0;
+          this._frDn = 0;
+        }
+      } else this._frUp = 0;
+    } else {
+      if (this._frArmsDown(lm)) {
+        this._frDn++;
+        if (this._frDn >= Detector.FR_STAND) {
+          if (t - this._lastRepMs >= Detector.MIN_REP_MS) {
+            this.phase = 'down';
+            this.reps++;
+            repAdded = true;
+            this._lastRepMs = t;
+          }
+          this._frDn = 0;
+        }
+      } else this._frDn = 0;
+    }
+    const lh = lm[LM.LS].y - lm[LM.LW].y;
+    const rh = lm[LM.RS].y - lm[LM.RW].y;
+    const hAvg = (lh + rh) / 2;
+    const sym = Math.max(38, 100 - Math.abs(le - re) * 2.4);
+    const heightScore = Math.min(100, Math.max(25, hAvg * 520));
+    const score = Math.round(sym * 0.45 + heightScore * 0.55);
+    const text = this.phase === 'down'
+      ? 'Raise both arms straight out in front — to shoulder height.'
+      : hAvg > 0.060 ? '✓ Good height — lower slowly, no lean back.'
+      : '↑ Lift a little higher — stop at shoulder height.';
+    return { text, kind: this.phase === 'up' && hAvg > 0.058 ? 'good' : 'warn', score, repAdded, ex:'Front Raise' };
+  }
+}
+
+// ════════════════════════════════════════════════════════════════
+//  UI HELPERS
+// ════════════════════════════════════════════════════════════════
+function showTips(mode) {
+  tipsEl.innerHTML = (TIPS[mode] || TIPS.squat).map(t => `<div class="tip">${t}</div>`).join('');
+}
+
+function setFeedback(text, kind, score) {
+  fbText.textContent = text;
+  fbText.className   = `feedback ${kind || ''}`;
+  const p = Math.max(0, Math.min(100, score || 0));
+  formFill.style.width = `${p}%`;
+  formPct.textContent  = `${Math.round(p)}%`;
+  formFill.className   = 'fill' + (kind==='good' ? ' good' : kind==='error' || kind==='bad' ? ' bad' : '');
+  // Score chip
+  if (kind && kind !== 'error' && p > 0) {
+    scoreChip.textContent = p >= 80 ? '✓ Great form' : p >= 55 ? '⚠ Needs work' : '✗ Fix form';
+    scoreChip.className   = `score-chip ${p >= 80 ? 'good' : p >= 55 ? 'warn' : 'bad'}`;
+  } else {
+    scoreChip.className = 'score-chip hidden';
+  }
+  // ── HUD mirror ──
+  const pill = $('hudFeedback');
+  if (pill) { pill.textContent = text; pill.className = 'hud-feedback-pill ' + (kind || ''); }
+  const hudFill = $('hudFormFill');
+  if (hudFill) {
+    hudFill.style.width = p + '%';
+    hudFill.className = 'hud-form-bar-fill' + (kind==='good' ? ' good' : (kind==='error'||kind==='bad') ? ' bad' : '');
+  }
+  const hudPct = $('hudFormPct');
+  if (hudPct) hudPct.textContent = p > 0 ? Math.round(p) + '%' : '—';
+  // Track running average for session summary
+  if (running && kind !== 'error' && p > 0) { formScoreSum += p; formScoreCount++; }
+}
+
+function showOverlay(type, title, msg) {
+  idleOv.classList.add('hidden'); loadOv.classList.add('hidden'); errOv.classList.add('hidden');
+  if (type === 'idle') idleOv.classList.remove('hidden');
+  if (type === 'load') loadOv.classList.remove('hidden');
+  if (type === 'err')  { errTitle.textContent = title || 'Camera Error'; errMsg.textContent = msg || ''; errOv.classList.remove('hidden'); }
+}
+
+function updatePhaseBadge(phase, exKey) {
+  if (!phase || exKey === 'plank' || exKey === 'jumpingjack') {
+    phaseBadge.classList.remove('visible', 'down', 'up');
+    const h = $('hudPhaseBadge'); if (h) h.classList.remove('visible','down','up');
+    return;
+  }
+  phaseBadge.textContent = phase === 'down' ? '↓ DOWN' : '↑ UP';
+  phaseBadge.className   = `phase-badge visible ${phase}`;
+  const h = $('hudPhaseBadge');
+  if (h) { h.textContent = phase === 'down' ? '↓ DOWN' : '↑ UP'; h.className = `hud-phase-badge visible ${phase}`; }
+}
+
+function addHistory(label, value, score) {
+  if (repHist.children.length && repHist.children[0].classList.contains('tip'))
+    repHist.innerHTML = '';
+  const t   = new Date().toLocaleTimeString();
+  const q   = score >= 75 ? '✓' : score >= 45 ? '⚠' : '✗';
+  const qc  = score >= 75 ? '#3de68b' : score >= 45 ? '#e4bb5a' : '#ff4f6a';
+  const el  = document.createElement('div');
+  el.className = 'row';
+  el.innerHTML = `<span>${t} — ${label} ${value}</span><strong style="color:${qc}">${q} ${Math.round(score || 0)}%</strong>`;
+  repHist.prepend(el);
+  if (repHist.children.length > 40) repHist.removeChild(repHist.lastChild);
+}
+
+function updateTimer() {
+  if (!sessionStart) return;
+  const s = Math.floor((Date.now() - sessionStart) / 1000);
+  const str = `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+  timerEl.textContent = str;
+  const ht = $('hudTime'); if (ht) ht.textContent = str;
+}
+
+// ════════════════════════════════════════════════════════════════
+//  FULLSCREEN + HUD HELPERS
+// ════════════════════════════════════════════════════════════════
+function enterWorkoutMode() {
+  document.body.classList.add('in-workout');
+  setTimeout(() => {
+    cvs.width  = cvs.clientWidth  || window.innerWidth;
+    cvs.height = cvs.clientHeight || window.innerHeight;
+  }, 120);
+  try { document.documentElement.requestFullscreen && document.documentElement.requestFullscreen().catch(() => {}); } catch(_) {}
+}
+function exitWorkoutMode() {
+  document.body.classList.remove('in-workout');
+  try { document.fullscreenElement && document.exitFullscreen && document.exitFullscreen().catch(() => {}); } catch(_) {}
+}
+document.addEventListener('fullscreenchange', () => {
+  if (!document.fullscreenElement && running) stopWorkout();
+});
+window.addEventListener('resize', () => {
+  if (cvs && document.body.classList.contains('in-workout')) {
+    cvs.width  = Math.max(320, cvs.clientWidth  || window.innerWidth);
+    cvs.height = Math.max(240, cvs.clientHeight || window.innerHeight);
+  }
+});
+
+function showPrepCountdown(onDone) {
+  const prepOv  = $('prepOv');
+  const prepNum = $('prepNum');
+  const prepHead = $('prepHead');
+  const prepHint = $('prepHint');
+  if (prepHead) prepHead.textContent = 'Prepare';
+  if (prepHint) prepHint.textContent = 'Full body in frame. Soft, even lighting.';
+  idleOv.classList.add('hidden');
+  loadOv.classList.add('hidden');
+  prepOv.classList.remove('hidden');
+
+  const cdRate = 1.15;
+  const cdPitch = VC._humanPitch;
+  /** Max ms per digit — high enough that short “3/2/1” usually finishes naturally; still caps runaway TTS. */
+  const DIGIT_CAP_MS = 480;
+  /** Breath between digits (voice + muted) — same pacing for all workouts. */
+  const GAP_AFTER_DIGIT_MS = 72;
+  const VIS_STEP_MS = 420;
+
+  /** Same 3-2-1 + Go for every workout; voice optional when muted. */
+  async function runCountdownVoice() {
+    VC.lastSpoken = 0;
+    if (VC._muted) {
+      for (let k = 3; k >= 1; k--) {
+        prepNum.textContent = String(k);
+        await new Promise(r => setTimeout(r, VIS_STEP_MS));
+        await new Promise(r => setTimeout(r, GAP_AFTER_DIGIT_MS));
+      }
+      await new Promise(r => setTimeout(r, 48));
+      return;
+    }
+    function speakCd(text, rate) {
+      return new Promise((resolve) => {
+        VC.speak(text, {
+          cooldown: 0,
+          bypassCooldown: true,
+          noCancel: true,
+          queueDelay: 0,
+          rate,
+          pitch: cdPitch,
+          onEnd: resolve,
+        });
+      });
+    }
+    /** Per-digit TTS capped — some engines stretch “Three” and felt slow on certain exercises. */
+    function speakDigitCapped(text, rate) {
+      return new Promise((resolve) => {
+        let done = false;
+        const finish = (fromTimer) => {
+          if (done) return;
+          done = true;
+          clearTimeout(t);
+          if (fromTimer && VC.synth) try { VC.synth.cancel(); } catch (_) {}
+          resolve();
+        };
+        const t = setTimeout(() => finish(true), DIGIT_CAP_MS);
+        VC.speak(text, {
+          cooldown: 0,
+          bypassCooldown: true,
+          noCancel: true,
+          queueDelay: 0,
+          rate,
+          pitch: cdPitch,
+          onEnd: () => finish(false),
+        });
+      });
+    }
+    for (let k = 3; k >= 1; k--) {
+      prepNum.textContent = String(k);
+      await speakDigitCapped(VC.CUES.countdown[k], cdRate);
+      await new Promise(r => setTimeout(r, GAP_AFTER_DIGIT_MS));
+    }
+    await new Promise(r => setTimeout(r, 52));
+    await speakCd(VC.CUES.countdown.go, 1.02);
+  }
+
+  void (async () => {
+    try {
+      await runCountdownVoice();
+    } catch (_) {}
+    prepOv.classList.add('hidden');
+    VC.startKeepAlive();
+    setTimeout(() => VC.speakIntro(exSel.value), 380);
+    onDone();
+  })();
+}
+
+function showSessionSummary(reps, sets, dur, avgForm, exercise, exKey) {
+  $('sumReps').textContent  = reps;
+  $('sumSets').textContent  = sets;
+  const m = Math.floor(dur / 60), sc = dur % 60;
+  $('sumTime').textContent  = m + ':' + String(sc).padStart(2,'0');
+  const fp = avgForm > 0 ? Math.round(avgForm) : 0;
+  $('sumForm').textContent  = fp > 0 ? fp + '%' : '—';
+  $('sumFormPct').textContent = fp > 0 ? fp + '%' : '—';
+  $('sumExLbl').textContent = exercise;
+  // Animate form bar after brief delay
+  setTimeout(() => { const f = $('sumFormFill'); if (f) f.style.width = fp + '%'; }, 250);
+  $('sumStatus').textContent = ''; $('sumStatus').className = 'sum-status';
+  $('sumSaveBtn').disabled = false;
+  _savedSessionData = { exerciseKey: exKey, workoutName: exercise, reps, sets, duration: dur, timestamp: new Date().toISOString() };
+  $('summaryModal').classList.remove('hidden');
+}
+
+function getCurrentSession() {
+  try {
+    if (window.currentUser && typeof window.currentUser === 'object') return window.currentUser;
+  } catch (_) {}
+  try {
+    const raw = localStorage.getItem('bodybank_session');
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    return parsed && typeof parsed === 'object' ? parsed : null;
+  } catch (_) {
+    return null;
+  }
+}
+
+function enforceAiTrainerClientAccess() {
+  const session = getCurrentSession();
+  const role = String(session && session.role || '').toLowerCase();
+  const hasToken = !!(session && session.token);
+  const allowed = hasToken && role === 'user';
+  if (allowed) return true;
+  try {
+    window.location.replace('/index.html#login');
+  } catch (_) {
+    window.location.href = '/index.html#login';
+  }
+  return false;
+}
+
+if (!enforceAiTrainerClientAccess()) {
+  throw new Error('AI Trainer requires signed-in client access.');
+}
+
+async function saveAiTrainerSession(data) {
+  const session = getCurrentSession();
+  const headers = { 'Content-Type': 'application/json' };
+  if (session && session.token) headers.Authorization = 'Bearer ' + session.token;
+
+  const date = new Date().toISOString().slice(0, 10);
+  const workoutType = String(data.workoutName || 'AI Trainer').trim();
+  const reps = Number(data.reps || 0);
+  const sets = Number(data.sets || 0);
+  const durationSeconds = Number(data.duration || 0);
+
+  // Primary path: authenticated modern endpoint.
+  if (session && session.token) {
+    const modernPayload = {
+      date,
+      workout_type: workoutType,
+      duration_seconds: durationSeconds,
+      workout_completed: true,
+      notes: `AI Trainer session — reps: ${reps}, sets: ${sets}`
+    };
+    const modernRes = await fetch('/api/workouts/session', {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(modernPayload)
+    });
+    if (modernRes.ok) return modernRes;
+  }
+
+  // Fallback path: legacy endpoint.
+  const userId = session && session.id ? session.id : null;
+  if (!userId) {
+    return { ok: false };
+  }
+  return fetch('/api/workouts', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      user_id: userId,
+      workout_name: workoutType,
+      duration_seconds: durationSeconds,
+      feedback: `AI Trainer session — reps: ${reps}, sets: ${sets}`
+    })
+  });
+}
+
+// ════════════════════════════════════════════════════════════════
+//  WORKOUT FLOW
+// ════════════════════════════════════════════════════════════════
+async function startWorkout() {
+  startBtn.disabled = true; exSel.disabled = true;
+  formScoreSum = 0; formScoreCount = 0;
+
+  try {
+    await VC.awaitWelcomeOnce();
+    await new Promise(r => setTimeout(r, 280));
+  } catch (_) {}
+
+  VC.reset();
+
+  // Enter fullscreen CSS mode immediately
+  enterWorkoutMode();
+  showOverlay('load');
+  detector = new Detector();
+
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({
+      video: { width:{ ideal:1280 }, height:{ ideal:720 }, facingMode:'user' },
+      audio: false
+    });
+  } catch (e) {
+    exitWorkoutMode();
+    showOverlay('err', 'Camera Permission Error', 'Allow camera access in browser settings and retry.');
+    startBtn.disabled = false; exSel.disabled = false; return;
+  }
+
+  vid.srcObject = stream;
+  try { vid.playsInline = true; } catch (_) {}
+  await vid.play().catch(() => {});
+  await new Promise(r => { if (vid.readyState >= 2) r(); else vid.onloadeddata = r; });
+  const cw = cvs.clientWidth || window.innerWidth;
+  const ch = cvs.clientHeight || window.innerHeight;
+  cvs.width  = Math.max(320, cw);
+  cvs.height = Math.max(240, ch);
+
+  pose = new Pose({ locateFile: f => `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${f}` });
+  pose.setOptions({ modelComplexity:0, smoothLandmarks:true, minDetectionConfidence:.5, minTrackingConfidence:.45 });
+
+  const ctx = cvs.getContext('2d');
+  pose.onResults(results => {
+    fpsFrames++;
+    const now = performance.now();
+    if (now - fpsLast >= 1000) { currentFps = fpsFrames; fpsFrames = 0; fpsLast = now; fpsEl.textContent = currentFps; }
+
+    const w = cvs.width, h = cvs.height;
+    ctx.clearRect(0, 0, w, h);
+    if (results.image) ctx.drawImage(results.image, 0, 0, w, h);
+
+    const lm = results.poseLandmarks || null;
+    if (!lm) {
+      if (running) {
+        noPersonFrames++;
+        if (noPersonFrames > 40) noPerson.classList.remove('hidden');
+        VC.onFrame({ exKey: exSel.value, phase: 'up', kind: 'error', repAdded: false }, null);
+      }
+      return;
+    }
+
+    const exKeyPrev = exSel.value;
+    if (!running) {
+      noPersonFrames = 0;
+      noPerson.classList.add('hidden');
+      const ph = 'up';
+      const jPrev = evaluateJoints(lm, exKeyPrev, ph);
+      drawSmartSkeleton(ctx, lm, jPrev, w, h);
+      drawCoachingOverlay(ctx, lm, exKeyPrev, jPrev, w, h);
+      return;
+    }
+
+    noPersonFrames = 0;
+    noPerson.classList.add('hidden');
+
+    const out    = detector.process(lm, exSel.value);
+    const exKey  = out.exKey || exSel.value;
+    const phase  = out.phase || 'up';
+    const jStatus = evaluateJoints(lm, exKey, phase);
+
+    drawSmartSkeleton(ctx, lm, jStatus, w, h);
+    drawCoachingOverlay(ctx, lm, exKey, jStatus, w, h);
+
+    setFeedback(out.text, out.kind, out.score);
+    updatePhaseBadge(phase, exKey);
+    badgeEx.textContent = out.ex;
+    const hudEx = $('hudExBadge'); if (hudEx) hudEx.textContent = out.ex;
+    if (out.repAdded) addHistory(out.ex, `#${detector.reps}`, out.score);
+    repCount.textContent = detector.reps;
+    setCount.textContent = detector.sets;
+    const hr = $('hudReps'); if (hr) hr.textContent = detector.reps;
+    const hs = $('hudSets'); if (hs) hs.textContent = detector.sets;
+
+    VC.onFrame(out, lm, detector ? detector.reps : 0);
+  });
+
+  cam = new Camera(vid, {
+    onFrame: async () => {
+      try {
+        await pose.send({ image: vid });
+      } catch (e) {}
+    },
+    width: 960, height: 540
+  });
+  try { cam.start(); } catch (e) {}
+
+  // Show prep countdown, then launch session (camera already running so preview / pose warm up)
+  showPrepCountdown(() => {
+    running = true;
+    $('wkHud').classList.remove('hidden');
+    idleOv.classList.add('hidden');
+    stopBtn.disabled = false; setBtn.disabled = false;
+    const hudSetBtn = $('hudSetBtn'); if (hudSetBtn) hudSetBtn.disabled = false;
+    sessionStart = Date.now();
+    timerId = setInterval(updateTimer, 1000);
+    showTips(exSel.value);
+  });
+}
+
+async function stopWorkout() {
+  if (!running && !sessionStart) return;
+  running = false;
+
+  // Capture session data before teardown
+  const dur      = sessionStart ? Math.floor((Date.now() - sessionStart) / 1000) : 0;
+  const finalReps = Number(repCount.textContent || 0);
+  const finalSets = Number(setCount.textContent || 0);
+  const avgForm   = formScoreCount > 0 ? formScoreSum / formScoreCount : 0;
+  const exKey     = exSel.value;
+  const exLabel   = exSel.options[exSel.selectedIndex].text.replace(/^[\S]+\s/, '');
+  sessionStart = null;
+
+  if (cam)    { try { cam.stop(); } catch (_) {} cam = null; }
+  if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
+  if (timerId){ clearInterval(timerId); timerId = null; }
+
+  // Hide HUD + workout mode
+  $('wkHud').classList.add('hidden');
+  exitWorkoutMode();
+  showOverlay('idle');
+
+  startBtn.disabled = false; exSel.disabled = false;
+  stopBtn.disabled  = true;  setBtn.disabled = true;
+  const hudSetBtn = $('hudSetBtn'); if (hudSetBtn) hudSetBtn.disabled = true;
+  phaseBadge.classList.remove('visible', 'down', 'up');
+
+  VC.stopKeepAlive();
+  VC.reset();
+  VC.speak(VC.CUES.sessionDone, { cooldown: 0, bypassCooldown: true });
+  // Show luxury summary (save happens via Save button)
+  showSessionSummary(finalReps, finalSets, dur, avgForm, exLabel, exKey);
+}
+
+// ── EVENTS ────────────────────────────────────────────────────
+startBtn.addEventListener('click', startWorkout);
+stopBtn.addEventListener('click',  stopWorkout);
+
+function doCompleteSet() {
+  if (!detector) return;
+  if (detector.reps > 0) addHistory('Set Complete', `${detector.reps} reps`, 80);
+  detector.markSet();
+  repCount.textContent = detector.reps;
+  setCount.textContent = detector.sets;
+  const hr = $('hudReps'); if (hr) hr.textContent = detector.reps;
+  const hs = $('hudSets'); if (hs) hs.textContent = detector.sets;
+  setFeedback('Set complete. Rest and go again.', 'good', 92);
+  VC.speak(VC.CUES.setDone, { cooldown: 0, bypassCooldown: true });
+}
+setBtn.addEventListener('click', doCompleteSet);
+
+// HUD buttons
+const hudStopBtn = $('hudStopBtn');
+if (hudStopBtn) hudStopBtn.addEventListener('click', stopWorkout);
+const hudSetBtnEl = $('hudSetBtn');
+if (hudSetBtnEl) hudSetBtnEl.addEventListener('click', doCompleteSet);
+
+exSel.addEventListener('change', () => {
+  showTips(exSel.value);
+  badgeEx.textContent = exSel.options[exSel.selectedIndex].text;
+  if (detector && detector.reps > 0) detector.markSet();
+});
+
+// Summary modal buttons
+const sumSaveBtn = $('sumSaveBtn');
+if (sumSaveBtn) {
+  sumSaveBtn.addEventListener('click', async () => {
+    if (!_savedSessionData) return;
+    sumSaveBtn.disabled = true;
+    const st = $('sumStatus');
+    st.textContent = 'Saving…'; st.className = 'sum-status';
+    try {
+      const res = await saveAiTrainerSession(_savedSessionData);
+      if (res.ok) { st.textContent = '✓ Saved to workout log!'; st.className = 'sum-status ok'; }
+      else        { st.textContent = 'Save failed — try again.'; st.className = 'sum-status err'; sumSaveBtn.disabled = false; }
+    } catch(_) { st.textContent = 'Network error — check connection.'; st.className = 'sum-status err'; sumSaveBtn.disabled = false; }
+  });
+}
+const sumAgainBtn = $('sumAgainBtn');
+if (sumAgainBtn) {
+  sumAgainBtn.addEventListener('click', () => {
+    $('summaryModal').classList.add('hidden');
+    // Reset display stats
+    repCount.textContent = '0'; setCount.textContent = '0';
+    timerEl.textContent  = '0:00'; fpsEl.textContent = '--';
+    const hr = $('hudReps'); if (hr) hr.textContent = '0';
+    const hs = $('hudSets'); if (hs) hs.textContent = '0';
+    const ht = $('hudTime'); if (ht) ht.textContent = '0:00';
+    if (repHist) repHist.innerHTML = '<div class="tip">No reps yet.</div>';
+    setFeedback('Waiting to start…', '', 0);
+    showOverlay('idle');
+  });
+}
+
+// ── INIT ──────────────────────────────────────────────────────
+showTips(exSel.value);
+</script>
+</body>
+</html>
