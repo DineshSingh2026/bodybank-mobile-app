@@ -32,7 +32,20 @@
     <!-- Permissions -->
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <!-- Camera for the AI Trainer live form-coaching feature (requested at runtime by the system). -->
+
+    <!-- Camera: AI Trainer live form-coaching (getUserMedia) + body/meal progress photos (input capture). -->
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-feature android:name="android.hardware.camera" android:required="false" />
+
+    <!-- Notifications: required on Android 13+ (API 33) to show any notification, including
+         the WebView's Notification API used for daily check-in reminders and admin push. -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+
+    <!-- Photo library: blood-report upload, avatar, meal photos.
+         Android 13+ uses READ_MEDIA_IMAGES; older devices fall back to READ_EXTERNAL_STORAGE
+         (capped at SDK 32 so newer devices don't see a redundant prompt). -->
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
 </manifest>
