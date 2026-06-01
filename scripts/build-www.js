@@ -29,9 +29,14 @@ function rmrf(dir) {
   if (fs.existsSync(dir)) fs.rmSync(dir, { recursive: true, force: true });
 }
 
-function copyDir(src, dst) {
+// Top-level directories under public/ that should NOT be bundled into www/.
+// These are served from the live web instead (see bb-app-config.js URL rewrite).
+const SKIP_TOP_LEVEL = new Set(['videos']);
+
+function copyDir(src, dst, skipTopLevel) {
   fs.mkdirSync(dst, { recursive: true });
   for (const entry of fs.readdirSync(src, { withFileTypes: true })) {
+    if (skipTopLevel && skipTopLevel.has(entry.name)) continue;
     const s = path.join(src, entry.name);
     const d = path.join(dst, entry.name);
     if (entry.isDirectory()) copyDir(s, d);
@@ -73,8 +78,8 @@ log('Source: ' + SOURCE_PUBLIC);
 log('Dest:   ' + DEST_WWW);
 
 rmrf(DEST_WWW);
-copyDir(SOURCE_PUBLIC, DEST_WWW);
-log('Mirrored public/ -> www/');
+copyDir(SOURCE_PUBLIC, DEST_WWW, SKIP_TOP_LEVEL);
+log('Mirrored public/ -> www/  (skipped: ' + Array.from(SKIP_TOP_LEVEL).join(', ') + ')');
 
 // Drop our config script into www/js/
 fs.mkdirSync(path.join(DEST_WWW, 'js'), { recursive: true });

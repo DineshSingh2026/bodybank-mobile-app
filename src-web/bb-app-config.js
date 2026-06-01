@@ -56,7 +56,9 @@
   // Rewrite ONLY backend paths. Local bundled assets (/js, /css, /img, /icons,
   // /manifest.json, /favicon.ico) must stay relative so the WebView loads them
   // from inside the APK.
-  var BACKEND_PREFIX_RE = /^\/(api|uploads|webhook|webhooks|share)(\/|$|\?)/i;
+  // `videos` is rewritten because mp4 marketing clips live on the web (~24 MB total) —
+  // see scripts/build-www.js which skips public/videos/ to keep the app bundle slim.
+  var BACKEND_PREFIX_RE = /^\/(api|uploads|webhook|webhooks|share|videos)(\/|$|\?)/i;
   // The app's own WebView origin. Some pages build absolute URLs with
   // window.location.origin + '/api/...', which resolves to https://localhost
   // inside the app and has no backend. Catch those too.
