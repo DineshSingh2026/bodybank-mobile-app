@@ -112,6 +112,29 @@ Notes:
   `localhost` (Apple requires a verified https domain).
 - The button is **hidden inside the Android app**, so Android/Play is unchanged.
 
+## Step 5c — Reviewer demo account (required, auto-seeded)
+
+Apple reviewers cannot wait for the admin to approve their signup, so the server
+auto-creates a **pre-approved** demo user from these env vars (already wired in
+`server.js`). Set them and redeploy:
+
+```
+APPLE_REVIEW_EMAIL=apple-reviewer@bodybank.fit
+APPLE_REVIEW_PASS=BodybankReview!2026
+```
+
+(Use any values you like — but use the same ones in App Store Connect → App Review
+Information, see `bodybank-app/store-assets/APP_REVIEW_INFO.md` for the full template.)
+
+## Step 5d — Store listing, privacy, screenshots
+
+Ready-to-paste templates live in `bodybank-app/store-assets/`:
+
+- **APP_REVIEW_INFO.md** — demo credentials + reviewer notes
+- **APP_STORE_LISTING.md** — name, subtitle, description, keywords, age-rating answers
+- **APP_PRIVACY.md** — every data type the app collects mapped to Apple's questionnaire
+- **SCREENSHOTS.md** — required pixel sizes + how to capture them from Windows
+
 ## Step 6 — TestFlight → App Store
 
 1. In App Store Connect → **TestFlight**, the build appears after a few minutes of
@@ -128,10 +151,13 @@ Notes:
 
 - **App Privacy questionnaire** is mandatory and must match the `Info.plist` permissions
   (camera, photos) and any analytics/account data BodyBank collects.
-- **Demo account**: Apple review needs working login credentials if the app gates content
-  behind sign-in. Provide them in *App Review Information*.
-- **Sign in with Apple**: implemented (see Step 5b). Required because the app offers Google
+- **Demo account**: handled (Step 5c). The server auto-seeds a pre-approved reviewer
+  user from `APPLE_REVIEW_EMAIL` / `APPLE_REVIEW_PASS`.
+- **Sign in with Apple**: implemented (Step 5b). Required because the app offers Google
   sign-in. Turn it on in the Apple portal + set the env vars before submitting.
+- **Account deletion (Guideline 5.1.1(v))**: implemented — a "Delete account" button on
+  the user dashboard opens a password-confirmed delete that cascades through the user's
+  data. No reviewer action needed.
 - iOS deployment target is **14.0** (set in the Xcode project).
 - Build number auto-increments per Codemagic build; marketing version (`1.0`) is set in
   the Xcode project — bump it for each public release.
