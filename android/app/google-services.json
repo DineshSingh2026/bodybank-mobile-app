@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "458625195725",
+    "project_id": "bodybank-ca0a2",
+    "storage_bucket": "bodybank-ca0a2.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:458625195725:android:2f2f55c026ff50ba955384",
+        "android_client_info": {
+          "package_name": "com.bodybank.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAN70mnpVKdD142jOFB1jKVPGEJEkXIV1M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
