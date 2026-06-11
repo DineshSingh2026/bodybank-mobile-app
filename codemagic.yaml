@@ -14,6 +14,76 @@
 # generate certificates by hand on a Mac.
 
 workflows:
+  # ──────────────────────────────────────────────────────────────────────────
+  # Android — auto-build a signed AAB and ship it to the closed-testing track
+  # on every push to main. Runs on Linux (no Mac needed).
+  #
+  # ONE-TIME SETUP IN THE CODEMAGIC UI (see ANDROID_CICD_SETUP.md for the full
+  # walkthrough):
+  #   1. Connect this Git repo to a Codemagic app (if not already).
+  #   2. Code signing identities → Android keystores: upload
+  #      bodybank-release.keystore and give it the reference name
+  #      `bodybank_keystore` (must match `android_signing` below). Enter the
+  #      keystore password, key alias, and key password there.
+  #   3. Create a Google Cloud service account with the "Android Publisher" /
+  #      Play Console access, download its JSON key, and add it as a secure
+  #      env var named GCLOUD_SERVICE_ACCOUNT_CREDENTIALS in a variable group
+  #      called `google_play` (matches `groups` below).
+  #   4. Set GOOGLE_PLAY_TRACK below to your closed-testing track name (the
+  #      track's name in Play Console → Testing → Closed testing; often
+  #      `internal` for the Internal testing track, or your custom track name).
+  # ──────────────────────────────────────────────────────────────────────────
+  android-closed-testing:
+    name: BodyBank Android — Closed testing
+    instance_type: linux_x2
+    max_build_duration: 60
+    environment:
+      android_signing:
+        - bodybank_keystore        # <-- reference name from Codemagic UI (step 2)
+      groups:
+        - google_play              # <-- group holding GCLOUD_SERVICE_ACCOUNT_CREDENTIALS (step 3)
+      vars:
+        PACKAGE_NAME: "com.bodybank.app"
+        GOOGLE_PLAY_TRACK: "internal"   # <-- your closed-testing track name (step 4)
+      node: 22
+      java: 21
+    triggering:
+      events:
+        - push
+      branch_patterns:
+        - pattern: main
+          include: true
+    scripts:
+      - name: Install npm dependencies
+        script: npm ci
+      - name: Capacitor sync Android (copies committed www/ into android/)
+        # NOTE: this copies the already-committed www/ snapshot. The web→www
+        # mirror (`npm run build:www`) runs locally before you push, because the
+        # web repo isn't present on the CI machine.
+        script: npx cap sync android
+      - name: Write keystore.properties from Codemagic-managed signing
+        script: |
+          cat > "$CM_BUILD_DIR/android/keystore.properties" <<EOF
+          storeFile=$CM_KEYSTORE_PATH
+          storePassword=$CM_KEYSTORE_PASSWORD
+          keyAlias=$CM_KEY_ALIAS
+          keyPassword=$CM_KEY_PASSWORD
+          EOF
+      - name: Build signed AAB (unique, increasing versionCode)
+        script: |
+          cd android
+          ANDROID_VERSION_CODE=$(($PROJECT_BUILD_NUMBER + 100)) \
+            ./gradlew bundleRelease
+    artifacts:
+      - android/app/build/outputs/bundle/**/*.aab
+    publishing:
+      google_play:
+        credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
+        track: $GOOGLE_PLAY_TRACK
+        # Submits straight to the track (testers get it after Google processes
+        # it). Set to true if you'd rather it land as a draft for manual rollout.
+        submit_as_draft: false
+
   ios-appstore:
     name: BodyBank iOS — App Store
     instance_type: mac_mini_m2
