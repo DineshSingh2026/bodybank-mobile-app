@@ -9748,6 +9748,8 @@ function openModal(id){
   if (typeof bbUpdateEliteFeedFab === 'function') bbUpdateEliteFeedFab();
 }
 var _googleButtonRendered=false;
+var _gsiLoadAttempts=0;
+var _gsiMaxAttempts=3;
 async function updateGoogleButtonVisibility(){
   var btnSignup=document.getElementById('googleBtnSignup');
   if(!btnSignup)return;
@@ -10733,6 +10735,43 @@ function updateNotifyPermissionUI(granted) {
   var el = document.getElementById('notifyEnablePrompt');
   if (!el) return;
   el.style.display = granted ? 'none' : 'block';
+}
+
+// Native (installed Android/iOS app) push via Firebase Cloud Messaging.
+// No-op on the web — there the service worker + Web Push handle notifications.
+// Called right after login so the device token attaches to the signed-in user.
+var _nativePushRegistered = false;
+var _lastFcmToken = null;
+async function registerNativePush() {
+  if (!window.IS_BODYBANK_APP || _nativePushRegistered) return;
+  try {
+    var Cap = window.Capacitor;
+    var FM = Cap && Cap.Plugins && Cap.Plugins.FirebaseMessaging;
+    if (!FM) return; // plugin not present in this build yet
+    _nativePushRegistered = true;
+    var platform = (Cap.getPlatform && Cap.getPlatform()) || 'android';
+    async function sendToken(token) {
+      if (!token) return;
+      _lastFcmToken = token;
+      try { await apiCall('POST', '/api/push/register-token', { token: token, platform: platform }); } catch (e) {}
+    }
+    // Re-register automatically when FCM rotates the token.
+    try { FM.addListener('tokenReceived', function(ev) { sendToken(ev && ev.token); }); } catch (e) {}
+    var perm = await FM.requestPermissions();
+    if (!perm || perm.receive !== 'granted') { _nativePushRegistered = false; return; }
+    var res = await FM.getToken();
+    await sendToken(res && res.token);
+  } catch (e) { _nativePushRegistered = false; }
+}
+
+// Detach this device's token on logout so the signed-out user stops receiving
+// push here (other devices keep theirs). Must run BEFORE the session is cleared
+// so the API call is still authenticated.
+function unregisterNativePush() {
+  _nativePushRegistered = false;
+  if (!window.IS_BODYBANK_APP || !_lastFcmToken) return;
+  try { apiCall('DELETE', '/api/push/register-token', { token: _lastFcmToken }); } catch (e) {}
+  _lastFcmToken = null;
 }
 
 function showBrowserNotification(n) {
@@ -13281,6 +13320,7 @@ function downloadInsightsCSV() {
 }
 
 function logoutAdmin() {
+  if (typeof unregisterNativePush === 'function') unregisterNativePush();
   window.currentUser = null;
   if (typeof bbNotifyResetSoundState === 'function') bbNotifyResetSoundState();
   if (typeof stopAdminNotificationPolling === 'function') stopAdminNotificationPolling();
@@ -15537,6 +15577,7 @@ document.addEventListener('click', function(e) {
 // ========== USER DASHBOARD ==========
 function openUserDashboard(user) {
   window.currentUser = user;
+  if (typeof registerNativePush === 'function') registerNativePush();
   var adminPanel = document.getElementById('adminPanel');
   var superadminPanel = document.getElementById('superadminPanel');
   var waFloat = document.getElementById('userWaFloat');
@@ -16016,6 +16057,7 @@ async function submitDeleteAccount() {
 }
 
 function logoutUser() {
+  if (typeof unregisterNativePush === 'function') unregisterNativePush();
   if (typeof wkLogoutTimerCleanup === 'function') wkLogoutTimerCleanup();
   // Reset muscle ranking cache so next login fetches fresh data
   if (typeof mrData !== 'undefined') { mrData = null; mrLoaded = false; }
@@ -21619,18 +21661,37 @@ function ensureGoogleButtonRendered(config) {
   }
   if (window.google && window.google.accounts && window.google.accounts.id) {
     doRender();
-  } else {
-    var script = document.querySelector('script[src*="accounts.google.com/gsi/client"]');
-    if (!script) {
-      script = document.createElement('script');
-      script.src = 'https://accounts.google.com/gsi/client';
-      script.onload = function() { window._gsiLoaded = true; doRender(); };
-      script.onerror = function() { showPopup('Error', 'Could not load Google Sign-In. Check your connection.', '', 'OK'); };
-      document.head.appendChild(script);
-    } else if (window.google && window.google.accounts) {
-      doRender();
-    }
+    return;
   }
+  // GSI script not loaded yet. Load it resiliently: retry a couple of times on
+  // transient network failures (slow mobile, blockers, DNS hiccups). Google
+  // Sign-In is OPTIONAL — email/password and Apple sign-in still work — so we
+  // never block the user with an error popup; we just quietly hide the button
+  // if it ultimately can't load.
+  function loadGsiScript() {
+    if (window.google && window.google.accounts && window.google.accounts.id) { doRender(); return; }
+    var existing = document.querySelector('script[src*="accounts.google.com/gsi/client"]');
+    // A load already succeeded or is in flight (and not previously marked failed) — let its onload handle render.
+    if (existing && existing.getAttribute('data-bb-failed') !== '1') return;
+    if (existing && existing.parentNode) existing.parentNode.removeChild(existing);
+    var script = document.createElement('script');
+    script.src = 'https://accounts.google.com/gsi/client';
+    script.async = true;
+    script.onload = function() { window._gsiLoaded = true; doRender(); };
+    script.onerror = function() {
+      script.setAttribute('data-bb-failed', '1');
+      _gsiLoadAttempts++;
+      if (_gsiLoadAttempts < _gsiMaxAttempts) {
+        setTimeout(loadGsiScript, 1500 * _gsiLoadAttempts);
+      } else {
+        console.warn('Google Sign-In failed to load after ' + _gsiLoadAttempts + ' attempt(s); hiding the button. Other login methods still work.');
+        var el = document.getElementById('googleBtnSignup');
+        if (el) el.style.display = 'none';
+      }
+    };
+    document.head.appendChild(script);
+  }
+  loadGsiScript();
 }
 
 var _pendingGoogleToken = null;
@@ -21855,6 +21916,7 @@ function restoreSession() {
     var data = JSON.parse(s);
     if (!data || !data.id || !data.role) return;
     window.currentUser = data;
+    if (typeof registerNativePush === 'function') registerNativePush();
     if (data.role === 'admin') {
       document.getElementById('adminPanel').classList.add('open');
       document.body.classList.add('site-nav-hidden');
@@ -22120,6 +22182,7 @@ function renderSuperadminData(data, readOnly) {
 }
 
 function logoutSuperadmin() {
+  if (typeof unregisterNativePush === 'function') unregisterNativePush();
   if (typeof bbNotifyResetSoundState === 'function') bbNotifyResetSoundState();
   if (navigator.clearAppBadge) navigator.clearAppBadge().catch(function(){});
   document.getElementById('superadminPanel').classList.remove('open');
@@ -25077,5 +25140,6 @@ function bbBodyOnboardingKeyHandler(ev) {
 <a class="wa-public-fab" href="https://wa.me/919502575669" target="_blank" rel="noopener noreferrer" aria-label="Chat with us on WhatsApp" title="Chat on WhatsApp">
   <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
 </a>
+<script src="js/public-nav.js" defer></script>
 </body>
 </html>
