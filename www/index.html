@@ -2857,19 +2857,20 @@ body.admin-dashboard-open .admin-ai-wa-fab-wrap{display:flex}
 .user-section.active{display:block;animation:udFadeIn .4s ease-out}
 @keyframes udFadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 .user-section h2{font-family:'Syne',sans-serif;font-size:28px;font-weight:700;color:var(--cream);margin-bottom:24px;text-align:left;letter-spacing:-0.5px}
-.user-welcome{text-align:center;padding:56px 24px 64px;position:relative}
+.user-welcome{text-align:center;padding:24px 16px 44px;position:relative}
 .user-welcome::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:min(480px,95%);height:320px;background:radial-gradient(ellipse 70% 60% at 50% 0%,rgba(200,164,78,0.08) 0%,transparent 70%);pointer-events:none}
-.user-welcome-avatar{position:relative;margin:0 auto 32px;width:100px;height:100px;border-radius:50%;border:3px solid rgba(200,164,78,0.7);object-fit:cover;object-position:center;display:block;background:radial-gradient(circle at 50% 35%,rgba(255,255,255,0.1),rgba(12,12,12,0.96));box-shadow:0 12px 40px rgba(0,0,0,0.4),0 0 0 4px rgba(200,164,78,0.12),0 0 24px rgba(200,164,78,0.22)}
-.user-welcome-avatar-placeholder{position:relative;margin:0 auto 32px;width:100px;height:100px;border-radius:50%;border:3px solid rgba(200,164,78,0.55);background:radial-gradient(circle at 50% 30%,rgba(200,164,78,0.14),rgba(14,14,14,0.96) 68%);display:grid;place-items:center;color:var(--muted);box-shadow:0 12px 40px rgba(0,0,0,0.4),0 0 0 4px rgba(200,164,78,0.1),0 0 24px rgba(200,164,78,0.18);flex-shrink:0}
+.user-welcome-avatar{position:relative;margin:0 auto 14px;width:76px;height:76px;border-radius:50%;border:2px solid rgba(200,164,78,0.7);object-fit:cover;object-position:center;display:block;background:radial-gradient(circle at 50% 35%,rgba(255,255,255,0.1),rgba(12,12,12,0.96));box-shadow:0 10px 30px rgba(0,0,0,0.4),0 0 0 4px rgba(200,164,78,0.1),0 0 20px rgba(200,164,78,0.2)}
+.user-welcome-avatar-placeholder{position:relative;margin:0 auto 14px;width:76px;height:76px;border-radius:50%;border:2px solid rgba(200,164,78,0.55);background:radial-gradient(circle at 50% 30%,rgba(200,164,78,0.14),rgba(14,14,14,0.96) 68%);display:grid;place-items:center;color:var(--muted);box-shadow:0 10px 30px rgba(0,0,0,0.4),0 0 0 4px rgba(200,164,78,0.1),0 0 20px rgba(200,164,78,0.18);flex-shrink:0}
 .user-welcome-avatar-placeholder svg{width:44px;height:44px;stroke:var(--muted);fill:none;stroke-width:1.5}
 .profile-avatar{width:120px;height:120px;border-radius:50%;border:3px solid rgba(200,164,78,0.78);object-fit:cover;object-position:center;background:radial-gradient(circle at 50% 35%,rgba(255,255,255,0.1),rgba(12,12,12,0.96));display:none;box-shadow:0 8px 24px rgba(0,0,0,0.3),0 0 0 5px rgba(200,164,78,0.12),0 0 28px rgba(200,164,78,0.22)}
 .profile-avatar-placeholder{width:120px;height:120px;border-radius:50%;border:3px solid rgba(200,164,78,0.55);background:radial-gradient(circle at 50% 30%,rgba(200,164,78,0.14),rgba(14,14,14,0.96) 68%);display:grid;place-items:center;margin:0 auto;box-shadow:0 8px 24px rgba(0,0,0,0.3),0 0 0 5px rgba(200,164,78,0.1),0 0 28px rgba(200,164,78,0.18);color:var(--muted)}
 .profile-avatar-note{margin-top:10px;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--muted)}
-.user-welcome h1{font-family:'Syne',sans-serif;font-size:clamp(34px,5vw,56px);font-weight:800;letter-spacing:-0.02em;margin-bottom:12px;line-height:1.1}
+.user-welcome h1{font-family:'Syne',sans-serif;font-size:clamp(21px,4.2vw,28px);font-weight:800;letter-spacing:-0.01em;margin-bottom:6px;line-height:1.15}
 .user-welcome h1 .welcome-label{display:block;font-size:11px;font-weight:600;letter-spacing:4px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;opacity:.9}
 .user-welcome h1 .welcome-name{background:linear-gradient(135deg,#f5f0e8 0%,var(--goldb) 45%,var(--gold) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .user-welcome .user-welcome-tag{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;letter-spacing:2.5px;color:var(--gold);margin-bottom:32px;opacity:1}
-.welcome-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;max-width:860px;margin:0 auto}
+.welcome-explore-title{max-width:560px;margin:24px auto 12px;font-size:12px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;color:var(--muted);text-align:left}
+.welcome-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;max-width:560px;margin:0 auto}
 .welcome-card{position:relative;display:flex;align-items:center;gap:14px;padding:18px 20px;background:linear-gradient(180deg,rgba(18,18,18,0.95) 0%,rgba(8,8,8,0.98) 100%);border:1px solid rgba(255,255,255,0.06);border-radius:16px;text-align:left;cursor:pointer;transition:all .3s ease;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.22)}
 .welcome-card::before{content:'';position:absolute;left:0;top:14px;bottom:14px;width:3px;background:linear-gradient(180deg,rgba(200,164,78,0.95),rgba(200,164,78,0.18));border-radius:999px;opacity:.75;transition:opacity .3s}
 .welcome-card::after{content:'\203A';margin-left:auto;color:rgba(200,164,78,0.9);font-size:22px;line-height:1;transition:transform .3s ease,color .3s ease}
@@ -2919,7 +2920,7 @@ body.admin-dashboard-open .admin-ai-wa-fab-wrap{display:flex}
 .user-logout{padding:8px 20px;border:1px solid rgba(255,80,80,0.4);border-radius:6px;background:transparent;color:#ff6b6b;font-family:'Outfit',sans-serif;font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .3s;flex-shrink:0}
 .user-logout:hover{background:rgba(255,80,80,0.1)}
 /* Today dashboard + micro-goals */
-.today-dash{display:flex;flex-direction:column;gap:24px;max-width:640px;margin:0 auto}
+.today-dash{display:flex;flex-direction:column;gap:18px;max-width:560px;margin:0 auto}
 .today-row{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start}
 .today-card{flex:1;min-width:200px;padding:20px;background:rgba(255,255,255,0.03);border:1px solid var(--bdr);border-radius:12px}
 .today-card h3{font-size:12px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin-bottom:12px}
@@ -2928,8 +2929,8 @@ body.admin-dashboard-open .admin-ai-wa-fab-wrap{display:flex}
 .today-card.empty .val{color:var(--muted);font-weight:400}
 .today-card.action{cursor:pointer;transition:background .2s,border-color .2s}
 .today-card.action:hover{background:rgba(200,164,78,0.06);border-color:var(--gold)}
-.micro-goals-wrap{background:rgba(255,255,255,0.02);border:1px solid var(--bdr);border-radius:14px;padding:24px;margin:0}
-.micro-goals-wrap h3{font-size:13px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.micro-goals-wrap{background:linear-gradient(180deg,rgba(255,255,255,0.045),rgba(255,255,255,0.012));border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:20px;margin:0;box-shadow:0 14px 34px -18px rgba(0,0,0,0.55),inset 0 1px 0 rgba(255,255,255,0.04)}
+.micro-goals-wrap h3{font-size:12px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;color:var(--gold);margin-bottom:16px;display:flex;align-items:center;gap:10px}
 .micro-goals-wrap .streak-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;background:rgba(200,164,78,0.2);border-radius:20px;font-size:13px;font-weight:700;color:var(--gold);transition:background .3s,box-shadow .3s,transform .15s}
 .micro-goals-wrap .streak-badge[data-tier="fire"]{background:rgba(255,100,50,0.25);box-shadow:0 0 12px rgba(255,140,0,0.2)}
 .micro-goals-wrap .streak-badge[data-tier="rocket"]{background:linear-gradient(135deg,rgba(200,164,78,0.3),rgba(255,180,50,0.15));box-shadow:0 0 16px rgba(200,164,78,0.25)}
@@ -2946,6 +2947,119 @@ body.admin-dashboard-open .admin-ai-wa-fab-wrap{display:flex}
   box-shadow:0 10px 28px rgba(0,0,0,0.3),inset 0 0 0 1px rgba(255,255,255,0.04);
   display:flex;align-items:center;justify-content:space-between;gap:12px;
 }
+/* ===== Unified TODAY hero ===== */
+.bb-today{position:relative;margin:0 auto 16px;width:min(560px,100%);text-align:left;border-radius:24px;padding:20px 18px 16px;border:1px solid rgba(200,164,78,0.22);background:linear-gradient(170deg,rgba(36,29,16,0.55) 0%,rgba(15,15,17,0.92) 44%,rgba(10,10,12,0.97) 100%);-webkit-backdrop-filter:blur(16px) saturate(1.1);backdrop-filter:blur(16px) saturate(1.1);box-shadow:0 22px 50px -14px rgba(0,0,0,0.62),inset 0 1px 0 rgba(255,255,255,0.06);overflow:hidden}
+.bb-today::before{content:'';position:absolute;top:-45%;left:50%;transform:translateX(-50%);width:130%;height:65%;background:radial-gradient(ellipse at center,rgba(200,164,78,0.20),transparent 70%);pointer-events:none}
+.bb-today > *{position:relative;z-index:1}
+.bb-today-top{display:flex;flex-direction:column;align-items:center;text-align:center;gap:12px;margin-bottom:16px}
+.bb-today-avatar{width:92px;height:92px;border-radius:50%;flex-shrink:0;background-color:rgba(200,164,78,0.12);background-size:cover;background-position:center;border:3px solid rgba(200,164,78,0.7);display:grid;place-items:center;font-weight:800;font-size:34px;color:var(--gold);box-shadow:0 10px 30px rgba(0,0,0,0.5),0 0 26px rgba(200,164,78,0.25)}
+.bb-today-greet{width:100%;min-width:0}
+.bb-today-eyebrow{margin:0;font-size:10.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:rgba(200,164,78,0.85)}
+.bb-today-name{margin:5px 0 0;font-size:26px;font-weight:800;color:#fbf6ec;letter-spacing:-.015em;line-height:1.1}
+.bb-today-tag{margin:6px 0 0;font-size:11.5px;font-weight:700;letter-spacing:.04em;color:var(--gold)}
+.bb-today-sub{margin:3px 0 0;font-size:11px;color:var(--muted)}
+.bb-today-stats{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:center;margin-bottom:10px}
+.bb-today-pill i{font-style:normal;font-weight:600;color:var(--muted);font-size:11px;margin-left:1px}
+.bb-today-pill{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;padding:7px 11px;border-radius:999px;border:1px solid rgba(255,255,255,0.1);background:linear-gradient(180deg,rgba(255,255,255,0.09),rgba(255,255,255,0.02));color:var(--cream);font-family:inherit;line-height:1}
+button.bb-today-pill{cursor:pointer}
+.bb-today-pill--streak b{color:#ffb454}
+.bb-today-pill--coin b{color:var(--gold)}
+.bb-today-pill--freeze{cursor:pointer;color:#9fd8ff;border-color:rgba(120,190,255,0.45);background:rgba(120,190,255,0.12)}
+.bb-today-pill--freeze:active{background:rgba(120,190,255,0.25)}
+.bb-today-body{display:flex;align-items:center;gap:18px}
+.bb-today-ring{position:relative;flex-shrink:0;width:112px;height:112px;border:none;background:none;padding:0;cursor:pointer}
+.bb-today-ring-svg{width:112px;height:112px;transform:rotate(-90deg);filter:drop-shadow(0 0 9px rgba(200,164,78,0.4))}
+.bb-today-ring-track{fill:none;stroke:rgba(255,255,255,0.07);stroke-width:8}
+.bb-today-ring-fill{fill:none;stroke:url(#bbTodayGrad);stroke-width:8;stroke-linecap:round;stroke-dasharray:327;stroke-dashoffset:327;transition:stroke-dashoffset .7s cubic-bezier(.34,1.2,.4,1)}
+.bb-today-ring-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1}
+.bb-today-ring-center b{font-size:30px;font-weight:800;color:#fbf6ec;letter-spacing:-.02em}
+.bb-today-ring-center i{font-size:13px;font-style:normal;color:var(--muted);margin-top:2px}
+.bb-today-ring-center em{font-size:9px;font-style:normal;text-transform:uppercase;letter-spacing:.18em;color:rgba(200,164,78,0.8);margin-top:4px;font-weight:700}
+.bb-today-list{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.bb-today-item{display:flex;align-items:center;gap:11px;width:100%;border:none;background:none;padding:7px 6px;margin:0;border-radius:10px;cursor:pointer;text-align:left;transition:background .15s}
+.bb-today-item:active{background:rgba(255,255,255,0.05)}
+.bb-today-item-ico{width:20px;text-align:center;font-size:14px;flex-shrink:0;opacity:.95}
+.bb-today-item-main{flex:1;min-width:0}
+.bb-today-item-top{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+.bb-today-item-lbl{font-size:12.5px;font-weight:600;color:#e9e2d4}
+.bb-today-item-val{font-size:10.5px;color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
+.bb-today-item-bar{height:6px;border-radius:999px;background:rgba(255,255,255,0.07);margin-top:6px;overflow:hidden}
+.bb-today-item-bar > span{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#c8a44e,#f5d889);width:0;transition:width .6s cubic-bezier(.4,0,.2,1)}
+.bb-today-item.is-done .bb-today-item-bar > span{background:linear-gradient(90deg,#3fa45f,#6fe09a)}
+.bb-today-item.is-done .bb-today-item-lbl{color:#9fe6b3}
+.bb-today-chip{font-size:10.5px;font-weight:700;padding:4px 10px;border-radius:999px;border:1px solid rgba(255,255,255,0.14);color:var(--muted);white-space:nowrap;letter-spacing:.02em}
+.bb-today-chip.is-done{color:#9fe6b3;border-color:rgba(70,196,106,0.4);background:rgba(70,196,106,0.12)}
+.bb-today-chip.is-todo{color:#1a1408;border-color:transparent;background:linear-gradient(180deg,#f5d889,#c8a44e);font-weight:800}
+.bb-today-coach{display:flex;align-items:center;gap:12px;width:100%;margin-top:16px;padding:12px 13px;border-radius:15px;border:1px solid rgba(255,255,255,0.08);background:linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.015));cursor:pointer;text-align:left;transition:border-color .2s,background .2s}
+.bb-today-coach.has-unread{border-color:rgba(200,164,78,0.55);background:linear-gradient(180deg,rgba(200,164,78,0.14),rgba(200,164,78,0.04))}
+.bb-today-coach.has-unread .bb-today-coach-cta{background:linear-gradient(180deg,#f5d889,#c8a44e);color:#1a1408;border-color:transparent}
+.bb-today-coach-ico{font-size:18px;flex-shrink:0}
+.bb-today-coach-copy{flex:1;min-width:0}
+.bb-today-coach-from{display:block;font-size:9.5px;text-transform:uppercase;letter-spacing:.12em;color:rgba(200,164,78,0.85);font-weight:700}
+.bb-today-coach-msg{display:block;font-size:13px;color:var(--cream);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:2px}
+.bb-today-coach-cta{flex-shrink:0;font-size:11.5px;font-weight:700;color:var(--gold);border:1px solid rgba(200,164,78,0.4);border-radius:999px;padding:6px 13px}
+.bb-today-meta{display:flex;align-items:center;gap:7px;width:100%;margin-top:9px;padding:11px 13px;border-radius:13px;border:1px solid rgba(255,255,255,0.06);background:rgba(255,255,255,0.02);color:var(--cream);font-size:12.5px;text-align:left;cursor:pointer}
+.bb-today-meta b{color:var(--gold);font-weight:700}
+.bb-today-week{margin:14px 4px 2px;font-size:11px;color:var(--muted);text-align:center;letter-spacing:.04em;font-weight:600}
+@media(max-width:380px){.bb-today-body{gap:13px}.bb-today-ring,.bb-today-ring-svg{width:96px;height:96px}.bb-today-ring-center b{font-size:25px}}
+/* ===== Pulse — one card captures day + week + pillars ===== */
+.bb-pulse-score{display:flex;align-items:center;gap:18px;margin-bottom:2px}
+.bb-pulse-ring-track2{fill:none;stroke:rgba(255,255,255,0.06);stroke-width:7}
+.bb-pulse-ring-fill2{fill:none;stroke:url(#bbPulseDayGrad);stroke-width:7;stroke-linecap:round;stroke-dasharray:239;stroke-dashoffset:239;transition:stroke-dashoffset .7s cubic-bezier(.34,1.2,.4,1)}
+.bb-today-ring-center i{font-size:11px;font-style:normal;color:var(--muted);margin-top:3px}
+.bb-pulse-meta{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.bb-pulse-kicker{font-size:10px;text-transform:uppercase;letter-spacing:.14em;color:rgba(200,164,78,0.85);font-weight:700}
+.bb-pulse-trend{font-size:13.5px;font-weight:700;color:var(--cream)}
+.bb-pulse-trend.up{color:#7fe3a6}.bb-pulse-trend.down{color:#ff9090}
+.bb-pulse-week{font-size:11px;color:var(--muted)}
+.bb-pulse-scbtns{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}
+.bb-pulse-scbtns button{font-size:10.5px;font-weight:700;color:var(--cream);background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:999px;padding:6px 11px;cursor:pointer;font-family:inherit}
+.bb-pulse-scbtns .bb-share{color:var(--gold);border-color:rgba(200,164,78,0.4)}
+.bb-pulse-sec-label{font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:18px 2px 9px}
+.bb-pulse-pillars{display:flex;flex-direction:column;gap:9px}
+.bb-pulse-pillar{display:flex;align-items:center;gap:10px}
+.bb-pulse-pillar-lbl{flex:0 0 62px;font-size:12px;font-weight:600;color:#e9e2d4}
+.bb-pulse-pillar-track{flex:1;height:7px;border-radius:999px;background:rgba(255,255,255,0.07);overflow:hidden}
+.bb-pulse-pillar-track > span{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#c8a44e,#f5d889);width:0;transition:width .6s ease}
+.bb-pulse-pillar-score{flex:0 0 22px;text-align:right;font-size:12.5px;font-weight:800;color:#fbf6ec;font-variant-numeric:tabular-nums}
+.bb-pulse-pillar-wt{flex:0 0 32px;text-align:right;font-size:10px;color:var(--muted)}
+.bb-pulse-habits{display:flex;flex-direction:column;gap:3px}
+.bb-pulse-habit{display:flex;align-items:center;gap:11px;width:100%;border:none;background:none;padding:8px 6px;margin:0;border-radius:12px;cursor:pointer;text-align:left;transition:background .15s}
+.bb-pulse-habit:active{background:rgba(255,255,255,0.05)}
+.bb-pulse-habit-ico{width:22px;text-align:center;font-size:15px;flex-shrink:0;opacity:.95}
+.bb-pulse-habit-body{flex:1;min-width:0}
+.bb-pulse-habit-r1{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+.bb-pulse-habit-r1 .lbl{font-size:12.5px;font-weight:600;color:#e9e2d4}
+.bb-pulse-habit-r1 .val{font-size:11px;color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
+.bb-pulse-habit.is-done .lbl{color:#9fe6b3}
+.bb-pulse-habit-bar{height:6px;border-radius:999px;background:rgba(255,255,255,0.07);margin-top:6px;overflow:hidden}
+.bb-pulse-habit-bar > span{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#c8a44e,#f5d889);width:0;transition:width .6s ease}
+.bb-pulse-habit.is-done .bb-pulse-habit-bar > span{background:linear-gradient(90deg,#3fa45f,#6fe09a)}
+.bb-pulse-habit-spark{flex:0 0 50px;display:flex;flex-direction:column;align-items:flex-end;gap:2px}
+.bb-spark-svg{width:50px;height:16px;display:block}
+.bb-pulse-habit-spark em{font-size:9.5px;font-style:normal;color:var(--muted);white-space:nowrap;letter-spacing:.02em}
+.bb-pulse-actions{display:flex;gap:8px;margin-top:14px}
+.bb-pulse-act{flex:1;display:flex;flex-direction:column;align-items:flex-start;gap:3px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.03);border-radius:13px;padding:10px 12px;cursor:pointer;font-family:inherit;text-align:left}
+.bb-pulse-act > span{font-size:11px;color:var(--muted);font-weight:600}
+.bb-pulse-act b{font-size:13px;color:var(--gold);font-weight:800}
+.bb-pulse-act.is-done b{color:#9fe6b3}
+/* Old scorecard + weekly recap are now folded into the Pulse card above */
+#bbScorecardMobileWrap,#weeklyRecap{display:none !important}
+/* The Pulse card greets you by name, so the old welcome block is redundant — hide it
+   (kept in the DOM because its name/avatar setters are referenced unguarded). */
+.user-welcome > .user-welcome-avatar,
+.user-welcome > .user-welcome-avatar-placeholder,
+.user-welcome > h1,
+.user-welcome > .user-welcome-tag{display:none !important}
+/* Skeleton shimmer so the Pulse occupies its space instantly (no pop-in / layout shift) */
+.bb-skel-row{border-radius:8px;margin:7px 0;background:linear-gradient(90deg,rgba(255,255,255,0.04) 25%,rgba(255,255,255,0.10) 37%,rgba(255,255,255,0.04) 63%);background-size:400% 100%;animation:bbSkel 1.3s ease infinite}
+.bb-skel-pillar{height:16px}
+.bb-skel-habit{height:38px}
+@keyframes bbSkel{0%{background-position:100% 0}100%{background-position:-100% 0}}
+/* Onboarding goal chips */
+.bb-onb-goal{font-size:13px;font-weight:600;padding:9px 13px;border-radius:999px;border:1px solid rgba(255,255,255,0.16);background:rgba(255,255,255,0.04);color:var(--cream);cursor:pointer;transition:all .18s}
+.bb-onb-goal:hover{border-color:rgba(200,164,78,0.5)}
+.bb-onb-goal.is-sel{background:rgba(200,164,78,0.16);border-color:var(--gold);color:var(--gold)}
 .bb-coin-card .coin-left{display:flex;align-items:center;gap:10px;min-width:0}
 .bb-coin-card .coin-ico{
   width:32px;height:32px;border-radius:50%;
@@ -3209,6 +3323,24 @@ body.admin-dashboard-open .admin-ai-wa-fab-wrap{display:flex}
 .bb-access-reset{background:transparent;border:1px solid rgba(255,255,255,0.16);color:var(--muted);padding:6px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-family:inherit;transition:all .15s}
 .bb-access-reset:hover{color:var(--gold);border-color:rgba(200,164,78,0.4)}
 .bb-access-card-actions{display:flex;justify-content:flex-end;margin-top:14px}
+.bb-member-ai{margin-top:12px;border-top:1px dashed rgba(255,255,255,0.08);padding-top:6px}
+.bb-member-ai-summary{cursor:pointer;list-style:none;font-weight:600;color:var(--gold);font-size:12.5px;letter-spacing:.02em;padding:8px 2px;display:flex;align-items:center;gap:6px;user-select:none}
+.bb-member-ai-summary::-webkit-details-marker{display:none}
+.bb-member-ai-summary::before{content:'▸';display:inline-block;transition:transform .15s ease;font-size:11px;opacity:.8}
+.bb-member-ai[open] .bb-member-ai-summary::before{transform:rotate(90deg)}
+.bb-member-ai-body{padding-top:4px}
+/* Members tab (merged memberships + AI access) — phone polish */
+@media(max-width:600px){
+  .bb-access-card{padding:16px 14px;border-radius:14px}
+  .bb-access-card-actions{justify-content:stretch}
+  .bb-access-card-actions>*{flex:1 1 auto;text-align:center;justify-content:center}
+  .bb-access-card-actions #bb-mem-term-,.bb-access-card-actions select{flex:1 1 100%}
+  .bb-access-card-actions select[id^="bb-mem-term-"]{flex:1 1 100%}
+  .bb-access-row-controls{gap:10px}
+  .bb-access-limit input{width:64px}
+  .bb-member-ai-summary{padding:10px 2px;font-size:13px}
+  .bb-membership-stats>div{flex:1 1 calc(50% - 10px);min-width:0!important}
+}
 .bb-access-badge{display:inline-block;padding:3px 9px;border-radius:999px;font-size:10.5px;font-weight:600;letter-spacing:.04em;text-transform:uppercase}
 .bb-access-badge-ok{background:rgba(46,170,90,0.15);color:#5bd089;border:1px solid rgba(46,170,90,0.3)}
 .bb-access-badge-trial{background:rgba(200,164,78,0.12);color:var(--gold);border:1px solid rgba(200,164,78,0.3)}
@@ -3410,6 +3542,13 @@ body.admin-dashboard-open .admin-ai-wa-fab-wrap{display:flex}
 .micro-goal-field label{font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--muted)}
 .micro-goal-field input{width:100%;padding:10px 14px;border:1px solid var(--bdr);border-radius:8px;background:rgba(0,0,0,0.3);color:var(--cream);font-size:14px}
 .micro-goal-field input::placeholder{color:var(--muted)}
+/* +/- steppers for frictionless daily logging */
+.bb-stepper{display:flex;align-items:stretch;gap:0;border:1px solid var(--bdr);border-radius:8px;background:rgba(0,0,0,0.3);overflow:hidden}
+.bb-stepper input{flex:1;min-width:0;border:none!important;border-radius:0!important;background:transparent!important;text-align:center;padding:10px 4px!important;-moz-appearance:textfield}
+.bb-stepper input::-webkit-outer-spin-button,.bb-stepper input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.bb-step-btn{flex:0 0 auto;width:38px;border:none;background:rgba(200,164,78,0.1);color:var(--gold);font-size:20px;font-weight:700;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;touch-action:manipulation;transition:background .15s}
+.bb-step-btn:active{background:rgba(200,164,78,0.28)}
+.bb-step-btn:disabled{opacity:.4;cursor:not-allowed}
 .micro-goals-submit{width:100%;padding:12px;background:var(--goldg);border:none;border-radius:8px;color:var(--black);font-weight:700;font-size:13px;letter-spacing:1px;cursor:pointer;transition:opacity .2s,transform .1s}
 .micro-goals-submit:hover{opacity:.92}
 .micro-goals-submit:active{transform:scale(0.97);opacity:.85;transition:transform .08s,opacity .08s}
@@ -3433,6 +3572,7 @@ body.admin-dashboard-open .admin-ai-wa-fab-wrap{display:flex}
 .user-bottom-nav-item:hover,.user-bottom-nav-item:focus{color:var(--cream);outline:none}
 .user-bottom-nav-item.active{color:var(--gold)}
 .user-bottom-nav-item.active::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:24px;height:3px;background:var(--gold);border-radius:2px}
+.user-bottom-nav-badge{position:absolute;top:8px;left:calc(50% + 8px);width:9px;height:9px;border-radius:50%;background:#ff5c5c;border:2px solid var(--black,#0a0a0a);box-shadow:0 0 0 1px rgba(255,92,92,0.4)}
 .user-bottom-nav-icon{display:flex;align-items:center;justify-content:center;width:24px;height:24px;font-size:20px;line-height:1;margin-bottom:4px;flex-shrink:0}
 .user-bottom-nav-label{display:block;font-size:11px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;text-align:center;min-height:14px}
 /* Breadcrumbs */
@@ -5427,17 +5567,56 @@ body.admin-dashboard-open .admin-ai-wa-fab-wrap{display:flex}
         <div id="welcomeAvatarPlaceholder" class="user-welcome-avatar-placeholder"><svg viewBox="0 0 24 24" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
         <h1><span class="welcome-label">Welcome</span><span class="welcome-name" id="userWelcomeName">User</span></h1>
         <p class="user-welcome-tag">Tribe Elite Member</p>
-        <div class="bb-coin-card" id="bbCoinCardMobile">
-          <div class="coin-left">
-            <span class="coin-ico" aria-hidden="true">◉</span>
-            <div class="coin-copy">
-              <div class="coin-title">Gold Coins</div>
-              <div class="coin-balance" id="bbCoinBalanceMobile">—</div>
-              <div class="coin-sub" id="bbCoinSubMobile">Tracking your consistency</div>
+
+        <!-- ===== Unified TODAY hero (the daily loop at a glance) ===== -->
+        <section class="bb-today" id="bbTodayHero" aria-label="Today" hidden>
+          <div class="bb-today-top">
+            <div class="bb-today-avatar" id="bbPulseAvatar" role="img" aria-label="Your profile photo"></div>
+            <div class="bb-today-greet">
+              <p class="bb-today-eyebrow" id="bbTodayGreeting">Welcome</p>
+              <p class="bb-today-name" id="bbTodayName">—</p>
+              <p class="bb-today-tag">⭐ Tribe Elite Member</p>
+              <p class="bb-today-sub" id="bbTodayDate"></p>
             </div>
           </div>
-          <button type="button" class="coin-btn" onclick="bbOpenCoinHistory()">Activity</button>
-        </div>
+          <div class="bb-today-stats">
+            <span class="bb-today-pill bb-today-pill--streak" id="bbTodayStreakPill" title="Daily check-in streak">🔥 <b id="bbTodayStreakNum">0</b> <i>streak</i></span>
+            <button type="button" class="bb-today-pill bb-today-pill--coin" id="bbTodayCoinPill" onclick="bbOpenCoinHistory()" title="Gold coins — tap for activity">◉ <b id="bbTodayCoinNum">0</b> <i>coins</i></button>
+            <button type="button" class="bb-today-pill bb-today-pill--freeze" id="bbTodayFreezeBtn" onclick="bbUseStreakFreeze()" title="Protect your streak across a missed day (1/month)" hidden>🧊 Freeze</button>
+          </div>
+          <div class="bb-pulse-score">
+            <button type="button" class="bb-today-ring bb-pulse-ring" id="bbTodayRingBtn" onclick="bbTodayFocusChecklist()" aria-label="Your weekly score and today's progress">
+              <svg viewBox="0 0 120 120" class="bb-today-ring-svg" aria-hidden="true">
+                <defs>
+                  <linearGradient id="bbTodayGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#c8a44e"></stop><stop offset="1" stop-color="#f7dd93"></stop></linearGradient>
+                  <linearGradient id="bbPulseDayGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3fa45f"></stop><stop offset="1" stop-color="#6fe09a"></stop></linearGradient>
+                </defs>
+                <circle class="bb-today-ring-track" cx="60" cy="60" r="52"></circle>
+                <circle class="bb-today-ring-fill" id="bbTodayRingFill" cx="60" cy="60" r="52"></circle>
+                <circle class="bb-pulse-ring-track2" cx="60" cy="60" r="38"></circle>
+                <circle class="bb-pulse-ring-fill2" id="bbPulseDayFill" cx="60" cy="60" r="38"></circle>
+              </svg>
+              <span class="bb-today-ring-center"><b id="bbTodayRingScore">0</b><em>score</em><i id="bbPulseTodayMini">0/6 today</i></span>
+            </button>
+            <div class="bb-pulse-meta">
+              <span class="bb-pulse-kicker">BodyBank Score</span>
+              <span class="bb-pulse-trend" id="bbPulseTrend">—</span>
+              <span class="bb-pulse-week" id="bbPulseWeek"></span>
+              <div class="bb-pulse-scbtns">
+                <button type="button" onclick="openScorecardBreakdownModal()">Breakdown</button>
+                <button type="button" onclick="handleScorecardLeaderboardCta()">Leaderboard</button>
+                <button type="button" class="bb-share" onclick="shareScorecardImage()">Share</button>
+              </div>
+            </div>
+          </div>
+          <div class="bb-pulse-sec-label">This week · pillars</div>
+          <div class="bb-pulse-pillars" id="bbPulsePillars"></div>
+          <div class="bb-pulse-sec-label">Today's habits</div>
+          <div class="bb-pulse-habits" id="bbPulseHabits"></div>
+          <div class="bb-pulse-actions" id="bbPulseActions"></div>
+          <button type="button" class="bb-today-meta" id="bbTodayNextCall" onclick="switchUserTab('contact')" hidden></button>
+          <p class="bb-today-week" id="bbTodayWeek" hidden></p>
+        </section>
 
         <div class="push-enable-wrap" id="pushEnableWrap">
           <p>Get workout &amp; check-in reminders, and know when your Lifestyle Manager replies.</p>
@@ -5470,23 +5649,8 @@ body.admin-dashboard-open .admin-ai-wa-fab-wrap{display:flex}
           </div>
         </div>
 
-        <!-- Today dashboard -->
+        <!-- Today dashboard (the 3 status cards are now folded into the Today hero above) -->
         <div class="today-dash" id="todayDash">
-          <div class="today-row">
-            <div class="today-card" onclick="switchUserTab('messages');return false">
-              <h3>Last message</h3>
-              <p id="todayLastMsg" class="val empty">—</p>
-            </div>
-            <div class="today-card" onclick="switchUserTab('contact');return false">
-              <h3>Next call</h3>
-              <p id="todayNextCall" class="val empty">—</p>
-            </div>
-            <div class="today-card action" id="todayCheckinCard" onclick="switchUserTab('checkin');return false" style="display:none">
-              <h3>Pending</h3>
-              <p class="val" style="color:var(--gold)">Sunday check-in due</p>
-            </div>
-          </div>
-
           <!-- Micro-goals: daily check-in + streaks -->
           <div class="micro-goals-wrap">
             <div class="streak-at-risk-banner" id="streakAtRiskBanner" style="display:none">
@@ -5506,25 +5670,41 @@ body.admin-dashboard-open .admin-ai-wa-fab-wrap{display:flex}
                 <button type="button" class="bb-inactivity-risk__btn" id="inactivityAtRiskBtn" onclick="switchUserTab('checkin')">Open check-in</button>
               </div>
             </div>
-            <h3>Daily check-in <span class="streak-badge" id="microStreakBadge">0 day streak</span></h3>
+            <h3>Daily check-in</h3>
             <div class="streak-timer" id="microStreakTimer" style="display:none"><span class="streak-timer-icon">⏱</span><span id="microStreakTimerText"></span></div>
             <form id="microGoalsForm" onsubmit="submitMicroGoals();return false">
               <div class="micro-goals-grid">
                 <div class="micro-goal-field">
                   <label>Steps</label>
-                  <input type="number" id="microSteps" placeholder="e.g. 8000" min="0">
+                  <div class="bb-stepper">
+                    <button type="button" class="bb-step-btn" onclick="bbStep('microSteps',-500,0,100000)" aria-label="Decrease steps">−</button>
+                    <input type="number" id="microSteps" placeholder="e.g. 8000" min="0">
+                    <button type="button" class="bb-step-btn" onclick="bbStep('microSteps',500,0,100000)" aria-label="Increase steps">+</button>
+                  </div>
                 </div>
                 <div class="micro-goal-field">
                   <label>Water (L)</label>
-                  <input type="number" id="microWater" placeholder="e.g. 2.5" min="0" max="15" step="0.1" inputmode="decimal">
+                  <div class="bb-stepper">
+                    <button type="button" class="bb-step-btn" onclick="bbStep('microWater',-0.25,0,15)" aria-label="Decrease water">−</button>
+                    <input type="number" id="microWater" placeholder="e.g. 2.5" min="0" max="15" step="0.1" inputmode="decimal">
+                    <button type="button" class="bb-step-btn" onclick="bbStep('microWater',0.25,0,15)" aria-label="Increase water">+</button>
+                  </div>
                 </div>
                 <div class="micro-goal-field">
                   <label>Protein (g)</label>
-                  <input type="number" id="microProtein" placeholder="e.g. 120" min="0">
+                  <div class="bb-stepper">
+                    <button type="button" class="bb-step-btn" onclick="bbStep('microProtein',-10,0,500)" aria-label="Decrease protein">−</button>
+                    <input type="number" id="microProtein" placeholder="e.g. 120" min="0">
+                    <button type="button" class="bb-step-btn" onclick="bbStep('microProtein',10,0,500)" aria-label="Increase protein">+</button>
+                  </div>
                 </div>
                 <div class="micro-goal-field">
                   <label>Sleep (hrs)</label>
-                  <input type="number" id="microSleep" placeholder="e.g. 7.5" min="0" step="0.5">
+                  <div class="bb-stepper">
+                    <button type="button" class="bb-step-btn" onclick="bbStep('microSleep',-0.5,0,24)" aria-label="Decrease sleep">−</button>
+                    <input type="number" id="microSleep" placeholder="e.g. 7.5" min="0" step="0.5">
+                    <button type="button" class="bb-step-btn" onclick="bbStep('microSleep',0.5,0,24)" aria-label="Increase sleep">+</button>
+                  </div>
                 </div>
               </div>
               <button type="submit" class="micro-goals-submit">Save today</button>
@@ -5555,15 +5735,8 @@ body.admin-dashboard-open .admin-ai-wa-fab-wrap{display:flex}
           </div>
         </div>
 
+        <h3 class="welcome-explore-title">Explore</h3>
         <div class="welcome-cards">
-          <div class="welcome-card" onclick="switchUserTab('workout')"><div class="wc-icon-wrap"><svg viewBox="0 0 24 24"><path d="M2 12h4V8H2v4zM18 12h4V8h-4v4zM6 12h12"/></svg></div><div class="wc-copy"><div class="wc-title">My Workout</div><div class="wc-desc">Log sessions, lifts, and body metrics</div></div></div>
-          <div class="welcome-card" onclick="switchUserTab('body')"><div class="wc-icon-wrap"><svg viewBox="0 0 24 24"><path d="M21 19V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2z"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div><div class="wc-copy"><div class="wc-title">My Body</div><div class="wc-desc">Photos &amp; measurements over time</div></div></div>
-          <div class="welcome-card" onclick="switchUserTab('programs')"><div class="wc-icon-wrap"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg></div><div class="wc-copy"><div class="wc-title">My Programs</div><div class="wc-desc">PDFs assigned by your manager</div></div></div>
-          <div class="welcome-card" onclick="switchUserTab('checkin')"><div class="wc-icon-wrap"><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div><div class="wc-copy"><div class="wc-title sc-style">Check-in</div><div class="wc-desc">Daily &amp; Sunday check-ins</div></div></div>
-          <div class="welcome-card" onclick="switchUserTab('messages')"><div class="wc-icon-wrap"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><div class="wc-copy"><div class="wc-title">Messages</div><div class="wc-desc">Chat with your Lifestyle Manager</div></div></div>
-          <div class="welcome-card" onclick="switchUserTab('profile')"><div class="wc-icon-wrap"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div><div class="wc-copy"><div class="wc-title">My Profile</div><div class="wc-desc">View and update your information</div></div></div>
-          <div class="welcome-card" onclick="window.location.href='/ai-trainer.html?v=2'"><div class="wc-icon-wrap"><svg viewBox="0 0 24 24"><path d="M12 3a2 2 0 0 1 2 2v2h1.8A3.2 3.2 0 0 1 19 10.2V16a3 3 0 0 1-3 3h-1v2h-2v-2h-2v2H9v-2H8a3 3 0 0 1-3-3v-5.8A3.2 3.2 0 0 1 8.2 7H10V5a2 2 0 0 1 2-2z"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/></svg></div><div class="wc-copy"><div class="wc-title">AI Trainer</div><div class="wc-desc">Train live with AI pose feedback</div></div></div>
-          <div class="welcome-card" onclick="switchUserTab('contact')"><div class="wc-icon-wrap"><svg viewBox="0 0 24 24"><path d="M3 3h18v18H3V3zm2 2v14h14V5H5zm2 2h10v2H7V7zm0 4h10v2H7v-2zm0 4h6v2H7v-2z"/></svg></div><div class="wc-copy"><div class="wc-title">Contact Us</div><div class="wc-desc">Send a one-off message</div></div></div>
           <div class="welcome-card wc-muscle" onclick="switchUserTab('muscle')">
             <div class="wc-icon-wrap wc-muscle-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -5578,6 +5751,8 @@ body.admin-dashboard-open .admin-ai-wa-fab-wrap{display:flex}
               <div class="wc-muscle-tag">NEW</div>
             </div>
           </div>
+          <div class="welcome-card" onclick="switchUserTab('body')"><div class="wc-icon-wrap"><svg viewBox="0 0 24 24"><path d="M21 19V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2z"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div><div class="wc-copy"><div class="wc-title">My Body</div><div class="wc-desc">Photos &amp; measurements over time</div></div></div>
+          <div class="welcome-card" onclick="switchUserTab('elitefeed')"><div class="wc-icon-wrap"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3"/><circle cx="12" cy="13" r="3.2"/><path d="M8 5l1.5-2h5L16 5"/></svg></div><div class="wc-copy"><div class="wc-title">Elite Feed</div><div class="wc-desc">Wins &amp; transformations from the tribe</div></div></div>
         </div>
 
       </div>
@@ -6336,25 +6511,26 @@ body.admin-dashboard-open .admin-ai-wa-fab-wrap{display:flex}
   </div>
   <nav class="user-bottom-nav" id="userBottomNav" aria-label="User sections">
     <div class="user-bottom-nav-inner">
-      <button type="button" class="user-bottom-nav-item active" data-tab="home" onclick="switchUserTab('home')" aria-label="Home">
+      <button type="button" class="user-bottom-nav-item active" data-tab="home" onclick="switchUserTab('home')" aria-label="Today">
         <span class="user-bottom-nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20a1 1 0 0 0 1 1h3v-6h6v6h3a1 1 0 0 0 1-1V9.5"/></svg></span>
-        <span class="user-bottom-nav-label">Home</span>
+        <span class="user-bottom-nav-label">Today</span>
       </button>
-      <button type="button" class="user-bottom-nav-item" data-tab="workout" onclick="switchUserTab('workout')" aria-label="Workout">
+      <button type="button" class="user-bottom-nav-item" data-tab="workout" onclick="switchUserTab('workout')" aria-label="Train">
         <span class="user-bottom-nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1.5 12h2M20.5 12h2"/><rect x="3.5" y="8" width="3.2" height="8" rx="1.1"/><rect x="17.3" y="8" width="3.2" height="8" rx="1.1"/><path d="M6.7 12h10.6"/></svg></span>
-        <span class="user-bottom-nav-label">Workout</span>
-      </button>
-      <button type="button" class="user-bottom-nav-item" data-tab="programs" onclick="switchUserTab('programs')" aria-label="Programs">
-        <span class="user-bottom-nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3.2a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1V4"/><path d="M9 10h6M9 13.5h6M9 17h3.5"/></svg></span>
-        <span class="user-bottom-nav-label">Programs</span>
+        <span class="user-bottom-nav-label">Train</span>
       </button>
       <button type="button" class="user-bottom-nav-item" data-tab="checkin" onclick="switchUserTab('checkin')" aria-label="Check-in">
         <span class="user-bottom-nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="16" rx="2.2"/><path d="M3.5 9.5h17M8 3v4M16 3v4"/><path d="M8.8 15.2l2.1 2.1 4.3-4.3"/></svg></span>
         <span class="user-bottom-nav-label">Check-in</span>
       </button>
-      <button type="button" class="user-bottom-nav-item" data-tab="messages" onclick="switchUserTab('messages')" aria-label="Messages">
+      <button type="button" class="user-bottom-nav-item" data-tab="messages" onclick="switchUserTab('messages')" aria-label="Coach">
         <span class="user-bottom-nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a7.5 7.5 0 0 1-10.9 6.7L4 20l1.85-5.05A7.5 7.5 0 1 1 21 11.5Z"/></svg></span>
-        <span class="user-bottom-nav-label">Messages</span>
+        <span class="user-bottom-nav-badge" id="userCoachNavBadge" hidden></span>
+        <span class="user-bottom-nav-label">Coach</span>
+      </button>
+      <button type="button" class="user-bottom-nav-item" data-tab="profile" onclick="switchUserTab('profile')" aria-label="Profile">
+        <span class="user-bottom-nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1"/></svg></span>
+        <span class="user-bottom-nav-label">Profile</span>
       </button>
     </div>
   </nav>
@@ -6498,7 +6674,6 @@ body.admin-dashboard-open .admin-ai-wa-fab-wrap{display:flex}
     <div class="admin-tabs" id="adminTabs">
       <div class="admin-tab" data-tab="requests" onclick="switchTab('requests')">Audit forms</div>
       <div class="admin-tab" data-tab="leads" onclick="switchTab('leads')">Leads pipeline</div>
-      <div class="admin-tab" data-tab="signups" onclick="switchTab('signups')">Pending Sign-ups</div>
       <div class="admin-tab" data-tab="tribe" onclick="switchTab('tribe')">Client Board</div>
       <div class="admin-tab" data-tab="workouts" onclick="switchTab('workouts')">Workouts</div>
       <div class="admin-tab" data-tab="messages" onclick="switchTab('messages')">Messages</div>
@@ -6514,7 +6689,7 @@ body.admin-dashboard-open .admin-ai-wa-fab-wrap{display:flex}
       <div class="admin-tab" data-tab="leaderboards" onclick="switchTab('leaderboards')">Leader Boards</div>
       <div class="admin-tab" data-tab="nutrition" onclick="switchTab('nutrition')">Nutrition AI</div>
       <div class="admin-tab" data-tab="blood" onclick="switchTab('blood')">Blood Reports</div>
-      <div class="admin-tab" data-tab="memberships" onclick="switchTab('memberships')">Memberships</div>
+      <div class="admin-tab" data-tab="memberships" onclick="switchTab('memberships')">Members</div>
     </div>
 
     <div class="admin-tab-content-wrap">
@@ -6563,7 +6738,7 @@ body.admin-dashboard-open .admin-ai-wa-fab-wrap{display:flex}
             <div class="stat-sub up" id="stat-checkins-sub">Loading...</div>
           </div>
           <div class="bb-stat-card">
-            <div class="stat-label">Pending Approvals</div>
+            <div class="stat-label">Trials</div>
             <div class="stat-number" id="stat-pending">—</div>
             <div class="stat-sub down" id="stat-pending-sub">Loading...</div>
           </div>
@@ -6652,7 +6827,6 @@ body.admin-dashboard-open .admin-ai-wa-fab-wrap{display:flex}
 
         <div class="bb-quick-actions">
           <a class="bb-quick-btn" href="#" onclick="switchTab('leads');return false"><span class="btn-icon">🎯</span>Leads</a>
-          <a class="bb-quick-btn" href="#" onclick="switchTab('signups');return false"><span class="btn-icon">👤</span>Approve Sign-ups</a>
           <a class="bb-quick-btn" href="#" onclick="switchTab('tribe');return false"><span class="btn-icon">👥</span>Client Board</a>
           <a class="bb-quick-btn" href="#" onclick="switchTab('requests');return false"><span class="btn-icon">📋</span>Audit Forms</a>
           <a class="bb-quick-btn" href="#" onclick="switchTab('dailycheckin');return false"><span class="btn-icon">📅</span>Daily Check-ins</a>
@@ -6660,8 +6834,7 @@ body.admin-dashboard-open .admin-ai-wa-fab-wrap{display:flex}
           <a class="bb-quick-btn" href="#" onclick="switchTab('leaderboards');return false"><span class="btn-icon">🏆</span>Leader Boards</a>
           <a class="bb-quick-btn" href="#" onclick="switchTab('nutrition');return false"><span class="btn-icon">🥗</span>Nutrition AI</a>
           <a class="bb-quick-btn" href="#" onclick="switchTab('blood');return false"><span class="btn-icon">🩺</span>Blood Reports</a>
-          <a class="bb-quick-btn" href="#" onclick="switchTab('memberships');return false"><span class="btn-icon">💳</span>Memberships</a>
-          <a class="bb-quick-btn" href="#" onclick="switchTab('accesscontrol');return false"><span class="btn-icon">🔐</span>Access Control</a>
+          <a class="bb-quick-btn" href="#" onclick="switchTab('memberships');return false"><span class="btn-icon">💳</span>Members</a>
           <a class="bb-quick-btn" href="#" onclick="switchToSection('analytics');return false"><span class="btn-icon">📈</span>Analytics</a>
           <a class="bb-quick-btn" href="#" onclick="toggleAdminAiAssistPanel();return false"><span class="btn-icon">💡</span>AI Assist</a>
         </div>
@@ -6674,7 +6847,7 @@ body.admin-dashboard-open .admin-ai-wa-fab-wrap{display:flex}
         <div class="admin-summary-cards">
           <div class="admin-summary-card" onclick="switchTab('clientprogress');return false" role="button" tabindex="0" aria-label="Open Client Progress"><span class="admin-summary-lbl">MEMBERS</span><span class="admin-summary-num num-gold" id="dashMembers">24</span></div>
           <div class="admin-summary-card" onclick="switchTab('dailycheckin');return false" role="button" tabindex="0" aria-label="Open Daily Check-In"><span class="admin-summary-lbl">DAILY CHECK-IN</span><span class="admin-summary-num num-green" id="dashCheckins">18</span></div>
-          <div class="admin-summary-card" onclick="switchTab('signups');return false" role="button" tabindex="0" aria-label="Open Pending Sign-ups"><span class="admin-summary-lbl">PENDING</span><span class="admin-summary-num num-orange" id="dashPending">3</span></div>
+          <div class="admin-summary-card" onclick="switchTab('memberships');return false" role="button" tabindex="0" aria-label="Open Memberships call queue"><span class="admin-summary-lbl">TRIALS</span><span class="admin-summary-num num-orange" id="dashTrials">0</span></div>
           <div class="admin-summary-card" onclick="switchTab('messages');return false" role="button" tabindex="0" aria-label="Open Messages"><span class="admin-summary-lbl">MESSAGES</span><span class="admin-summary-num num-pink" id="dashMessages">2</span></div>
         </div>
 
@@ -6696,7 +6869,6 @@ body.admin-dashboard-open .admin-ai-wa-fab-wrap{display:flex}
           <h3 class="admin-qa-title">QUICK ACCESS</h3>
           <div class="admin-qa-grid">
             <a class="admin-qa-btn" href="#" onclick="switchTab('leads');return false"><span class="admin-qa-icon">&#127919;</span>Leads</a>
-            <a class="admin-qa-btn" href="#" onclick="switchTab('signups');return false"><span class="admin-qa-icon">&#128100;</span>Sign-ups</a>
             <a class="admin-qa-btn" href="#" onclick="switchTab('sundaycheckin');return false"><span class="admin-qa-icon">&#128197;</span>Check-Ins</a>
             <a class="admin-qa-btn" href="#" onclick="switchTab('dailycompliance');return false"><span class="admin-qa-icon">📊</span>Daily Compliance</a>
             <a class="admin-qa-btn" href="#" onclick="switchTab('workouts');return false"><span class="admin-qa-icon">&#127939;</span>Workouts</a>
@@ -6707,8 +6879,7 @@ body.admin-dashboard-open .admin-ai-wa-fab-wrap{display:flex}
             <a class="admin-qa-btn" href="#" onclick="switchTab('leaderboards');return false"><span class="admin-qa-icon">🏆</span>Leader boards</a>
             <a class="admin-qa-btn" href="#" onclick="switchTab('nutrition');return false"><span class="admin-qa-icon">🥗</span>Nutrition report</a>
             <a class="admin-qa-btn" href="#" onclick="switchTab('blood');return false"><span class="admin-qa-icon">🩺</span>Blood reports</a>
-            <a class="admin-qa-btn" href="#" onclick="switchTab('memberships');return false"><span class="admin-qa-icon">💳</span>Memberships</a>
-            <a class="admin-qa-btn" href="#" onclick="switchTab('accesscontrol');return false"><span class="admin-qa-icon">🔐</span>Access Control</a>
+            <a class="admin-qa-btn" href="#" onclick="switchTab('memberships');return false"><span class="admin-qa-icon">💳</span>Members</a>
             <a class="admin-qa-btn" href="#" onclick="switchToSection('analytics');return false"><span class="admin-qa-icon">&#128202;</span>Analytics</a>
           </div>
         </div>
@@ -6759,11 +6930,6 @@ body.admin-dashboard-open .admin-ai-wa-fab-wrap{display:flex}
       <div class="admin-section-page">
         <div class="admin-section-back"><button type="button" class="admin-back-btn" onclick="switchToSection('dashboard');return false">← Back</button></div>
         <div class="admin-section-cards">
-          <a class="admin-section-card" href="#" onclick="switchTab('signups');return false">
-            <span class="admin-section-card-icon" aria-hidden="true">&#128231;</span>
-            <span class="admin-section-card-title">Pending Sign-ups</span>
-            <span class="admin-section-card-desc">Review and approve new client registrations</span>
-          </a>
           <a class="admin-section-card" href="#" onclick="switchTab('tribe');return false">
             <span class="admin-section-card-icon" aria-hidden="true">&#128101;</span>
             <span class="admin-section-card-title">Tribe</span>
@@ -6908,19 +7074,6 @@ body.admin-dashboard-open .admin-ai-wa-fab-wrap{display:flex}
         <tbody id="requestsBody">
           <tr><td colspan="5" style="text-align:center;color:var(--muted);padding:24px">Loading…</td></tr>
         </tbody>
-      </table></div>
-      <div class="admin-h-scroll-ctrl" aria-label="Scroll table horizontally">
-        <button type="button" class="admin-h-scroll-btn" data-dir="-1" aria-label="Scroll left">←</button>
-        <span class="admin-h-scroll-label">Scroll to see all columns</span>
-        <button type="button" class="admin-h-scroll-btn" data-dir="1" aria-label="Scroll right">→</button>
-      </div>
-    </div>
-
-    <!-- TAB: Pending Sign-ups -->
-    <div class="admin-tab-content" id="tab-signups">
-      <div class="admin-table-wrap"><table class="admin-table">
-        <thead><tr><th>Name</th><th>Email</th><th>Signed up</th><th>Actions</th></tr></thead>
-        <tbody id="signupsBody"><tr><td colspan="4" style="text-align:center;color:var(--muted);padding:24px">Loading…</td></tr></tbody>
       </table></div>
       <div class="admin-h-scroll-ctrl" aria-label="Scroll table horizontally">
         <button type="button" class="admin-h-scroll-btn" data-dir="-1" aria-label="Scroll left">←</button>
@@ -7622,33 +7775,11 @@ body.admin-dashboard-open .admin-ai-wa-fab-wrap{display:flex}
       <div id="adminBloodReportsList" class="admin-blood-reports-wrap" style="overflow-x:auto;-webkit-overflow-scrolling:touch"></div>
     </div>
 
-    <div class="admin-tab-content admin-access-control-page" id="tab-accesscontrol">
-      <div class="admin-nutrition-header">
-        <div>
-          <h3>Access Control</h3>
-          <p class="form-hint" style="margin:4px 0 0">Control per-user access to <strong style="color:var(--gold)">Nutrition AI</strong> and <strong style="color:var(--gold)">AI Trainer</strong>. Toggle <strong>Unlimited</strong> for paid clients, or set a trial limit for users who are evaluating. When a trial limit is reached, the user is blocked and asked to contact you.</p>
-        </div>
-        <div class="admin-nutrition-controls">
-          <input type="search" id="adminAccessSearch" placeholder="Search by name or email" oninput="renderAdminAccessControl()" style="background:var(--surface,#161a1e);border:1px solid rgba(255,255,255,0.1);color:var(--text,#f0ede8);padding:8px 12px;border-radius:8px;font-size:13px;min-width:220px" aria-label="Search users">
-          <select id="adminAccessFilter" onchange="renderAdminAccessControl()" style="background:var(--surface,#161a1e);border:1px solid rgba(255,255,255,0.1);color:var(--text,#f0ede8);padding:8px 12px;border-radius:8px;font-size:13px" aria-label="Filter">
-            <option value="all">All users</option>
-            <option value="unlimited">Unlimited (both)</option>
-            <option value="trial">On a trial limit</option>
-            <option value="blocked">Trial exhausted</option>
-          </select>
-          <button type="button" class="form-submit" style="width:auto;padding:10px 18px;margin:0" onclick="loadAdminAccessControl()">Refresh</button>
-        </div>
-      </div>
-      <div id="adminAccessControlList" style="margin-top:18px">
-        <p class="form-hint" style="padding:24px;margin:0">Loading…</p>
-      </div>
-    </div>
-
     <div class="admin-tab-content admin-memberships-page" id="tab-memberships">
       <div class="admin-nutrition-header">
         <div>
-          <h3>Memberships <span style="font-size:12px;color:var(--muted);font-weight:600">trials · activations · renewals</span></h3>
-          <p class="form-hint" style="margin:4px 0 0">New sign-ups get <strong style="color:var(--gold)">instant access on a free trial</strong>. Call them, collect payment your way, then hit <strong style="color:var(--gold)">Activate</strong> and pick a plan length. Anyone whose trial or plan lapses is locked out automatically until you renew them.</p>
+          <h3>Members <span style="font-size:12px;color:var(--muted);font-weight:600">trials · activations · renewals · AI access</span></h3>
+          <p class="form-hint" style="margin:4px 0 0">New sign-ups get <strong style="color:var(--gold)">instant access on a free trial</strong>. Call them, collect payment your way, then hit <strong style="color:var(--gold)">Activate</strong> and pick a plan length. Lapsed members are locked out automatically. Expand <strong>AI access</strong> on any card to set Nutrition AI / AI Trainer limits.</p>
         </div>
         <div class="admin-nutrition-controls">
           <input type="search" id="adminMembershipSearch" placeholder="Search by name, email or phone" oninput="renderAdminMemberships()" style="background:var(--surface,#161a1e);border:1px solid rgba(255,255,255,0.1);color:var(--text,#f0ede8);padding:8px 12px;border-radius:8px;font-size:13px;min-width:220px" aria-label="Search members">
@@ -7659,6 +7790,7 @@ body.admin-dashboard-open .admin-ai-wa-fab-wrap{display:flex}
             <option value="active">Active (paid)</option>
             <option value="expired">Expired</option>
             <option value="canceled">Locked</option>
+            <option value="ai_limited">AI: limited</option>
           </select>
           <button type="button" class="form-submit" style="width:auto;padding:10px 18px;margin:0" onclick="loadAdminMemberships()">Refresh</button>
           <button type="button" class="form-submit" style="width:auto;padding:10px 18px;margin:0;background:transparent;border:1px solid rgba(255,255,255,0.18)" onclick="runMembershipLifecycleNow()" title="Expire lapsed members, send reminders, refresh the call queue">Run checks now</button>
@@ -7763,7 +7895,7 @@ body.admin-dashboard-open .admin-ai-wa-fab-wrap{display:flex}
           <button class="ai-prompt-chip" data-send="Give me a full business overview">🏢 Business Overview</button>
           <button class="ai-prompt-chip" data-send="How many active clients do I have?">👥 Active Clients</button>
           <button class="ai-prompt-chip" data-send="How many pending audit forms are there?">📋 Pending Audits</button>
-          <button class="ai-prompt-chip" data-send="How many pending sign-ups are waiting for approval?">🔔 Pending Sign-ups</button>
+          <button class="ai-prompt-chip" data-send="How many members are on a trial right now?">🔔 Trials</button>
           <button class="ai-prompt-chip" data-send="What is the overall compliance rate across all clients this month?">📊 Overall Compliance</button>
           <button class="ai-prompt-chip" data-send="How many meetings are scheduled?">📅 Meetings</button>
         </div>
@@ -8367,16 +8499,6 @@ body.admin-dashboard-open .admin-ai-wa-fab-wrap{display:flex}
     <div class="bb-lead-modal-body" id="bbLeadModalBody">
       <p class="form-hint" style="padding:24px;text-align:center">Loading…</p>
     </div>
-  </div>
-</div>
-
-<!-- ADMIN: Sign-up Request View Modal -->
-<div class="modal-overlay view-detail-modal" id="signupViewModal" onclick="if(event.target===this)closeModal('signupViewModal')">
-  <div class="modal">
-    <button class="modal-close" onclick="closeModal('signupViewModal')">&times;</button>
-    <h2>Sign-up Request</h2>
-    <div class="view-detail-body" id="signupViewBody"></div>
-    <div class="view-detail-actions" id="signupViewActions"></div>
   </div>
 </div>
 
@@ -11165,11 +11287,11 @@ async function loadStats() {
   if (activeEl) activeEl.textContent = data.active_members ?? 0;
   const dashMembers = document.getElementById('dashMembers');
   const dashCheckins = document.getElementById('dashCheckins');
-  const dashPending = document.getElementById('dashPending');
+  const dashTrials = document.getElementById('dashTrials');
   const dashMessages = document.getElementById('dashMessages');
   if (dashMembers) dashMembers.textContent = data.active_members ?? 0;
   if (dashCheckins) dashCheckins.textContent = data.daily_checkins ?? 0;
-  if (dashPending) dashPending.textContent = data.pending_signups ?? 0;
+  if (dashTrials) dashTrials.textContent = data.trials ?? 0;
   if (dashMessages) dashMessages.textContent = data.messages ?? 0;
   const dateEl = document.getElementById('adminWelcomeDate');
   if (dateEl) {
@@ -11275,11 +11397,11 @@ async function bbRefreshDesktopAdminDashboard(statsData) {
   // Stats row
   bbSetText('stat-members', statsData.active_members ?? 0);
   bbSetText('stat-checkins', statsData.daily_checkins ?? 0);
-  bbSetText('stat-pending', statsData.pending_signups ?? 0);
+  bbSetText('stat-pending', statsData.trials ?? 0);
   bbSetText('stat-messages', statsData.messages ?? 0);
   bbSetText('stat-members-sub', 'Active tribe members');
   bbSetText('stat-checkins-sub', 'Total daily check-ins');
-  bbSetText('stat-pending-sub', 'Users awaiting approval');
+  bbSetText('stat-pending-sub', 'Members on a free trial');
   bbSetText('stat-messages-sub', 'Unread chat threads');
 
   // Today widget + popup auto-check are now run from loadStats() so they fire
@@ -11713,7 +11835,6 @@ function ensureAdminPanelRowOpenDelegation() {
     var oid = tr.getAttribute('data-open-id') || '';
     if (!kind || !oid) return;
     if (kind === 'audit') viewRequest(oid);
-    else if (kind === 'signup') viewSignupRequest(oid);
     else if (kind === 'sunday') viewSundayCheckin(oid);
     else if (kind === 'daily') viewDailyCheckin(oid);
     else if (kind === 'workout') viewAdminWorkout(oid);
@@ -11940,69 +12061,6 @@ async function removePart2Submission(id) {
   showPopup('Removed', 'Part-2 form has been removed.', '', 'OK');
   loadPart2Submissions();
   loadDashboard();
-}
-
-async function loadPendingSignups() {
-  const tbody = document.getElementById('signupsBody');
-  if (!tbody) return;
-  const data = await apiCall('GET', '/api/admin/pending-signups');
-  const list = data && !data.error && Array.isArray(data) ? data : [];
-  if (list.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:24px">No pending sign-ups.</td></tr>';
-    return;
-  }
-  tbody.innerHTML = list.map(u => {
-    const name = (u.first_name || '') + ' ' + (u.last_name || '').trim() || '-';
-    const date = u.created_at ? new Date(u.created_at).toLocaleString(undefined, { dateStyle: 'short', timeStyle: 'short' }) : '-';
-    const id = String(u.id || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'");
-    var oid = adminAttrId(u.id || '');
-    return '<tr class="admin-row-clickable" data-open-kind="signup" data-open-id="' + oid + '"><td data-label="Name">' + escapeHtml(name) + '</td><td data-label="Email">' + escapeHtml(u.email || '-') + '</td><td data-label="Signed up">' + date + '</td><td data-label="Actions"><button type="button" class="action-btn btn-view" onclick="event.stopPropagation();viewSignupRequest(\'' + id + '\')">View</button> <button type="button" class="action-btn btn-approve" onclick="event.stopPropagation();approveUser(\'' + id + '\')">Approve</button> <button type="button" class="action-btn btn-reject" onclick="event.stopPropagation();rejectUser(\'' + id + '\')">Reject</button></td></tr>';
-  }).join('');
-}
-
-async function viewSignupRequest(id) {
-  const r = await apiCall('GET', '/api/admin/pending-signup/' + id);
-  if (r && r.error) { showPopup('Error', r.error, '', 'OK', null, 'error'); return; }
-  const body = document.getElementById('signupViewBody');
-  const actions = document.getElementById('signupViewActions');
-  if (!body) return;
-  var _age = '';
-  if (r.dob) { try { var _bd = new Date(r.dob); var _ag = Math.floor((Date.now() - _bd.getTime()) / (365.25*24*3600*1000)); _age = ' (' + _ag + ' yrs)'; } catch(_){} }
-  body.innerHTML = _row('Name', (r.first_name || '') + ' ' + (r.last_name || '').trim()) +
-    _row('Email', r.email) + _row('Mobile', r.phone || '—') +
-    _row('DOB', r.dob ? (new Date(r.dob).toLocaleDateString(undefined,{year:'numeric',month:'short',day:'numeric'})) + _age : '—') +
-    _row('Gender', r.gender || '—') +
-    _row('Country', r.country || '—') +
-    _row('State / Province', r.state_province || '—') +
-    _row('City', r.city || '—') +
-    _row('Timezone', r.timezone || '—') +
-    _row('Requested', r.created_at ? new Date(r.created_at).toLocaleString() : '');
-  if (actions) {
-    const sid = String(r.id || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'");
-    actions.innerHTML = '<button class="action-btn btn-approve" onclick="closeModal(\'signupViewModal\');approveUser(\'' + sid + '\')">Approve</button><button class="action-btn btn-reject" onclick="closeModal(\'signupViewModal\');rejectUser(\'' + sid + '\')">Reject</button>';
-  }
-  openModal('signupViewModal');
-}
-
-async function approveUser(id) {
-  const res = await apiCall('POST', '/api/admin/approve-user/' + id);
-  if (res && res.error) { showPopup('Error', res.error, '', 'OK', null, 'error'); return; }
-  showPopup('Approved', 'User can now log in and has been added to Clients.', '', 'OK');
-  closeModal('signupViewModal');
-  loadPendingSignups();
-  loadTribe();
-  loadNotifications();
-  if (typeof loadDashboard === 'function') loadDashboard();
-}
-
-async function rejectUser(id) {
-  if (!confirm('Reject this sign-up request? The user will need to sign up again.')) return;
-  const res = await apiCall('POST', '/api/admin/reject-user/' + id);
-  if (res && res.error) { showPopup('Error', res.error, '', 'OK', null, 'error'); return; }
-  showPopup('Rejected', 'User has been rejected. They will need to sign up again to submit a new request.', '', 'OK');
-  closeModal('signupViewModal');
-  loadPendingSignups();
-  loadNotifications();
 }
 
 async function loadSundayCheckins() {
@@ -12479,22 +12537,30 @@ async function loadPart2Submissions() {
 // LEADS PIPELINE — kanban + table + detail modal + today widget
 // ════════════════════════════════════════════════════════════
 var BB_LEAD_STAGES = [
-  { id:'new_audit',       label:'New audit',        color:'#9ca3af', icon:'📥' },
-  { id:'whatsapp_sent',   label:'WhatsApp sent',    color:'#25d366', icon:'💬' },
-  { id:'in_conversation', label:'In conversation',  color:'#3b82f6', icon:'🗨️' },
-  { id:'part2_sent',      label:'Part-2 sent',      color:'#a855f7', icon:'📤' },
-  { id:'part2_received',  label:'Part-2 received',  color:'#8b5cf6', icon:'📋' },
-  { id:'call_proposed',   label:'Call proposed',    color:'#f59e0b', icon:'📞' },
-  { id:'call_scheduled',  label:'Call scheduled',   color:'#eab308', icon:'📅' },
-  { id:'call_done',       label:'Call done',        color:'#10b981', icon:'✓' },
-  { id:'payment_pending', label:'Payment pending',  color:'#f97316', icon:'💰' },
-  { id:'onboarded',       label:'Paid & onboarded', color:'#22c55e', icon:'🎉' },
-  { id:'lost',            label:'Lost / Cold',      color:'#ef4444', icon:'❌' }
+  { id:'new_audit', label:'New audit',       color:'#9ca3af', icon:'📥' },
+  { id:'contacted', label:'In conversation', color:'#3b82f6', icon:'💬' },
+  { id:'part2',     label:'Part-2',          color:'#a855f7', icon:'📋' },
+  { id:'call',      label:'Call',            color:'#eab308', icon:'📞' },
+  { id:'converted', label:'Converted',       color:'#22c55e', icon:'🎉' },
+  { id:'lost',      label:'Lost / Cold',     color:'#ef4444', icon:'❌' }
 ];
+// Legacy stage ids → streamlined ids, so any lead still carrying an old stage
+// (before the server migration runs) renders in the right column.
+var BB_LEAD_STAGE_ALIASES = {
+  whatsapp_sent:'contacted', in_conversation:'contacted',
+  part2_sent:'part2', part2_received:'part2',
+  call_proposed:'call', call_scheduled:'call', call_done:'call',
+  payment_pending:'converted', onboarded:'converted'
+};
+function bbNormalizeStage(id) {
+  var s = String(id || '').trim() || 'new_audit';
+  if (BB_LEAD_STAGE_MAP[s]) return s;
+  return BB_LEAD_STAGE_ALIASES[s] || 'new_audit';
+}
 var BB_LEAD_STAGE_MAP = (function(){ var m = {}; BB_LEAD_STAGES.forEach(function(s){ m[s.id] = s; }); return m; })();
 var bbLeadsState = { view: 'kanban', leads: [], byStage: {}, currentLeadId: null };
 
-function bbLeadStageMeta(id) { return BB_LEAD_STAGE_MAP[id] || BB_LEAD_STAGE_MAP.new_audit; }
+function bbLeadStageMeta(id) { return BB_LEAD_STAGE_MAP[bbNormalizeStage(id)] || BB_LEAD_STAGE_MAP.new_audit; }
 
 function bbLeadDaysSince(iso) {
   if (!iso) return 0;
@@ -12505,11 +12571,11 @@ function bbLeadDaysSince(iso) {
 
 function bbLeadIsStuck(lead) {
   if (!lead) return false;
-  var stage = lead.stage || 'new_audit';
+  var stage = bbNormalizeStage(lead.stage);
   var days = bbLeadDaysSince(lead.stage_changed_at || lead.created_at);
-  if (stage === 'part2_sent' && days > 7) return true;
-  if (stage === 'whatsapp_sent' && days > 3) return true;
-  if (stage === 'payment_pending' && days > 3) return true;
+  if (stage === 'part2' && days > 7) return true;
+  if (stage === 'contacted' && days > 3) return true;
+  if (stage === 'call' && days > 3) return true;
   if (stage === 'new_audit' && days > 1) return true;
   return false;
 }
@@ -12594,7 +12660,7 @@ async function loadLeads() {
   bbLeadsState.byStage = {};
   BB_LEAD_STAGES.forEach(function(s){ bbLeadsState.byStage[s.id] = []; });
   bbLeadsState.leads.forEach(function(l){
-    var s = l.stage || 'new_audit';
+    var s = bbNormalizeStage(l.stage);
     if (!bbLeadsState.byStage[s]) bbLeadsState.byStage[s] = [];
     bbLeadsState.byStage[s].push(l);
   });
@@ -12771,7 +12837,7 @@ function bbLeadRenderDetail(data) {
 
   var sid = String(lead.id||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'");
   var stageOptions = BB_LEAD_STAGES.map(function(s){
-    return '<option value="' + s.id + '"' + ((lead.stage || 'new_audit') === s.id ? ' selected' : '') + '>' + s.icon + ' ' + escapeHtml(s.label) + '</option>';
+    return '<option value="' + s.id + '"' + (bbNormalizeStage(lead.stage) === s.id ? ' selected' : '') + '>' + s.icon + ' ' + escapeHtml(s.label) + '</option>';
   }).join('');
 
   var waHref = bbWhatsAppHref(lead.phone);
@@ -12839,12 +12905,12 @@ function bbLeadRenderDetail(data) {
       '<div class="bb-lead-info-grid">' +
         '<div class="bb-lead-info-cell"><span class="lbl">Name</span><span class="val">' + escapeHtml((linkedUser.first_name||'') + ' ' + (linkedUser.last_name||'')) + '</span></div>' +
         '<div class="bb-lead-info-cell"><span class="lbl">Email</span><span class="val">' + escapeHtml(linkedUser.email || '') + '</span></div>' +
-        '<div class="bb-lead-info-cell"><span class="lbl">Status</span><span class="val">' + escapeHtml(linkedUser.approval_status || '') + '</span></div>' +
+        '<div class="bb-lead-info-cell"><span class="lbl">Membership</span><span class="val">' + escapeHtml((linkedUser.plan_label || linkedUser.subscription_status || 'trial')) + '</span></div>' +
         '<div class="bb-lead-info-cell"><span class="lbl">Joined</span><span class="val">' + escapeHtml(linkedUser.created_at ? new Date(linkedUser.created_at).toLocaleDateString() : '') + '</span></div>' +
       '</div>' +
       (alreadyLinked
-        ? '<p class="form-hint" style="margin:8px 0 0 0;color:#86efac">✓ Already linked &amp; marked Paid &amp; onboarded.</p>'
-        : '<button type="button" class="bb-lead-quick-btn" style="margin-top:10px" onclick="bbLeadLinkUser(\'' + sid + '\')">Mark as paid &amp; link this account</button>') +
+        ? '<p class="form-hint" style="margin:8px 0 0 0;color:#86efac">✓ Already linked &amp; marked Converted. Manage billing in the Memberships tab.</p>'
+        : '<button type="button" class="bb-lead-quick-btn" style="margin-top:10px" onclick="bbLeadLinkUser(\'' + sid + '\')">Mark converted &amp; link this account</button>') +
       '</div>';
   } else {
     linkedHtml = '<div class="bb-lead-section"><h4>BodyBank account</h4>' +
@@ -12959,7 +13025,7 @@ async function bbLeadLinkUser(id) {
     showPopup('Cannot link', resp.error, '', 'OK', null, 'error');
     return;
   }
-  showPopup('Linked', 'Lead marked as Paid & onboarded and linked to the BodyBank account.', '', 'OK', null, 'success');
+  showPopup('Linked', 'Lead marked Converted and linked to the BodyBank account. Manage billing in the Memberships tab.', '', 'OK', null, 'success');
   await viewLead(id);
   loadLeads();
 }
@@ -13007,7 +13073,7 @@ async function loadLeadsToday() {
   var calls = data.calls_today || [];
   var pending = data.pending_outreach || [];
   var stuck = data.stuck_part2 || [];
-  var pay = data.payment_pending || [];
+  var pay = data.after_call || [];
   var lost = data.lost_this_week || 0;
 
   function listItems(rows, fmtTime) {
@@ -13031,28 +13097,28 @@ async function loadLeadsToday() {
       '<div class="card-lbl">Waiting for outreach</div>' +
       '<div class="bb-leads-today-list">' + listItems(pending, false) + '</div>' +
     '</div>' +
-    '<div class="bb-leads-today-card is-good" onclick="bbLeadsFilterAndOpen(\'call_scheduled\')">' +
+    '<div class="bb-leads-today-card is-good" onclick="bbLeadsFilterAndOpen(\'call\')">' +
       '<div class="card-icon">📅</div>' +
       '<div class="card-num">' + calls.length + '</div>' +
       '<div class="card-lbl">Calls scheduled today</div>' +
       '<div class="bb-leads-today-list">' + listItems(calls, true) + '</div>' +
     '</div>' +
-    '<div class="bb-leads-today-card ' + (stuck.length ? 'is-urgent' : '') + '" onclick="bbLeadsFilterAndOpen(\'part2_sent\')">' +
+    '<div class="bb-leads-today-card ' + (stuck.length ? 'is-urgent' : '') + '" onclick="bbLeadsFilterAndOpen(\'part2\')">' +
       '<div class="card-icon">⚠</div>' +
       '<div class="card-num">' + stuck.length + '</div>' +
       '<div class="card-lbl">Stuck on Part-2 &gt; 7 days</div>' +
       '<div class="bb-leads-today-list">' + listItems(stuck, false) + '</div>' +
     '</div>' +
-    '<div class="bb-leads-today-card ' + (pay.length ? 'is-urgent' : '') + '" onclick="bbLeadsFilterAndOpen(\'payment_pending\')">' +
-      '<div class="card-icon">💰</div>' +
+    '<div class="bb-leads-today-card ' + (pay.length ? 'is-urgent' : '') + '" onclick="bbLeadsFilterAndOpen(\'call\')">' +
+      '<div class="card-icon">📞</div>' +
       '<div class="card-num">' + pay.length + '</div>' +
-      '<div class="card-lbl">Payment pending</div>' +
+      '<div class="card-lbl">After call — decide</div>' +
       '<div class="bb-leads-today-list">' + listItems(pay, false) + '</div>' +
     '</div>' +
-    '<div class="bb-leads-today-card" onclick="bbLeadsFilterAndOpen(\'onboarded\')">' +
+    '<div class="bb-leads-today-card" onclick="bbLeadsFilterAndOpen(\'converted\')">' +
       '<div class="card-icon">🎉</div>' +
-      '<div class="card-num">' + (counts.onboarded || 0) + '</div>' +
-      '<div class="card-lbl">Total onboarded</div>' +
+      '<div class="card-num">' + (counts.converted || 0) + '</div>' +
+      '<div class="card-lbl">Total converted</div>' +
     '</div>' +
     '<div class="bb-leads-today-card" onclick="bbLeadsFilterAndOpen(\'lost\')">' +
       '<div class="card-icon">❌</div>' +
@@ -13121,7 +13187,7 @@ async function renderLeadsTodayPopup() {
   var calls = data.calls_today || [];
   var pending = data.pending_outreach || [];
   var stuck = data.stuck_part2 || [];
-  var pay = data.payment_pending || [];
+  var pay = data.after_call || [];
   var lost = data.lost_this_week || 0;
 
   grid.innerHTML = '' +
@@ -13131,28 +13197,28 @@ async function renderLeadsTodayPopup() {
       '<div class="bb-today-pop-tile-lbl">Waiting for outreach</div>' +
       bbTodayPopTileListHtml(pending, false, 3) +
     '</div>' +
-    '<div class="bb-today-pop-tile is-good" onclick="closeLeadsTodayPopup();bbLeadsFilterAndOpen(\'call_scheduled\')">' +
+    '<div class="bb-today-pop-tile is-good" onclick="closeLeadsTodayPopup();bbLeadsFilterAndOpen(\'call\')">' +
       '<div class="bb-today-pop-tile-icon">📅</div>' +
       '<div class="bb-today-pop-tile-num">' + calls.length + '</div>' +
       '<div class="bb-today-pop-tile-lbl">Calls today</div>' +
       bbTodayPopTileListHtml(calls, true, 3) +
     '</div>' +
-    '<div class="bb-today-pop-tile ' + (stuck.length ? 'is-urgent' : '') + '" onclick="closeLeadsTodayPopup();bbLeadsFilterAndOpen(\'part2_sent\')">' +
+    '<div class="bb-today-pop-tile ' + (stuck.length ? 'is-urgent' : '') + '" onclick="closeLeadsTodayPopup();bbLeadsFilterAndOpen(\'part2\')">' +
       '<div class="bb-today-pop-tile-icon">⚠</div>' +
       '<div class="bb-today-pop-tile-num">' + stuck.length + '</div>' +
       '<div class="bb-today-pop-tile-lbl">Stuck on Part-2</div>' +
       bbTodayPopTileListHtml(stuck, false, 3) +
     '</div>' +
-    '<div class="bb-today-pop-tile ' + (pay.length ? 'is-urgent' : '') + '" onclick="closeLeadsTodayPopup();bbLeadsFilterAndOpen(\'payment_pending\')">' +
-      '<div class="bb-today-pop-tile-icon">💰</div>' +
+    '<div class="bb-today-pop-tile ' + (pay.length ? 'is-urgent' : '') + '" onclick="closeLeadsTodayPopup();bbLeadsFilterAndOpen(\'call\')">' +
+      '<div class="bb-today-pop-tile-icon">📞</div>' +
       '<div class="bb-today-pop-tile-num">' + pay.length + '</div>' +
-      '<div class="bb-today-pop-tile-lbl">Payment pending</div>' +
+      '<div class="bb-today-pop-tile-lbl">After call — decide</div>' +
       bbTodayPopTileListHtml(pay, false, 3) +
     '</div>' +
-    '<div class="bb-today-pop-tile is-good" onclick="closeLeadsTodayPopup();bbLeadsFilterAndOpen(\'onboarded\')">' +
+    '<div class="bb-today-pop-tile is-good" onclick="closeLeadsTodayPopup();bbLeadsFilterAndOpen(\'converted\')">' +
       '<div class="bb-today-pop-tile-icon">🎉</div>' +
-      '<div class="bb-today-pop-tile-num">' + (counts.onboarded || 0) + '</div>' +
-      '<div class="bb-today-pop-tile-lbl">Total onboarded</div>' +
+      '<div class="bb-today-pop-tile-num">' + (counts.converted || 0) + '</div>' +
+      '<div class="bb-today-pop-tile-lbl">Total converted</div>' +
     '</div>' +
     '<div class="bb-today-pop-tile" onclick="closeLeadsTodayPopup();bbLeadsFilterAndOpen(\'lost\')">' +
       '<div class="bb-today-pop-tile-icon">❌</div>' +
@@ -13534,7 +13600,6 @@ function logoutAdmin() {
   closeModal('auditModal');
   closeModal('auditViewModal');
   closeModal('part2ViewModal');
-  closeModal('signupViewModal');
   closeModal('sundayCheckinViewModal');
   closeModal('eliteCardModal');
   closePopup('popupSuccess');
@@ -14060,8 +14125,8 @@ async function sendAdminAiMessage() {
     }
   });
 })();
-var ADMIN_SECTION_LABELS = { requests: 'Audit Forms', leads: 'Leads', clientprogress: 'Client Progress', workouts: 'Workouts', messages: 'Messages', meetings: 'Meetings', 'messages-meetings': 'Messages & Meetings', signups: 'Pending Sign-ups', tribe: 'Tribe', part2: 'Part-2 Form', sundaycheckin: 'Sunday Check-in', dailycheckin: 'Daily Check-In', dailycompliance: 'Daily Compliance', programs: 'Programs', insights: 'Performance Insights', campaigns: 'Campaigns', leaderboards: 'Leader Boards', leaderboard: 'User Leaderboard', coinleaderboard: 'Coin Leaderboard', nutrition: 'Nutrition AI', blood: 'Blood Reports', accesscontrol: 'Access Control', memberships: 'Memberships' };
-var TAB_TO_SECTION = { requests: 'forms', leads: 'forms', signups: 'clients', tribe: 'clients', clientprogress: 'clients', workouts: 'training', messages: 'messages', meetings: 'messages', 'messages-meetings': 'messages', part2: 'forms', sundaycheckin: 'forms', dailycheckin: 'forms', dailycompliance: 'dashboard', programs: 'programs', insights: 'analytics', leaderboards: 'dashboard', leaderboard: 'dashboard', coinleaderboard: 'dashboard', nutrition: 'analytics', blood: 'analytics', accesscontrol: 'clients', memberships: 'clients' };
+var ADMIN_SECTION_LABELS = { requests: 'Audit Forms', leads: 'Leads', clientprogress: 'Client Progress', workouts: 'Workouts', messages: 'Messages', meetings: 'Meetings', 'messages-meetings': 'Messages & Meetings', tribe: 'Tribe', part2: 'Part-2 Form', sundaycheckin: 'Sunday Check-in', dailycheckin: 'Daily Check-In', dailycompliance: 'Daily Compliance', programs: 'Programs', insights: 'Performance Insights', campaigns: 'Campaigns', leaderboards: 'Leader Boards', leaderboard: 'User Leaderboard', coinleaderboard: 'Coin Leaderboard', nutrition: 'Nutrition AI', blood: 'Blood Reports', memberships: 'Members' };
+var TAB_TO_SECTION = { requests: 'forms', leads: 'forms', tribe: 'clients', clientprogress: 'clients', workouts: 'training', messages: 'messages', meetings: 'messages', 'messages-meetings': 'messages', part2: 'forms', sundaycheckin: 'forms', dailycheckin: 'forms', dailycompliance: 'dashboard', programs: 'programs', insights: 'analytics', leaderboards: 'dashboard', leaderboard: 'dashboard', coinleaderboard: 'dashboard', nutrition: 'analytics', blood: 'analytics', memberships: 'clients' };
 var ADMIN_FORM_FILTER_TABS = ['requests', 'sundaycheckin', 'part2', 'dailycheckin', 'workouts'];
 function syncAdminFormFilterStrip(activeTab) {
   var host = document.getElementById('adminInlineFormFilters');
@@ -14142,6 +14207,8 @@ function switchToSection(section) {
 function switchTab(tab) {
   // Backward compatibility: older links used the combined tab name.
   if (tab === 'messages-meetings') tab = 'messages';
+  // Access Control was merged into the Members (memberships) tab.
+  if (tab === 'accesscontrol') tab = 'memberships';
   var section = TAB_TO_SECTION[tab] || 'dashboard';
   document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.admin-nav-link').forEach(a => a.classList.remove('active'));
@@ -14183,7 +14250,6 @@ function switchTab(tab) {
   if (tab === 'meetings') { loadAdminMeetings(); loadMeetingUserDropdown(); }
   if (tab === 'workouts') loadAdminWorkouts();
   if (tab === 'requests') loadRequests();
-  if (tab === 'signups') loadPendingSignups();
   if (tab === 'sundaycheckin') loadSundayCheckins();
   if (tab === 'dailycheckin') loadDailyCheckins();
   if (tab === 'dailycompliance') loadDailyCompliancePreview();
@@ -14199,7 +14265,6 @@ function switchTab(tab) {
   if (tab === 'campaigns') loadCampaigns();
   if (tab === 'nutrition') loadAdminNutritionReport();
   if (tab === 'blood') loadAdminBloodReports();
-  if (tab === 'accesscontrol') loadAdminAccessControl();
   if (tab === 'memberships') loadAdminMemberships();
 }
 var adminProgressChartInstances = {};
@@ -15792,8 +15857,9 @@ function openUserDashboard(user) {
   var logoutBtn = document.getElementById('userLogoutBtn');
   if (logoutBtn) logoutBtn.style.display = '';
   lockBodyScroll();
+  bbPulseShowSkeleton();
+  loadHomeAggregate();
   loadUserStats();
-  loadTodayDashboard();
   loadMicroGoals();
   loadScorecard();
   bbLoadCoinSummary(true);
@@ -16352,8 +16418,9 @@ function switchUserTab(tab) {
   if (contentWrap) contentWrap.scrollTop = 0;
   window.scrollTo(0, 0);
   if (tab === 'home') {
+    bbPulseShowSkeleton();
+    loadHomeAggregate();
     loadUserStats();
-    loadTodayDashboard();
     loadMicroGoals();
     loadScorecard();
     bbLoadCoinSummary(true);
@@ -16363,7 +16430,11 @@ function switchUserTab(tab) {
       setTimeout(function() { bbRefreshDesktopUserDashboard(); }, 150);
     }
   }
-  if (tab === 'messages') loadUserMessagesSection();
+  if (tab === 'messages') {
+    loadUserMessagesSection();
+    try { localStorage.setItem('bb_seen_coach_at', String(Date.now())); } catch(_){}
+    var _nb = document.getElementById('userCoachNavBadge'); if (_nb) _nb.hidden = true;
+  }
   if (tab === 'elitefeed' && typeof loadUserEliteFeedGrid === 'function') loadUserEliteFeedGrid();
   if (tab === 'contact') {
     var today = new Date().toISOString().split('T')[0];
@@ -16392,6 +16463,297 @@ function switchUserTab(tab) {
   if (wasOnWorkout && tab !== 'workout' && typeof timerRunning !== 'undefined' && timerRunning) {
     if (typeof wkEnsureWorkoutBackgroundBanner === 'function') wkEnsureWorkoutBackgroundBanner();
   }
+}
+
+// ===== Unified TODAY hero — one aggregate call powers the daily-loop summary =====
+window._bbHomeData = null;
+window._bbHomeDataAt = 0;
+function bbHaptic(ms){ try { if (navigator.vibrate) navigator.vibrate(ms || 8); } catch(_){} }
+// +/- stepper for the daily check-in inputs (frictionless logging)
+function bbStep(id, delta, min, max){
+  var el = document.getElementById(id);
+  if (!el || el.disabled) return;
+  var cur = parseFloat(String(el.value || '').replace(/,/g, ''));
+  if (!Number.isFinite(cur)) cur = 0;
+  var next = cur + delta;
+  if (typeof min === 'number') next = Math.max(min, next);
+  if (typeof max === 'number') next = Math.min(max, next);
+  // keep decimals tidy for fractional fields (water/sleep), integers for the rest
+  next = (Math.abs(delta) < 1) ? Math.round(next * 100) / 100 : Math.round(next);
+  el.value = next;
+  bbHaptic(5);
+  try { el.dispatchEvent(new Event('input', { bubbles: true })); } catch(_){}
+}
+// Coins-as-badges (#13): tier from lifetime coins; escalating streak flair. Purely cosmetic.
+function bbCoinTier(coins){
+  var c = Number(coins) || 0;
+  if (c >= 10000) return { label: 'Elite',    icon: '👑', color: '#e9d8a6' };
+  if (c >= 5000)  return { label: 'Platinum', icon: '💎', color: '#cfd8dc' };
+  if (c >= 2000)  return { label: 'Gold',     icon: '🥇', color: '#e0a23c' };
+  if (c >= 500)   return { label: 'Silver',   icon: '🥈', color: '#c3c9cf' };
+  return { label: 'Bronze', icon: '🥉', color: '#cd9b6a' };
+}
+function bbStreakFlair(streak){
+  var n = Number(streak) || 0;
+  if (n >= 100) return '👑';
+  if (n >= 30)  return '💎';
+  if (n >= 14)  return '🌟';
+  if (n >= 7)   return '⚡';
+  return '🔥';
+}
+function bbTodayGreetingText(){
+  var h = new Date().getHours();
+  if (h < 12) return 'Good morning';
+  if (h < 17) return 'Good afternoon';
+  return 'Good evening';
+}
+function bbTodayFocusChecklist(){
+  var f = document.getElementById('microGoalsForm');
+  if (f && f.scrollIntoView) f.scrollIntoView({ behavior:'smooth', block:'center' });
+  var s = document.getElementById('microSteps');
+  if (s) { try { s.focus(); } catch(_){} }
+}
+function bbTodayFocusField(id){
+  var f = document.getElementById('microGoalsForm');
+  if (f && f.scrollIntoView) f.scrollIntoView({ behavior:'smooth', block:'center' });
+  var el = document.getElementById(id);
+  if (el) { try { el.focus(); el.select && el.select(); } catch(_){} }
+}
+async function loadHomeAggregate(){
+  try {
+    var data = await apiCall('GET', '/api/me/home');
+    if (!data || data.error) return null;
+    window._bbHomeData = data;
+    window._bbHomeDataAt = Date.now();
+    try { renderTodayHero(data); } catch(e){ console.warn('today hero render', e); }
+    try { if (typeof bbMaybeOnboard === 'function') bbMaybeOnboard(data.profile); } catch(e){ console.warn('onboard', e); }
+    return data;
+  } catch (e) { console.warn('home aggregate', e); return null; }
+}
+// Tiny inline sparkline from a numeric series (7-day trend).
+function bbSparkline(vals, color){
+  vals = (vals || []).map(function(n){ return Number(n) || 0; });
+  if (vals.length < 2) return '';
+  var max = Math.max.apply(null, vals), min = Math.min.apply(null, vals);
+  var range = (max - min) || 1, w = 50, h = 16, n = vals.length;
+  var pts = vals.map(function(v, i){ var x = (i/(n-1))*w; var y = h - ((v-min)/range)*(h-4) - 2; return x.toFixed(1)+','+y.toFixed(1); }).join(' ');
+  return '<svg class="bb-spark-svg" viewBox="0 0 '+w+' '+h+'" preserveAspectRatio="none" aria-hidden="true"><polyline points="'+pts+'" fill="none" stroke="'+(color||'#c8a44e')+'" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+}
+function bbPulseKfmt(n){ n = Number(n) || 0; return n >= 1000 ? (n/1000).toFixed(n >= 10000 ? 0 : 1)+'k' : String(Math.round(n)); }
+function bbSkelRows(n, kind){ var s = ''; for (var i = 0; i < n; i++) s += '<div class="bb-skel-row bb-skel-' + kind + '"></div>'; return s; }
+// Pulse header avatar: show the user's photo, else their initial.
+function bbSetPulseAvatar(pic, name){
+  var el = document.getElementById('bbPulseAvatar'); if (!el) return;
+  if (pic) { el.style.backgroundImage = 'url(' + JSON.stringify(pic) + ')'; el.textContent = ''; }
+  else { el.style.backgroundImage = ''; el.textContent = (((name || '').trim().charAt(0)) || '?').toUpperCase(); }
+}
+// Show the Pulse card instantly with the greeting (from the session) + shimmer placeholders,
+// so it never pops in late. Real numbers fill in when /api/me/home returns.
+function bbPulseShowSkeleton(){
+  var hero = document.getElementById('bbTodayHero');
+  if (!hero) return;
+  var name = ((window.currentUser && window.currentUser.first_name) || '').trim();
+  var g = document.getElementById('bbTodayGreeting');
+  if (g && typeof bbTodayGreetingText === 'function') g.textContent = bbTodayGreetingText();
+  var nmEl = document.getElementById('bbTodayName'); if (nmEl) nmEl.textContent = name || 'there';
+  bbSetPulseAvatar(window.currentUser && window.currentUser.profile_picture, name);
+  var d = document.getElementById('bbTodayDate');
+  if (d) d.textContent = new Date().toLocaleDateString(undefined, { weekday:'long', month:'long', day:'numeric' });
+  if (!window._bbHomeData) {
+    var pe = document.getElementById('bbPulsePillars'); if (pe && !pe.children.length) pe.innerHTML = bbSkelRows(4, 'pillar');
+    var he = document.getElementById('bbPulseHabits'); if (he && !he.children.length) he.innerHTML = bbSkelRows(4, 'habit');
+  }
+  hero.hidden = false;
+}
+
+function renderTodayHero(data){
+  var hero = document.getElementById('bbTodayHero');
+  if (!hero || !data) return;
+  var profile = data.profile || {};
+  var goals = profile.goals || { steps:8000, water_ml:3000, protein_g:120, sleep_hours:7.5 };
+  var today = data.today || {};
+  var ci = today.checkin || {};
+  var streak = data.streak || {};
+  var weekly = streak.weekly || {};
+  var series = data.series || {};
+  var coins = data.coins || {};
+  var sc = data.scorecard || {};
+  // header
+  var name = (profile.first_name || (window.currentUser && window.currentUser.first_name) || '').trim();
+  var g = document.getElementById('bbTodayGreeting');
+  if (g) g.textContent = bbTodayGreetingText();
+  var nmEl = document.getElementById('bbTodayName'); if (nmEl) nmEl.textContent = name || 'there';
+  bbSetPulseAvatar(profile.profile_picture || (window.currentUser && window.currentUser.profile_picture), name);
+  var d = document.getElementById('bbTodayDate');
+  if (d) d.textContent = new Date().toLocaleDateString(undefined, { weekday:'long', month:'long', day:'numeric' });
+  var sNum = document.getElementById('bbTodayStreakNum'); if (sNum) sNum.textContent = streak.streak || 0;
+  var sPill = document.getElementById('bbTodayStreakPill');
+  if (sPill) { sPill.firstChild && (sPill.firstChild.nodeValue = bbStreakFlair(streak.streak) + ' '); }
+  var cNum = document.getElementById('bbTodayCoinNum'); if (cNum) cNum.textContent = (coins.balance != null ? coins.balance : 0);
+  var cPill = document.getElementById('bbTodayCoinPill');
+  if (cPill) { var tier = bbCoinTier(coins.lifetimeEarned != null ? coins.lifetimeEarned : coins.balance); cPill.title = 'Gold coins — ' + tier.label + ' tier'; }
+  var freezeBtn = document.getElementById('bbTodayFreezeBtn');
+  if (freezeBtn) freezeBtn.hidden = !streak.freezeAvailable;
+  // ---- metrics (today value/goal + 7-day series + weekly avg) ----
+  var waterMl = (ci.water_ml != null) ? ci.water_ml : (ci.water_liters != null ? Math.round(ci.water_liters * 1000) : 0);
+  function pct(v, goal){ if (!goal || goal <= 0) return v > 0 ? 1 : 0; return Math.max(0, Math.min(1, (v || 0) / goal)); }
+  var workoutToday = false;
+  if (today.lastWorkout && today.lastWorkout.created_at) {
+    var wd = new Date(today.lastWorkout.created_at), now = new Date();
+    workoutToday = wd.getFullYear() === now.getFullYear() && wd.getMonth() === now.getMonth() && wd.getDate() === now.getDate();
+  }
+  var metrics = [
+    { ico:'👟', lbl:'Steps',   field:'microSteps',   v:(ci.steps||0),     goal:goals.steps,      disp:(ci.steps||0).toLocaleString() + ' / ' + Number(goals.steps).toLocaleString(), series:series.steps,     avg:(weekly.avgSteps!=null?bbPulseKfmt(weekly.avgSteps):'—') },
+    { ico:'💧', lbl:'Water',   field:'microWater',   v:waterMl,           goal:goals.water_ml,   disp:(waterMl/1000).toFixed(1) + ' / ' + (goals.water_ml/1000).toFixed(1) + ' L', series:series.water_ml,  avg:(weekly.avgWater!=null?(weekly.avgWater+'L'):'—') },
+    { ico:'🥩', lbl:'Protein', field:'microProtein', v:(ci.protein_g||0), goal:goals.protein_g,  disp:(ci.protein_g||0) + ' / ' + goals.protein_g + ' g', series:series.protein_g, avg:(weekly.avgProtein!=null?(weekly.avgProtein+'g'):'—') },
+    { ico:'😴', lbl:'Sleep',   field:'microSleep',   v:(ci.sleep_hours||0), goal:goals.sleep_hours, disp:(ci.sleep_hours||0) + ' / ' + goals.sleep_hours + ' h', series:series.sleep_hours, avg:(weekly.avgSleep!=null?(weekly.avgSleep+'h'):'—') }
+  ];
+  var doneCount = 0;
+  var habitsHtml = metrics.map(function(m){
+    var p = pct(m.v, m.goal), done = p >= 1;
+    if (done) doneCount++;
+    return '<button type="button" class="bb-pulse-habit' + (done?' is-done':'') + '" onclick="bbTodayFocusField(\'' + m.field + '\')">' +
+      '<span class="bb-pulse-habit-ico">' + m.ico + '</span>' +
+      '<span class="bb-pulse-habit-body">' +
+        '<span class="bb-pulse-habit-r1"><span class="lbl">' + m.lbl + '</span><span class="val">' + m.disp + '</span></span>' +
+        '<span class="bb-pulse-habit-bar"><span style="width:' + Math.round(p*100) + '%"></span></span>' +
+      '</span>' +
+      '<span class="bb-pulse-habit-spark">' + bbSparkline(m.series, done ? '#6fe09a' : '#c8a44e') + '<em>' + m.avg + '</em></span>' +
+    '</button>';
+  }).join('');
+  var habitsEl = document.getElementById('bbPulseHabits'); if (habitsEl) habitsEl.innerHTML = habitsHtml;
+  // ---- actions: workout + sunday (also count toward today's 6 wins) ----
+  if (workoutToday) doneCount++;
+  var sundayDone = !today.pendingSundayCheckin;
+  if (sundayDone) doneCount++;
+  var actEl = document.getElementById('bbPulseActions');
+  if (actEl) actEl.innerHTML =
+    '<button type="button" class="bb-pulse-act' + (workoutToday?' is-done':'') + '" onclick="switchUserTab(\'workout\')"><span>🏋️ Workout</span><b>' + (workoutToday?'Logged ✓':'Log now') + '</b></button>' +
+    '<button type="button" class="bb-pulse-act' + (sundayDone?' is-done':'') + '" onclick="switchUserTab(\'checkin\')"><span>📋 Sunday</span><b>' + (sundayDone?'Done ✓':'Due') + '</b></button>';
+  // ---- pillars (this week's score components) ----
+  var pillars = (sc.pillars || []);
+  var pillEl = document.getElementById('bbPulsePillars');
+  if (pillEl) {
+    pillEl.innerHTML = pillars.map(function(p){
+      return '<div class="bb-pulse-pillar">' +
+        '<span class="bb-pulse-pillar-lbl">' + escapeHtml(p.label) + '</span>' +
+        '<span class="bb-pulse-pillar-track"><span style="width:' + Math.max(0, Math.min(100, p.score||0)) + '%"></span></span>' +
+        '<span class="bb-pulse-pillar-score">' + (p.score||0) + '</span>' +
+        '<span class="bb-pulse-pillar-wt">' + (p.weight||0) + '%</span>' +
+      '</div>';
+    }).join('');
+  }
+  // ---- dual ring: outer = weekly score, inner = today's 6 wins ----
+  var score = sc.total || 0;
+  var scoreEl = document.getElementById('bbTodayRingScore'); if (scoreEl) scoreEl.textContent = score;
+  var miniEl = document.getElementById('bbPulseTodayMini'); if (miniEl) miniEl.textContent = doneCount + '/6 today';
+  var outer = document.getElementById('bbTodayRingFill');
+  if (outer) outer.style.strokeDashoffset = String(Math.round(327 * (1 - Math.max(0, Math.min(1, score/100)))));
+  var inner = document.getElementById('bbPulseDayFill');
+  if (inner) inner.style.strokeDashoffset = String(Math.round(239 * (1 - doneCount/6)));
+  // ---- score meta: trend + week ----
+  var trendEl = document.getElementById('bbPulseTrend');
+  if (trendEl) {
+    var td = sc.trend_delta;
+    if (td == null) { trendEl.textContent = 'New week'; trendEl.className = 'bb-pulse-trend'; }
+    else { var up = td >= 0; trendEl.textContent = (up ? '↑ +' + td : '↓ ' + td) + ' vs last week'; trendEl.className = 'bb-pulse-trend ' + (up ? 'up' : 'down'); }
+  }
+  var wkEl = document.getElementById('bbPulseWeek'); if (wkEl) wkEl.textContent = sc.week_label || '';
+  // Coach unread indicator (#5) — drives the bottom-nav Coach dot.
+  // (The in-card coach row was removed; Coach lives in the bottom nav now.)
+  var lm = today.lastMessage;
+  var navBadge = document.getElementById('userCoachNavBadge');
+  if (navBadge) {
+    var unread = false;
+    if (lm && lm.body && lm.sender_role && lm.sender_role !== 'user') {
+      var seen = parseInt(localStorage.getItem('bb_seen_coach_at') || '0', 10) || 0;
+      var msgAt = lm.created_at ? new Date(lm.created_at).getTime() : 0;
+      unread = msgAt > seen;
+    }
+    navBadge.hidden = !unread;
+  }
+  // Next call (folded in from the removed mini-cards)
+  var ncEl = document.getElementById('bbTodayNextCall');
+  if (ncEl) {
+    var nm = today.nextMeeting;
+    if (nm && nm.meeting_date) {
+      var nd = new Date(nm.meeting_date + 'T12:00:00');
+      var dlabel = isNaN(nd.getTime()) ? nm.meeting_date : nd.toLocaleDateString(undefined, { weekday:'short', month:'short', day:'numeric' });
+      ncEl.innerHTML = '<span aria-hidden="true">📞</span> Next call · <b>' + escapeHtml(dlabel + (nm.time_slot ? ' · ' + nm.time_slot : '')) + '</b>';
+      ncEl.hidden = false;
+    } else { ncEl.hidden = true; }
+  }
+  // week-in-review footer (#11): consistency only (the weekly score lives in the scorecard below)
+  var weekEl = document.getElementById('bbTodayWeek');
+  if (weekEl) {
+    var cw = streak.checkinsThisWeek;
+    if (cw != null) { weekEl.textContent = '✅ ' + cw + '/7 check-ins this week'; weekEl.hidden = false; }
+  }
+  hero.hidden = false;
+}
+
+// ===== First-run onboarding =====
+window._bbOnboardShown = false;
+window._bbOnboardGoal = '';
+function bbMaybeOnboard(profile){
+  if (!profile || profile.onboarded) return;
+  if (window._bbOnboardShown) return;
+  if (window.currentUser && window.currentUser.role && window.currentUser.role !== 'user') return; // clients only
+  window._bbOnboardShown = true;
+  // prefill targets from any existing goals
+  var g = profile.goals || {};
+  var set = function(id,v){ var el=document.getElementById(id); if(el && v!=null) el.value = v; };
+  set('onbSteps', g.steps); set('onbWater', g.water_ml!=null ? (g.water_ml/1000) : null);
+  set('onbProtein', g.protein_g); set('onbSleep', g.sleep_hours);
+  // wire goal chips once
+  var chips = document.querySelectorAll('#bbOnbGoals .bb-onb-goal');
+  chips.forEach(function(c){
+    c.onclick = function(){
+      chips.forEach(function(x){ x.classList.remove('is-sel'); });
+      c.classList.add('is-sel');
+      window._bbOnboardGoal = c.getAttribute('data-goal') || '';
+      bbHaptic(6);
+    };
+  });
+  if (profile.goal_type) {
+    chips.forEach(function(c){ if (c.getAttribute('data-goal') === profile.goal_type){ c.classList.add('is-sel'); window._bbOnboardGoal = profile.goal_type; } });
+  }
+  if (typeof openModal === 'function') openModal('bbOnboardModal');
+}
+async function bbSaveOnboarding(useDefaults){
+  var num = function(id, dflt){ var el=document.getElementById(id); var n=parseFloat(el && el.value); return Number.isFinite(n) ? n : dflt; };
+  var body = useDefaults ? {} : {
+    goal_type: window._bbOnboardGoal || '',
+    goal_steps: Math.round(num('onbSteps', 8000)),
+    goal_water_ml: Math.round(num('onbWater', 3) * 1000),
+    goal_protein_g: Math.round(num('onbProtein', 120)),
+    goal_sleep_hours: num('onbSleep', 7.5)
+  };
+  try { await apiCall('POST', '/api/me/onboarding', body); } catch(_){}
+  if (window._bbHomeData && window._bbHomeData.profile) window._bbHomeData.profile.onboarded = true;
+  if (typeof closeModal === 'function') closeModal('bbOnboardModal');
+}
+async function bbFinishOnboarding(){
+  bbHaptic(12);
+  await bbSaveOnboarding(false);
+  // refresh hero so the new targets reflect immediately
+  loadHomeAggregate();
+  if (typeof showPopup === 'function') showPopup('You’re all set', 'Your daily targets are saved. Log your first check-in to start a streak!', '', 'Let’s go');
+}
+async function bbSkipOnboarding(){
+  await bbSaveOnboarding(true);
+}
+
+// Streak freeze (#12)
+async function bbUseStreakFreeze(){
+  if (!confirm('Use your monthly streak freeze to protect your streak for the missed day?')) return;
+  try {
+    var r = await apiCall('POST', '/api/me/streak-freeze', {});
+    if (r && r.error) { showPopup('Heads up', r.error, '', 'OK'); return; }
+    bbHaptic(16);
+    showPopup('Streak protected 🧊', 'Your streak is safe — but log today to keep it going!', '', 'OK', null, 'success');
+    loadHomeAggregate();
+  } catch (e) { showPopup('Error', e.message || 'Could not apply freeze.', '', 'OK', null, 'error'); }
 }
 
 function bbIsTypingInputContext() {
@@ -16535,7 +16897,9 @@ function bbRenderCoinSummary() {
   if (el = document.getElementById('bbCoinBalanceDesktop')) el.textContent = balanceText;
   if (el = document.getElementById('bbCoinSubMobile')) {
     var earned = Number(bbCoinState.lifetimeEarned);
-    el.textContent = Number.isFinite(earned) ? ('Lifetime earned: ' + earned.toLocaleString('en-US')) : 'Tracking your consistency';
+    var tier = bbCoinTier(Number.isFinite(earned) ? earned : bbCoinState.balance);
+    var earnedTxt = Number.isFinite(earned) ? ('Lifetime earned: ' + earned.toLocaleString('en-US')) : 'Tracking your consistency';
+    el.innerHTML = '<span style="color:' + tier.color + ';font-weight:700">' + tier.icon + ' ' + tier.label + '</span> · ' + earnedTxt;
   }
 }
 async function bbLoadCoinSummary(force) {
@@ -17275,9 +17639,10 @@ async function submitMicroGoals() {
       return;
     }
     loadMicroGoals();
-    loadMicroGoals();
     loadScorecard();
     bbLoadCoinSummary(true);
+    if (typeof loadHomeAggregate === 'function') loadHomeAggregate();
+    bbHaptic(14);
     showPopup('Saved', 'Daily check-in saved. Streak updated!', '', 'OK', null, 'success');
   } catch (e) {
     showPopup('Error', e.message || 'Failed to save.', '', 'OK', null, 'error');
@@ -19855,6 +20220,7 @@ function renderAdminMemberships() {
     }
     if (f === 'callqueue') return (u.state === 'expired') || (u.state === 'canceled') || ((u.state === 'trialing' || u.state === 'active') && u.days_left != null && u.days_left <= 2);
     if (f === 'all') return true;
+    if (f === 'ai_limited') return !u.nutrition_ai_unlimited || !u.ai_trainer_unlimited;
     return u.state === f;
   });
   if (!filtered.length) {
@@ -19887,9 +20253,50 @@ function renderAdminMemberships() {
           waBtn +
           '<button type="button" class="bb-access-reset" style="color:#e05050;border-color:rgba(224,80,80,.4)" onclick="lockMembership(\'' + idAttr + '\')">⛔ Lock</button>' +
         '</div>' +
+        bbMemberAiSection(u, idAttr) +
       '</div>'
     );
   }).join('');
+}
+
+// Expandable per-member AI-access controls (merged in from the old Access Control tab).
+function bbMemberAiSection(u, idAttr) {
+  var nutBlocked = !u.nutrition_ai_unlimited && u.nutrition_ai_meal_limit > 0 && u.nutrition_ai_meal_used >= u.nutrition_ai_meal_limit;
+  var trnBlocked = !u.ai_trainer_unlimited && u.ai_trainer_trial_limit > 0 && u.ai_trainer_trial_used >= u.ai_trainer_trial_limit;
+  var nutBadge = u.nutrition_ai_unlimited ? '<span class="bb-access-badge bb-access-badge-ok">Unlimited</span>' :
+                 (nutBlocked ? '<span class="bb-access-badge bb-access-badge-blocked">Blocked</span>' :
+                               '<span class="bb-access-badge bb-access-badge-trial">' + u.nutrition_ai_meal_used + ' / ' + u.nutrition_ai_meal_limit + '</span>');
+  var trnBadge = u.ai_trainer_unlimited ? '<span class="bb-access-badge bb-access-badge-ok">Unlimited</span>' :
+                 (trnBlocked ? '<span class="bb-access-badge bb-access-badge-blocked">Blocked</span>' :
+                               '<span class="bb-access-badge bb-access-badge-trial">' + u.ai_trainer_trial_used + ' / ' + u.ai_trainer_trial_limit + '</span>');
+  return (
+    '<details class="bb-member-ai">' +
+      '<summary class="bb-member-ai-summary">AI access &nbsp;<span style="font-size:11px;color:var(--muted)">🥗 ' + (u.nutrition_ai_unlimited ? '∞' : (u.nutrition_ai_meal_used + '/' + u.nutrition_ai_meal_limit)) + ' &nbsp; 🏋️ ' + (u.ai_trainer_unlimited ? '∞' : (u.ai_trainer_trial_used + '/' + u.ai_trainer_trial_limit)) + '</span></summary>' +
+      '<div class="bb-member-ai-body">' +
+        '<div class="bb-access-row">' +
+          '<div class="bb-access-row-title">🥗 Nutrition AI ' + nutBadge + '</div>' +
+          '<div class="bb-access-row-controls">' +
+            '<label class="bb-access-toggle"><input type="checkbox" id="bb-acc-nut-unl-' + idAttr + '" ' + (u.nutrition_ai_unlimited ? 'checked' : '') + ' onchange="bbAccessToggleChanged(\'' + idAttr + '\', \'nut\')"> Unlimited</label>' +
+            '<label class="bb-access-limit">Meal limit <input type="number" min="0" step="1" id="bb-acc-nut-lim-' + idAttr + '" value="' + (parseInt(u.nutrition_ai_meal_limit, 10) || 0) + '" ' + (u.nutrition_ai_unlimited ? 'disabled' : '') + '></label>' +
+            '<span class="bb-access-used">Used <strong>' + u.nutrition_ai_meal_used + '</strong></span>' +
+            '<span class="bb-access-lastused" title="' + escapeHtml(u.nutrition_ai_last_used_at || '') + '">Last used <strong>' + escapeHtml(bbFormatLastUsed(u.nutrition_ai_last_used_at)) + '</strong></span>' +
+            '<button type="button" class="bb-access-reset" onclick="resetAdminAccess(\'' + idAttr + '\', \'nutrition\')">Reset</button>' +
+          '</div>' +
+        '</div>' +
+        '<div class="bb-access-row">' +
+          '<div class="bb-access-row-title">🏋️ AI Trainer ' + trnBadge + '</div>' +
+          '<div class="bb-access-row-controls">' +
+            '<label class="bb-access-toggle"><input type="checkbox" id="bb-acc-trn-unl-' + idAttr + '" ' + (u.ai_trainer_unlimited ? 'checked' : '') + ' onchange="bbAccessToggleChanged(\'' + idAttr + '\', \'trn\')"> Unlimited</label>' +
+            '<label class="bb-access-limit">Trial limit <input type="number" min="0" step="1" id="bb-acc-trn-lim-' + idAttr + '" value="' + (parseInt(u.ai_trainer_trial_limit, 10) || 0) + '" ' + (u.ai_trainer_unlimited ? 'disabled' : '') + '></label>' +
+            '<span class="bb-access-used">Used <strong>' + u.ai_trainer_trial_used + '</strong></span>' +
+            '<span class="bb-access-lastused" title="' + escapeHtml(u.ai_trainer_last_used_at || '') + '">Last used <strong>' + escapeHtml(bbFormatLastUsed(u.ai_trainer_last_used_at)) + '</strong></span>' +
+            '<button type="button" class="bb-access-reset" onclick="resetAdminAccess(\'' + idAttr + '\', \'trainer\')">Reset</button>' +
+          '</div>' +
+        '</div>' +
+        '<div class="bb-access-card-actions"><button type="button" class="form-submit" style="width:auto;padding:9px 22px;margin:0" onclick="saveAdminAccess(\'' + idAttr + '\')">Save AI access</button></div>' +
+      '</div>' +
+    '</details>'
+  );
 }
 
 function activateMembership(encodedId) {
@@ -19931,8 +20338,9 @@ function runMembershipLifecycleNow() {
   });
 }
 
-// ============ ACCESS CONTROL (Nutrition AI + AI Trainer per-user gating) ============
-window._bbAccessControlUsers = [];
+// ============ AI ACCESS (Nutrition AI + AI Trainer per-user gating) ============
+// Merged into the Members (memberships) tab — controls render inside each member
+// card's expandable "AI access" section. bbFormatLastUsed is shared by that section.
 
 function bbFormatLastUsed(ts) {
   if (!ts) return 'Never';
@@ -19950,93 +20358,9 @@ function bbFormatLastUsed(ts) {
   return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
 }
 
-function loadAdminAccessControl() {
-  if (!window.currentUser || (window.currentUser.role !== 'admin' && window.currentUser.role !== 'superadmin')) return;
-  var listEl = document.getElementById('adminAccessControlList');
-  if (!listEl) return;
-  listEl.innerHTML = '<p class="form-hint" style="padding:24px;margin:0">Loading…</p>';
-  apiCall('GET', '/api/admin/users-access')
-    .then(function (data) {
-      if (!data || data.error) {
-        listEl.innerHTML = '<p class="form-hint" style="padding:24px;color:#e05050;margin:0">' + escapeHtml(data && data.error ? data.error : 'Failed to load users') + '</p>';
-        return;
-      }
-      window._bbAccessControlUsers = Array.isArray(data.users) ? data.users : [];
-      renderAdminAccessControl();
-    });
-}
-
-function renderAdminAccessControl() {
-  var listEl = document.getElementById('adminAccessControlList');
-  if (!listEl) return;
-  var users = window._bbAccessControlUsers || [];
-  var qEl = document.getElementById('adminAccessSearch');
-  var fEl = document.getElementById('adminAccessFilter');
-  var q = (qEl && qEl.value ? qEl.value : '').trim().toLowerCase();
-  var f = fEl && fEl.value ? fEl.value : 'all';
-  function isBlocked(u) {
-    var nutBlocked = !u.nutrition_ai_unlimited && (u.nutrition_ai_meal_used >= u.nutrition_ai_meal_limit) && u.nutrition_ai_meal_limit > 0;
-    var trnBlocked = !u.ai_trainer_unlimited && (u.ai_trainer_trial_used >= u.ai_trainer_trial_limit) && u.ai_trainer_trial_limit > 0;
-    return nutBlocked || trnBlocked;
-  }
-  var filtered = users.filter(function (u) {
-    if (q) {
-      var hay = ((u.first_name || '') + ' ' + (u.last_name || '') + ' ' + (u.email || '')).toLowerCase();
-      if (hay.indexOf(q) === -1) return false;
-    }
-    if (f === 'unlimited') return u.nutrition_ai_unlimited && u.ai_trainer_unlimited;
-    if (f === 'trial')     return !u.nutrition_ai_unlimited || !u.ai_trainer_unlimited;
-    if (f === 'blocked')   return isBlocked(u);
-    return true;
-  });
-  if (!filtered.length) {
-    listEl.innerHTML = '<p class="form-hint" style="padding:24px;margin:0;text-align:center">No users match.</p>';
-    return;
-  }
-  listEl.innerHTML = filtered.map(function (u) {
-    var name = ((u.first_name || '') + ' ' + (u.last_name || '')).trim() || u.email || u.id;
-    var nutBlocked = !u.nutrition_ai_unlimited && u.nutrition_ai_meal_limit > 0 && u.nutrition_ai_meal_used >= u.nutrition_ai_meal_limit;
-    var trnBlocked = !u.ai_trainer_unlimited && u.ai_trainer_trial_limit > 0 && u.ai_trainer_trial_used >= u.ai_trainer_trial_limit;
-    var nutBadge = u.nutrition_ai_unlimited ? '<span class="bb-access-badge bb-access-badge-ok">Unlimited</span>' :
-                   (nutBlocked ? '<span class="bb-access-badge bb-access-badge-blocked">Blocked</span>' :
-                                 '<span class="bb-access-badge bb-access-badge-trial">' + (u.nutrition_ai_meal_used) + ' / ' + (u.nutrition_ai_meal_limit) + '</span>');
-    var trnBadge = u.ai_trainer_unlimited ? '<span class="bb-access-badge bb-access-badge-ok">Unlimited</span>' :
-                   (trnBlocked ? '<span class="bb-access-badge bb-access-badge-blocked">Blocked</span>' :
-                                 '<span class="bb-access-badge bb-access-badge-trial">' + (u.ai_trainer_trial_used) + ' / ' + (u.ai_trainer_trial_limit) + '</span>');
-    var idAttr = encodeURIComponent(u.id);
-    return (
-      '<div class="bb-access-card" data-user-id="' + escapeHtml(u.id) + '">' +
-        '<div class="bb-access-card-head">' +
-          '<div class="bb-access-card-name">' + escapeHtml(name) + '</div>' +
-          '<div class="bb-access-card-email">' + escapeHtml(u.email || '') + '</div>' +
-        '</div>' +
-        '<div class="bb-access-row">' +
-          '<div class="bb-access-row-title">🥗 Nutrition AI ' + nutBadge + '</div>' +
-          '<div class="bb-access-row-controls">' +
-            '<label class="bb-access-toggle"><input type="checkbox" id="bb-acc-nut-unl-' + idAttr + '" ' + (u.nutrition_ai_unlimited ? 'checked' : '') + ' onchange="bbAccessToggleChanged(\'' + idAttr + '\', \'nut\')"> Unlimited</label>' +
-            '<label class="bb-access-limit">Meal limit <input type="number" min="0" step="1" id="bb-acc-nut-lim-' + idAttr + '" value="' + (parseInt(u.nutrition_ai_meal_limit, 10) || 0) + '" ' + (u.nutrition_ai_unlimited ? 'disabled' : '') + '></label>' +
-            '<span class="bb-access-used">Used <strong>' + (u.nutrition_ai_meal_used) + '</strong></span>' +
-            '<span class="bb-access-lastused" title="' + escapeHtml(u.nutrition_ai_last_used_at || '') + '">Last used <strong>' + escapeHtml(bbFormatLastUsed(u.nutrition_ai_last_used_at)) + '</strong></span>' +
-            '<button type="button" class="bb-access-reset" onclick="resetAdminAccess(\'' + idAttr + '\', \'nutrition\')">Reset</button>' +
-          '</div>' +
-        '</div>' +
-        '<div class="bb-access-row">' +
-          '<div class="bb-access-row-title">🏋️ AI Trainer ' + trnBadge + '</div>' +
-          '<div class="bb-access-row-controls">' +
-            '<label class="bb-access-toggle"><input type="checkbox" id="bb-acc-trn-unl-' + idAttr + '" ' + (u.ai_trainer_unlimited ? 'checked' : '') + ' onchange="bbAccessToggleChanged(\'' + idAttr + '\', \'trn\')"> Unlimited</label>' +
-            '<label class="bb-access-limit">Trial limit <input type="number" min="0" step="1" id="bb-acc-trn-lim-' + idAttr + '" value="' + (parseInt(u.ai_trainer_trial_limit, 10) || 0) + '" ' + (u.ai_trainer_unlimited ? 'disabled' : '') + '></label>' +
-            '<span class="bb-access-used">Used <strong>' + (u.ai_trainer_trial_used) + '</strong></span>' +
-            '<span class="bb-access-lastused" title="' + escapeHtml(u.ai_trainer_last_used_at || '') + '">Last used <strong>' + escapeHtml(bbFormatLastUsed(u.ai_trainer_last_used_at)) + '</strong></span>' +
-            '<button type="button" class="bb-access-reset" onclick="resetAdminAccess(\'' + idAttr + '\', \'trainer\')">Reset</button>' +
-          '</div>' +
-        '</div>' +
-        '<div class="bb-access-card-actions">' +
-          '<button type="button" class="form-submit" style="width:auto;padding:9px 22px;margin:0" onclick="saveAdminAccess(\'' + idAttr + '\')">Save changes</button>' +
-        '</div>' +
-      '</div>'
-    );
-  }).join('');
-}
+// loadAdminAccessControl / renderAdminAccessControl were removed — AI-access controls
+// now render inline in each Members card via bbMemberAiSection(). The save/reset/toggle
+// handlers below are still used by that section.
 
 function bbAccessToggleChanged(encodedId, which) {
   var limEl = document.getElementById('bb-acc-' + which + '-lim-' + encodedId);
@@ -20063,7 +20387,7 @@ function saveAdminAccess(encodedId) {
         return;
       }
       if (data.user) {
-        var users = window._bbAccessControlUsers || [];
+        var users = window._bbMemberships || [];
         for (var i = 0; i < users.length; i++) {
           if (String(users[i].id) === String(id)) {
             users[i].nutrition_ai_unlimited    = data.user.nutrition_ai_unlimited;
@@ -20078,7 +20402,8 @@ function saveAdminAccess(encodedId) {
           }
         }
       }
-      renderAdminAccessControl();
+      renderAdminMemberships();
+      showPopup('AI access saved', 'AI limits updated for this member.', '', 'OK');
     });
 }
 
@@ -20092,7 +20417,7 @@ function resetAdminAccess(encodedId, feature) {
         alert('Reset failed: ' + (data && data.error ? data.error : 'Unknown error'));
         return;
       }
-      var users = window._bbAccessControlUsers || [];
+      var users = window._bbMemberships || [];
       for (var i = 0; i < users.length; i++) {
         if (String(users[i].id) === String(id)) {
           if (feature === 'nutrition' || feature === 'both') users[i].nutrition_ai_meal_used = 0;
@@ -20100,7 +20425,7 @@ function resetAdminAccess(encodedId, feature) {
           break;
         }
       }
-      renderAdminAccessControl();
+      renderAdminMemberships();
     });
 }
 
@@ -22768,7 +23093,7 @@ function renderSuperadminData(data, readOnly) {
       { lbl: 'Daily check-ins', num: s.daily_checkins },
       { lbl: 'Program assignments', num: s.program_assignments },
       { lbl: 'Approved users', num: s.approved_users },
-      { lbl: 'Pending sign-ups', num: s.pending_signups },
+      { lbl: 'Trials', num: s.trials },
       { lbl: 'Meetings', num: s.meetings },
       { lbl: 'Messages', num: s.messages }
     ].map(function(x) { return '<div class="superadmin-stat"><span class="num">' + (x.num ?? 0) + '</span><span class="lbl">' + (x.lbl || '') + '</span></div>'; }).join('');
@@ -23120,6 +23445,30 @@ window.addEventListener('resize', applySafeAreaFix);
 </style>
 
 <!-- Meal image lightbox -->
+<!-- ===== First-run onboarding (new users) ===== -->
+<div class="modal-overlay" id="bbOnboardModal" aria-hidden="true">
+  <div class="modal" onclick="event.stopPropagation()" style="max-width:min(460px,calc(100vw - 32px))">
+    <h2 style="margin:0 0 4px">Welcome to BodyBank 👋</h2>
+    <p class="form-hint" style="margin:0 0 16px">Two quick taps to personalise your daily targets. You can change these anytime in your profile.</p>
+    <label class="form-label" style="display:block;margin-bottom:6px">What's your main goal?</label>
+    <div id="bbOnbGoals" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px">
+      <button type="button" class="bb-onb-goal" data-goal="Fat loss">🔥 Fat loss</button>
+      <button type="button" class="bb-onb-goal" data-goal="Muscle gain">💪 Muscle gain</button>
+      <button type="button" class="bb-onb-goal" data-goal="Recomp">⚖️ Recomp</button>
+      <button type="button" class="bb-onb-goal" data-goal="General fitness">✨ General</button>
+    </div>
+    <label class="form-label" style="display:block;margin-bottom:8px">Your daily targets</label>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px">
+      <div class="micro-goal-field"><label>Steps</label><input type="number" id="onbSteps" min="0" value="8000"></div>
+      <div class="micro-goal-field"><label>Water (L)</label><input type="number" id="onbWater" min="0" max="15" step="0.1" value="3"></div>
+      <div class="micro-goal-field"><label>Protein (g)</label><input type="number" id="onbProtein" min="0" value="120"></div>
+      <div class="micro-goal-field"><label>Sleep (hrs)</label><input type="number" id="onbSleep" min="0" step="0.5" value="7.5"></div>
+    </div>
+    <button type="button" class="form-submit" style="margin:0 0 10px" onclick="bbFinishOnboarding()">Start my journey</button>
+    <button type="button" onclick="bbSkipOnboarding()" style="display:block;width:100%;background:none;border:none;color:var(--muted);font-size:13px;cursor:pointer;padding:6px">Skip for now</button>
+  </div>
+</div>
+
 <div id="bbCoinHistoryModal" role="dialog" aria-modal="true" onclick="bbCoinHistoryModalBgClose(event)">
   <div class="chm-box" onclick="event.stopPropagation()">
     <div class="chm-head">
