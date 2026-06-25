@@ -30,8 +30,10 @@ function rmrf(dir) {
 }
 
 // Top-level directories under public/ that should NOT be bundled into www/.
-// These are served from the live web instead (see bb-app-config.js URL rewrite).
-const SKIP_TOP_LEVEL = new Set(['videos']);
+// These are served from the live web instead (see bb-app-config.js URL rewrite),
+// or are runtime-generated user data that must never ship inside the app bundle.
+// reports/ = generated user weekly-report PDFs (privacy).
+const SKIP_TOP_LEVEL = new Set(['videos', 'reports']);
 
 function copyDir(src, dst, skipTopLevel) {
   fs.mkdirSync(dst, { recursive: true });
