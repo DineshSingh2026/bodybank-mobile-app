@@ -184,6 +184,196 @@
   }
   hideSplashWhenReady();
 
+  // ---- 7. Native download bridge ----
+  // The web app downloads files by creating <a download href="blob:..."> and
+  // clicking it (blood-report PDFs, progress-report PDFs, CSV exports, meal /
+  // share cards). Android's WebView has no download manager wired up, and a
+  // blob: URL cannot be handed to the native DownloadManager anyway, so those
+  // clicks silently do nothing inside the app.
+  //
+  // Here we intercept the click, read the Blob on the JS side, write it into the
+  // app cache with @capacitor/filesystem, then present the native share sheet
+  // (@capacitor/share) so the user can save it to Files / Drive or open it in a
+  // PDF viewer. FileProvider already exposes cache-path (see AndroidManifest +
+  // res/xml/file_paths.xml), which is what Share needs.
+  (function nativeDownloads() {
+    // Blob URL -> Blob. Several call sites revoke the object URL on the line
+    // right after .click(), so re-fetching the URL asynchronously would race.
+    // Keeping the Blob itself removes the race entirely.
+    var blobRegistry = [];   // [{ url, blob, dead }] — small, LRU-trimmed
+    var MAX_TRACKED = 8;
+    var KEEP_AFTER_REVOKE_MS = 120000;
+
+    function trackBlob(url, blob) {
+      blobRegistry.push({ url: url, blob: blob });
+      while (blobRegistry.length > MAX_TRACKED) blobRegistry.shift();
+    }
+    function lookupBlob(url) {
+      for (var i = blobRegistry.length - 1; i >= 0; i--) {
+        if (blobRegistry[i].url === url) return blobRegistry[i].blob;
+      }
+      return null;
+    }
+    function forgetBlobLater(url) {
+      setTimeout(function () {
+        for (var i = 0; i < blobRegistry.length; i++) {
+          if (blobRegistry[i].url === url) { blobRegistry.splice(i, 1); return; }
+        }
+      }, KEEP_AFTER_REVOKE_MS);
+    }
+
+    try {
+      if (window.URL && typeof URL.createObjectURL === 'function') {
+        var origCreate = URL.createObjectURL.bind(URL);
+        URL.createObjectURL = function (obj) {
+          var url = origCreate(obj);
+          try { if (obj instanceof Blob) trackBlob(url, obj); } catch (e) {}
+          return url;
+        };
+      }
+      if (window.URL && typeof URL.revokeObjectURL === 'function') {
+        var origRevoke = URL.revokeObjectURL.bind(URL);
+        URL.revokeObjectURL = function (url) {
+          // Hold the Blob a little longer so an in-flight save still succeeds,
+          // but let the browser reclaim the URL right away as the page intended.
+          try { forgetBlobLater(url); } catch (e) {}
+          return origRevoke(url);
+        };
+      }
+    } catch (e) { /* ignore */ }
+
+    function toast(message, isError) {
+      try {
+        var el = document.createElement('div');
+        el.textContent = message;
+        el.style.cssText =
+          'position:fixed;left:50%;bottom:96px;transform:translateX(-50%);z-index:2147483647;' +
+          'max-width:88vw;padding:12px 18px;border-radius:12px;font:600 13px/1.4 system-ui,-apple-system,sans-serif;' +
+          'text-align:center;color:#fff;box-shadow:0 8px 28px rgba(0,0,0,.45);' +
+          (isError ? 'background:#8c2b2b;' : 'background:#1d1a12;border:1px solid rgba(200,164,78,.5);color:#f7dd93;');
+        (document.body || document.documentElement).appendChild(el);
+        setTimeout(function () { try { el.remove(); } catch (e) {} }, 3200);
+      } catch (e) { /* ignore */ }
+    }
+
+    function plugins() {
+      var p = window.Capacitor && window.Capacitor.Plugins;
+      return {
+        Filesystem: p && p.Filesystem,
+        Share: p && p.Share
+      };
+    }
+
+    function blobToBase64(blob) {
+      return new Promise(function (resolve, reject) {
+        var reader = new FileReader();
+        reader.onerror = function () { reject(new Error('read failed')); };
+        reader.onload = function () {
+          var s = String(reader.result || '');
+          var comma = s.indexOf(',');
+          resolve(comma >= 0 ? s.slice(comma + 1) : s);
+        };
+        reader.readAsDataURL(blob);
+      });
+    }
+
+    function safeName(name, href) {
+      var n = String(name || '').trim();
+      if (!n) {
+        var m = String(href || '').match(/\/([^\/?#]+)(?:[?#]|$)/);
+        n = (m && m[1]) || 'bodybank-download';
+      }
+      n = n.replace(/[\\\/:*?"<>|]+/g, '-').replace(/\s+/g, ' ').slice(0, 120);
+      return n || 'bodybank-download';
+    }
+
+    // Resolve the anchor's href to a Blob, synchronously where possible.
+    function resolveBlob(href) {
+      if (/^blob:/i.test(href)) {
+        var known = lookupBlob(href);
+        if (known) return Promise.resolve(known);
+        return fetch(href).then(function (r) { return r.blob(); });
+      }
+      if (/^data:/i.test(href)) {
+        return fetch(href).then(function (r) { return r.blob(); });
+      }
+      // Same-origin backend asset (e.g. /uploads/meal.jpg) — rewriteIfBackend
+      // has already pointed it at the live site; cookies are not used for auth
+      // so a plain GET is enough.
+      return fetch(rewriteIfBackend(href)).then(function (r) {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.blob();
+      });
+    }
+
+    function handleDownload(href, filename) {
+      var p = plugins();
+      if (!p.Filesystem || !p.Share) return false; // let the default behaviour run
+
+      var name = safeName(filename, href);
+      toast('Preparing ' + name + '…');
+
+      resolveBlob(href)
+        .then(blobToBase64)
+        .then(function (b64) {
+          return p.Filesystem.writeFile({
+            path: name,
+            data: b64,
+            directory: 'CACHE',
+            recursive: true
+          });
+        })
+        .then(function (res) {
+          return p.Share.share({
+            title: name,
+            files: [res.uri],
+            dialogTitle: 'Save or open ' + name
+          });
+        })
+        .catch(function (err) {
+          // A user dismissing the share sheet rejects too — don't cry wolf.
+          var msg = String((err && (err.message || err)) || '');
+          if (/cancel|abort|dismiss/i.test(msg)) return;
+          toast('Could not save ' + name, true);
+          try { console.warn('[BodyBank App] download failed', err); } catch (e) {}
+        });
+      return true;
+    }
+
+    // Case A: code-driven `a.click()` on an anchor that may never enter the DOM.
+    try {
+      var AnchorProto = window.HTMLAnchorElement && window.HTMLAnchorElement.prototype;
+      if (AnchorProto && typeof AnchorProto.click === 'function') {
+        var origAnchorClick = AnchorProto.click;
+        AnchorProto.click = function () {
+          try {
+            if (this.hasAttribute && this.hasAttribute('download')) {
+              var href = this.getAttribute('href') || '';
+              if (href && handleDownload(href, this.getAttribute('download'))) return;
+            }
+          } catch (e) { /* fall through to native click */ }
+          return origAnchorClick.apply(this, arguments);
+        };
+      }
+    } catch (e) { /* ignore */ }
+
+    // Case B: the user taps a download link that is rendered in the markup.
+    try {
+      document.addEventListener('click', function (ev) {
+        try {
+          var a = ev.target && ev.target.closest && ev.target.closest('a[download]');
+          if (!a) return;
+          var href = a.getAttribute('href') || '';
+          if (!href) return;
+          if (handleDownload(href, a.getAttribute('download'))) {
+            ev.preventDefault();
+            ev.stopPropagation();
+          }
+        } catch (e) { /* ignore */ }
+      }, true);
+    } catch (e) { /* ignore */ }
+  })();
+
   // Debug breadcrumb
   try { console.log('[BodyBank App] API base =', API_BASE); } catch (e) {}
 })();
