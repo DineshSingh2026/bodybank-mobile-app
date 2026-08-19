@@ -1,0 +1,375 @@
+/* ============================================================================
+   BodyBank — Member home
+   Warm, calm and unmistakably a member surface rather than a staff tool: the
+   staff consoles are cool glass, this is warm gold on near-black. Its job is to
+   make the next action obvious, so the loop card is the loudest thing on the
+   page and everything else recedes.
+   ========================================================================== */
+
+#memberHome {
+  --mh-ink: #F6F1E6;
+  --mh-soft: #A9A294;
+  --mh-dim: #7B7364;
+  --mh-gold: #E2C071;
+  --mh-gold-lt: #F7E3AE;
+  --mh-ok: #5FD39A;
+  --mh-warn: #F0BD58;
+  --mh-bad: #F0836B;
+  --mh-glass: linear-gradient(155deg, rgba(255, 255, 255, .075), rgba(255, 255, 255, .02));
+  --mh-glass-hi: linear-gradient(155deg, rgba(255, 255, 255, .115), rgba(255, 255, 255, .035));
+  --mh-edge: rgba(255, 255, 255, .10);
+  --mh-edge-gold: rgba(226, 192, 113, .40);
+  --mh-inner: inset 0 1px 0 rgba(255, 255, 255, .13);
+  --mh-lift: 0 16px 42px rgba(0, 0, 0, .40);
+
+  display: flex; flex-direction: column; gap: 20px;
+  color: var(--mh-ink); font-family: 'Outfit', system-ui, sans-serif; max-width: 1180px;
+}
+#memberHome * { box-sizing: border-box }
+#memberHome button { font-family: inherit }
+
+.mh-head { display: flex; align-items: center; gap: 12px; margin: 0 2px 12px }
+.mh-title { margin: 0; font-size: 12.5px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--mh-soft) }
+.mh-count { font-size: 11.5px; font-weight: 700; color: var(--mh-gold); background: rgba(226, 192, 113, .14); border-radius: 999px; padding: 3px 10px }
+.mh-block { display: flex; flex-direction: column; min-width: 0 }
+.mh-empty { text-align: center; color: var(--mh-soft); padding: 26px 14px; font-size: 13.5px }
+
+/* ------------------------------------------------------------------ hero */
+.mh-hero {
+  position: relative; overflow: hidden; padding: 26px 28px; border-radius: 26px;
+  background:
+    radial-gradient(90% 160% at 100% 0%, rgba(226, 192, 113, .20), transparent 62%),
+    var(--mh-glass-hi);
+  border: 1px solid var(--mh-edge); box-shadow: var(--mh-lift), var(--mh-inner);
+  display: flex; flex-direction: column; gap: 20px;
+}
+.mh-hero-top { display: flex; align-items: center; gap: 15px }
+.mh-avatar {
+  width: 56px; height: 56px; border-radius: 20px; flex: none; overflow: hidden;
+  display: grid; place-items: center; font-size: 19px; font-weight: 700; color: var(--mh-gold-lt);
+  background: linear-gradient(150deg, rgba(226, 192, 113, .30), rgba(226, 192, 113, .08));
+  border: 1px solid var(--mh-edge-gold);
+}
+.mh-avatar img { width: 100%; height: 100%; object-fit: cover; object-position: center 25% }
+.mh-hero-id { min-width: 0; flex: 1 }
+.mh-eyebrow { font-size: 11.5px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--mh-gold) }
+.mh-greet { font-size: clamp(21px, 2.6vw, 29px); font-weight: 600; letter-spacing: -.028em; line-height: 1.15; margin: 5px 0 0 }
+.mh-refresh {
+  width: 38px; height: 38px; border-radius: 13px; flex: none; cursor: pointer; font-size: 16px;
+  background: rgba(255, 255, 255, .06); border: 1px solid var(--mh-edge); color: var(--mh-gold);
+}
+.mh-refresh:hover { background: rgba(226, 192, 113, .14) }
+.mh-refresh.is-busy { animation: mhSpin .9s linear infinite }
+@keyframes mhSpin { to { transform: rotate(360deg) } }
+
+.mh-line { font-size: clamp(14.5px, 1.3vw, 16.5px); color: var(--mh-soft); line-height: 1.6; margin: 0 }
+.mh-line b { color: var(--mh-gold-lt); font-weight: 700 }
+
+.mh-hero-row { display: flex; align-items: center; gap: 22px; flex-wrap: wrap }
+.mh-streak { display: flex; align-items: baseline; gap: 8px; flex: none }
+.mh-streak b { font-size: 40px; font-weight: 700; letter-spacing: -.05em; line-height: 1; color: var(--mh-gold-lt); font-variant-numeric: tabular-nums }
+.mh-streak span { font-size: 12.5px; color: var(--mh-soft) }
+.mh-week { display: flex; gap: 7px; flex: 1; min-width: 180px }
+.mh-day {
+  flex: 1; min-width: 0; height: 40px; border-radius: 12px; position: relative;
+  background: rgba(255, 255, 255, .06); border: 1px solid var(--mh-edge);
+  display: grid; place-items: center;
+}
+.mh-day i { font-style: normal; font-size: 11px; font-weight: 700; color: var(--mh-dim) }
+.mh-day.on { background: linear-gradient(160deg, var(--mh-gold-lt), var(--mh-gold)); border-color: transparent }
+.mh-day.on i { color: #211803 }
+.mh-day.today { box-shadow: 0 0 0 2px rgba(226, 192, 113, .45) }
+
+/* ------------------------------------------------------------ daily loop */
+/* One card, not one per task. The rail carries progress, the next action
+   carries the only gold button on the page, the rest are one-line rows, and
+   finished work collapses to a ledger that keeps the numbers logged. */
+.mh-day-card {
+  padding: 0; border-radius: 22px; overflow: hidden;
+  background: var(--mh-glass); border: 1px solid var(--mh-edge); box-shadow: var(--mh-inner), var(--mh-lift);
+}
+
+/* progress rail — one segment per task, so "how far through today" is pre-attentive */
+.mh-rail { display: flex; gap: 5px; padding: 11px 11px 9px }
+.mh-rail i {
+  flex: 1; height: 5px; border-radius: 999px; background: rgba(255, 255, 255, .14);
+  transition: background .4s ease, box-shadow .4s ease;
+}
+.mh-rail i.on {
+  background: linear-gradient(90deg, var(--mh-gold), var(--mh-gold-lt));
+  box-shadow: 0 0 12px rgba(226, 192, 113, .5);
+}
+
+/* the one thing to do now */
+.mh-next {
+  display: flex; align-items: center; gap: 16px; padding: 18px 20px 20px;
+  background:
+    radial-gradient(120% 160% at 0% 0%, rgba(226, 192, 113, .13), transparent 62%),
+    linear-gradient(180deg, rgba(226, 192, 113, .05), transparent);
+}
+.mh-next-ico {
+  width: 46px; height: 46px; flex: none; border-radius: 15px; display: grid; place-items: center; font-size: 21px;
+  background: rgba(226, 192, 113, .15); border: 1px solid var(--mh-edge-gold);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .16);
+}
+.mh-next-main { flex: 1; min-width: 0 }
+.mh-kicker {
+  display: block; font-size: 10px; font-weight: 800; letter-spacing: .17em; text-transform: uppercase;
+  color: var(--mh-gold); margin-bottom: 5px;
+}
+.mh-next-title { font-size: 19px; font-weight: 600; letter-spacing: -.02em; line-height: 1.2 }
+.mh-next-sub { font-size: 13px; color: var(--mh-soft); margin-top: 4px; line-height: 1.45 }
+.mh-next-cta {
+  flex: none; padding: 13px 20px; border-radius: 14px; border: 0; cursor: pointer; white-space: nowrap;
+  display: inline-flex; align-items: center; gap: 9px;
+  font-size: 14px; font-weight: 700; color: #211803;
+  background: linear-gradient(105deg, var(--mh-gold-lt), var(--mh-gold));
+  box-shadow: 0 10px 26px rgba(226, 192, 113, .3); transition: filter .18s, transform .18s;
+}
+.mh-next-cta em { font-style: normal; transition: transform .18s }
+.mh-next-cta:hover { filter: brightness(1.06) }
+.mh-next-cta:hover em { transform: translateX(3px) }
+
+/* everything else still to do — the row itself is the target, no button chrome */
+.mh-rows { display: flex; flex-direction: column; border-top: 1px solid var(--mh-edge) }
+.mh-row {
+  display: flex; align-items: center; gap: 13px; width: 100%; text-align: left; cursor: pointer;
+  padding: 14px 20px; background: transparent; border: 0; border-bottom: 1px solid rgba(255, 255, 255, .05);
+  color: var(--mh-ink); transition: background .16s;
+}
+.mh-row:last-child { border-bottom: 0 }
+.mh-row:hover { background: rgba(255, 255, 255, .045) }
+.mh-row.soft { opacity: .62 }
+.mh-row-ico {
+  width: 30px; height: 30px; flex: none; border-radius: 10px; display: grid; place-items: center; font-size: 15px;
+  background: rgba(255, 255, 255, .055); border: 1px solid var(--mh-edge);
+}
+.mh-row-t { font-size: 14.5px; font-weight: 600; letter-spacing: -.01em; flex: none; margin-right: 2px }
+.mh-row-note {
+  flex: 1; min-width: 0; font-size: 12.5px; color: var(--mh-dim);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.mh-row-go { flex: none; font-size: 19px; color: var(--mh-dim); transition: transform .16s, color .16s }
+.mh-row:hover .mh-row-go { color: var(--mh-gold); transform: translateX(3px) }
+
+/* finished work — the reward without the bulk */
+.mh-ledger { display: flex; flex-direction: column; background: rgba(0, 0, 0, .22); border-top: 1px solid var(--mh-edge) }
+.mh-led {
+  display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; cursor: pointer;
+  padding: 11px 20px; background: transparent; border: 0; color: var(--mh-soft); transition: color .16s;
+}
+.mh-led:hover { color: var(--mh-ink) }
+.mh-led-tick {
+  width: 19px; height: 19px; flex: none; border-radius: 999px; display: grid; place-items: center;
+  font-size: 11px; font-weight: 800; color: #06301F; background: var(--mh-ok);
+}
+.mh-led-t { font-size: 13px; font-weight: 600; flex: none }
+.mh-led-v {
+  flex: 1; min-width: 0; font-size: 12px; color: var(--mh-dim); text-align: right;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+
+/* nothing left — make it a moment, not an empty list */
+.mh-day-card.is-done { border-color: rgba(95, 211, 154, .3) }
+.mh-day-card.is-done .mh-rail i.on {
+  background: linear-gradient(90deg, var(--mh-ok), #A7EFCE); box-shadow: 0 0 12px rgba(95, 211, 154, .45);
+}
+.mh-alldone {
+  display: flex; align-items: center; gap: 15px; padding: 20px;
+  background: radial-gradient(120% 160% at 0% 0%, rgba(95, 211, 154, .14), transparent 62%);
+}
+.mh-alldone-ring {
+  width: 44px; height: 44px; flex: none; border-radius: 999px; display: grid; place-items: center;
+  font-size: 21px; font-weight: 800; color: var(--mh-ok);
+  background: rgba(95, 211, 154, .14); border: 2px solid rgba(95, 211, 154, .5);
+}
+.mh-alldone-t b { display: block; font-size: 18px; font-weight: 600; letter-spacing: -.02em }
+.mh-alldone-t span { display: block; font-size: 13px; color: var(--mh-soft); margin-top: 3px }
+
+/* --------------------------------------------------------- today's goals */
+.mh-goals { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 11px }
+.mh-goal { padding: 14px 15px; border-radius: 17px; background: var(--mh-glass); border: 1px solid var(--mh-edge); box-shadow: var(--mh-inner) }
+.mh-goal-top { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin-bottom: 9px }
+.mh-goal-top span { font-size: 12px; color: var(--mh-soft); text-transform: uppercase; letter-spacing: .08em; font-weight: 600 }
+.mh-goal-top b { font-size: 16px; font-weight: 700; color: var(--mh-ink); font-variant-numeric: tabular-nums; white-space: nowrap }
+.mh-goal-top i { font-style: normal; font-size: 12px; color: var(--mh-dim); font-weight: 500 }
+.mh-goal-track { height: 7px; border-radius: 99px; background: rgba(255, 255, 255, .08); overflow: hidden }
+.mh-goal-fill { display: block; height: 100%; border-radius: 99px; background: linear-gradient(90deg, var(--mh-gold), var(--mh-gold-lt)); transition: width .8s cubic-bezier(.2, .8, .2, 1) }
+.mh-goal-fill.ok { background: linear-gradient(90deg, var(--mh-ok), #8FE8BE) }
+.mh-goal-fill.low { background: linear-gradient(90deg, var(--mh-bad), #FFB49B) }
+
+/* -------------------------------------------------------------- uploads */
+.mh-uploads { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px }
+.mh-up {
+  display: flex; flex-direction: column; gap: 12px; padding: 20px 21px; border-radius: 22px;
+  background: var(--mh-glass); border: 1px dashed var(--mh-edge-gold); box-shadow: var(--mh-inner);
+}
+.mh-up-top { display: flex; align-items: flex-start; gap: 13px }
+.mh-up-ico {
+  width: 44px; height: 44px; border-radius: 15px; flex: none; display: grid; place-items: center; font-size: 21px;
+  background: rgba(226, 192, 113, .13); border: 1px solid var(--mh-edge-gold);
+}
+.mh-up-id { min-width: 0; flex: 1 }
+.mh-up-title { font-size: 17px; font-weight: 600; letter-spacing: -.015em }
+.mh-up-sub { font-size: 13px; color: var(--mh-soft); margin-top: 4px; line-height: 1.55 }
+.mh-up-state { display: flex; flex-wrap: wrap; gap: 6px }
+.mh-tag {
+  font-size: 11.5px; font-weight: 600; padding: 4px 11px; border-radius: 999px; white-space: nowrap;
+  background: rgba(255, 255, 255, .07); color: var(--mh-soft); border: 1px solid rgba(255, 255, 255, .07);
+}
+.mh-tag.ok { background: rgba(95, 211, 154, .15); color: #9DEBC5; border-color: rgba(95, 211, 154, .28) }
+.mh-tag.warn { background: rgba(240, 189, 88, .15); color: #FFE0A6; border-color: rgba(240, 189, 88, .28) }
+.mh-up-btn {
+  padding: 13px 18px; border-radius: 15px; border: 0; cursor: pointer; width: 100%;
+  font-size: 14px; font-weight: 700; color: #211803;
+  background: linear-gradient(105deg, var(--mh-gold-lt), var(--mh-gold));
+  box-shadow: 0 8px 22px rgba(226, 192, 113, .26); transition: filter .18s;
+}
+.mh-up-btn:hover { filter: brightness(1.07) }
+.mh-up-btn[disabled] { opacity: .45; cursor: not-allowed; filter: none; box-shadow: none }
+.mh-up-hint { font-size: 12px; color: var(--mh-dim); line-height: 1.5 }
+.mh-say { display: none; font-size: 13px; line-height: 1.55; padding: 10px 13px; border-radius: 12px;
+  background: rgba(255, 255, 255, .05); border: 1px solid var(--mh-edge); color: var(--mh-soft) }
+.mh-say.ok { background: rgba(95, 211, 154, .12); border-color: rgba(95, 211, 154, .3); color: #A8EFCD }
+.mh-say.bad { background: rgba(240, 131, 107, .12); border-color: rgba(240, 131, 107, .32); color: #FFC0AE }
+.mh-say b { color: var(--mh-ink) }
+
+/* ------------------------------------------------------------ everything */
+.mh-nav { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px }
+.mh-navtile {
+  position: relative; display: flex; align-items: center; gap: 13px; padding: 16px 17px; cursor: pointer; text-align: left;
+  border-radius: 19px; background: var(--mh-glass); border: 1px solid var(--mh-edge); color: var(--mh-ink);
+  box-shadow: var(--mh-inner); transition: all .18s;
+}
+.mh-navtile:hover { transform: translateY(-3px); background: var(--mh-glass-hi); border-color: var(--mh-edge-gold); box-shadow: var(--mh-lift), var(--mh-inner) }
+.mh-navico { font-size: 22px; flex: none; line-height: 1 }
+.mh-navmain { min-width: 0 }
+.mh-navmain b { display: block; font-size: 14.5px; font-weight: 600; letter-spacing: -.01em }
+.mh-navmain i { display: block; font-style: normal; font-size: 12px; color: var(--mh-soft); margin-top: 3px }
+.mh-navbadge {
+  position: absolute; top: 11px; right: 12px; min-width: 20px; height: 20px; padding: 0 6px; border-radius: 999px;
+  background: linear-gradient(150deg, #FFB49B, var(--mh-bad)); color: #2A100A;
+  font-size: 11px; font-weight: 800; line-height: 20px; text-align: center;
+}
+
+/* a quiet divider before everything the old home already showed */
+.mh-more { display: flex; align-items: center; gap: 14px; margin: 6px 2px 0 }
+.mh-more span { font-size: 12px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--mh-dim); white-space: nowrap }
+.mh-more::after { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, var(--mh-edge), transparent) }
+
+@media (max-width: 900px) {
+  .mh-goals { grid-template-columns: repeat(2, minmax(0, 1fr)) }
+  .mh-uploads { grid-template-columns: minmax(0, 1fr) }
+  .mh-nav { grid-template-columns: repeat(2, minmax(0, 1fr)) }
+}
+@media (max-width: 767px) {
+  #memberHome { gap: 17px }
+  .mh-hero { padding: 19px 17px; border-radius: 22px; gap: 17px }
+  .mh-greet { font-size: 22px }
+  .mh-avatar { width: 48px; height: 48px; border-radius: 17px; font-size: 17px }
+  .mh-hero-row { gap: 14px }
+  .mh-streak b { font-size: 33px }
+  .mh-week { gap: 5px; min-width: 0 }
+  .mh-day { height: 34px; border-radius: 10px }
+  /* the next action stacks so its button spans the thumb, the rows stay single-line */
+  .mh-next { flex-wrap: wrap; padding: 16px 16px 18px; gap: 13px }
+  .mh-next-ico { width: 40px; height: 40px; border-radius: 13px; font-size: 19px }
+  .mh-next-title { font-size: 17.5px }
+  .mh-next-main { flex: 1 1 60% }
+  .mh-next-cta { width: 100%; justify-content: center }
+  .mh-row { padding: 13px 16px; gap: 11px }
+  .mh-row-note { display: none }
+  .mh-row-t { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+  .mh-led { padding: 10px 16px }
+  /* the numbers logged are the reward, so keep them — just let them truncate */
+  .mh-led-t { max-width: 45%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+  .mh-led-v { font-size: 11.5px }
+  .mh-alldone { padding: 17px 16px }
+  .mh-up { padding: 17px }
+  .mh-navtile { padding: 14px 15px; border-radius: 17px }
+  .mh-navmain b { font-size: 13.5px }
+  .mh-navmain i { font-size: 11.5px }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mh-goal-fill { transition: none }
+  .mh-refresh.is-busy { animation: none }
+  .mh-navtile:hover, .mh-next-cta:hover em, .mh-row:hover .mh-row-go { transform: none }
+  .mh-rail i { transition: none }
+}
+
+/* ------------------------------------------------- sequencing the page --- */
+/* Retired duplicates. !important because several of these are switched on by
+   viewport rules elsewhere (#usec-home .bb-user-desktop-dashboard{display:block
+   !important} among them). */
+.mh-gone { display: none !important }
+
+/* Widgets moved in from the old panes keep their own internals; these rules
+   only make them sit correctly inside the new sequence. */
+.mh-slot > * { margin-bottom: 0 !important }
+.mh-two { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; align-items: start }
+.mh-two > * { min-width: 0 }
+#mhSlotScore > *, #mhSlotWeek > *, #mhSlotTrends > *, #mhSlotActivity > *, #mhSlotReports > * { width: 100% }
+#mhSlotWeek { display: grid; gap: 12px }
+#mhSlotTrends > * { margin: 0 }
+#mhSlotPush { margin-top: 4px }
+
+/* the pills row lifted out of the old hero (freeze, refer, signal, readiness) */
+.mh-pills { display: flex; flex-wrap: wrap; gap: 8px }
+.mh-pills > * { margin: 0 !important }
+
+@media (max-width: 900px) {
+  .mh-two { grid-template-columns: minmax(0, 1fr) }
+}
+
+/* The desktop top bar carries coins, notifications and logout, so it is hoisted
+   to the very top of the page. Two corrections that follow from moving it:
+   its greeting repeats the hero right beneath it, and on a phone the shell
+   already has its own header, so the bar has no business being there. */
+#usec-home > .user-topbar > :first-child { display: none }
+@media (max-width: 767px) {
+  #usec-home > .user-topbar { display: none !important }
+}
+
+/* Moving these widgets out of the two legacy panes also took them out of the
+   viewport gating those panes provided, so the mobile and desktop variants of
+   the same card both showed up at once. Re-state the intent explicitly. */
+@media (max-width: 767px) {
+  #mhSlotBody > #bbRdHomeSectionDesktop,
+  #mhSlotBody > #bbSigHomeSectionDesktop,
+  #mhSlotScore > #bbScorecardDesktopWrap,
+  /* .bb-stat-grid, the charts and the activity table are filled only by
+     bbRefreshDesktopUserDashboard, which the shell runs at >=768px — on a phone
+     they would sit on "Loading…" for ever. */
+  #mhSlotWeek > .bb-stat-grid,
+  #mhSecTrends, #mhSecActivity { display: none !important }
+}
+@media (min-width: 768px) {
+  #mhSlotBody > #bbRdHome,
+  #mhSlotBody > #bbSigHome,
+  #mhSlotScore > .bb-pulse-score,
+  #mhSlotWeek > #bbPulsePillars { display: none !important }
+}
+/* the health-reports panel owns blood entirely now, so it sits full width */
+#mhSlotReports { margin-top: 14px }
+#mhSlotReports > * { width: 100% }
+.mh-uploads:has(> .mh-up:only-child) { grid-template-columns: minmax(0, 1fr) }
+@media (max-width: 767px) { #mhSlotReports > #myHealthReportsSectionDesktop { display: none !important } }
+@media (min-width: 768px) { #mhSlotReports > #myHealthReportsSection { display: none !important } }
+@media (max-width: 767px) { #mhSlotPush > #pushEnableWrapDesktop { display: none !important } }
+@media (min-width: 768px) { #mhSlotPush > #pushEnableWrap { display: none !important } }
+/* three empty slots stacked full width ate a whole screen on a wide monitor */
+@media (min-width: 900px) {
+  #mhSlotReports .bb-blood-slots { grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: start }
+}
+
+/* ------------------------------------------------- arriving from the loop --- */
+/* "Log a meal" drops you inside the daily form, so flag where you landed. Lives
+   here rather than in the check-in styles because the member home is what sends
+   people there; the selector is unscoped because the target sits outside it. */
+.bb-focus-flash { animation: bbFocusFlash 1.6s ease-out 1 }
+@keyframes bbFocusFlash {
+  0%   { box-shadow: 0 0 0 0 rgba(226, 192, 113, 0) }
+  18%  { box-shadow: 0 0 0 3px rgba(226, 192, 113, .55), 0 12px 34px rgba(226, 192, 113, .18) }
+  100% { box-shadow: 0 0 0 0 rgba(226, 192, 113, 0) }
+}
+@media (prefers-reduced-motion: reduce) { .bb-focus-flash { animation: none } }
