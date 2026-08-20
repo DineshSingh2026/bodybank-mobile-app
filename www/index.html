@@ -94,10 +94,26 @@ nav{position:fixed;top:0;left:0;right:0;z-index:10010;display:flex;align-items:c
 body.site-nav-hidden nav#nv{display:none !important}
 .nb{display:flex;align-items:center;text-decoration:none;flex-shrink:0}
 .nav-logo-img{height:54px;width:auto;object-fit:contain;mix-blend-mode:lighten}
-.nm{display:flex;gap:28px;list-style:none;align-items:center;flex-shrink:1;min-width:0}
+/* Never shrink: a shrunk .nm still renders full-width nowrap text, which is
+   what overlapped the tagline and the buttons. Let the breakpoint decide. */
+.nm{display:flex;gap:24px;list-style:none;align-items:center;flex-shrink:0}
+@media(max-width:1560px){
+  /* the tagline is brand garnish and the widest thing we can lose */
+  .nav-tagline{display:none}
+}
+@media(max-width:1400px){
+  .nm{gap:18px}
+  .nm a{letter-spacing:1.3px}
+}
 .nm a{color:var(--creamd);text-decoration:none;font-size:12px;font-weight:500;letter-spacing:2px;text-transform:uppercase;transition:color .3s;white-space:nowrap}
 .nm a:hover{color:var(--gold)}
 .nav-right{display:flex;align-items:center;gap:10px;flex-shrink:0}
+/* The second door in the hero: quiet, but named, so 'where do I sign up?'
+   has a visible answer without scrolling. */
+.hero-alt{margin-top:18px;font-family:'Outfit',sans-serif;font-size:13px;line-height:1.7;color:var(--creamd,#bfb9ab)}
+.hero-alt a{color:var(--gold);font-weight:700;text-decoration:none;border-bottom:1px solid rgba(200,164,78,0.4);padding-bottom:1px;transition:border-color .25s}
+.hero-alt a:hover{border-color:var(--gold)}
+@media(max-width:600px){.hero-alt{font-size:12.5px;margin-top:15px}}
 .nav-tagline{font-family:'Outfit',sans-serif;font-size:13px;font-weight:500;letter-spacing:2px;text-transform:uppercase;white-space:nowrap;color:var(--gold);padding-left:12px;border-left:1px solid rgba(200,164,78,0.4);opacity:.95}
 .nav-login{padding:9px 22px;border:1.5px solid var(--gold);border-radius:6px;background:transparent;color:var(--cream);font-family:'Outfit',sans-serif;font-weight:600;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:all .3s;text-decoration:none}
 .nav-login:hover{background:rgba(200,164,78,0.1)}
@@ -105,13 +121,43 @@ body.site-nav-hidden nav#nv{display:none !important}
 .nav-cta:hover{transform:translateY(-1px);box-shadow:0 4px 20px rgba(200,164,78,0.3)}
 .nav-login-btn{display:inline-flex;align-items:center;justify-content:center}
 .nav-login-btn.desktop-only{display:inline-flex}
+/* Login and Join are a matched pair: same size, same shape, different weight,
+   so they read as two doors rather than one button and a stray link. Login was
+   desktop-only, which is why the phone felt like it had no way in at all. */
+.nav-quiet{
+  font-family:'Outfit',sans-serif;font-size:12px;font-weight:700;letter-spacing:1.5px;
+  text-transform:uppercase;text-decoration:none;white-space:nowrap;
+  display:inline-flex;align-items:center;justify-content:center;
+  min-height:40px;padding:0 18px;border-radius:6px;
+  color:var(--gold,#c8a44e);background:transparent;
+  border:1px solid rgba(200,164,78,0.55);
+  transition:background .25s,border-color .25s;
+}
+.nav-quiet:hover{background:rgba(200,164,78,0.12);border-color:var(--gold,#c8a44e)}
+/* the filled twin carries the same box so the pair lines up exactly */
+.nav-join{flex-shrink:0;white-space:nowrap;display:inline-flex;align-items:center;min-height:40px;padding:0 18px;border:1px solid transparent}
+@media(max-width:900px){
+  /* both stay on screen — the pair is the point */
+  .nav-right .nav-quiet,.nav-right .nav-join{
+    display:inline-flex !important;align-items:center;
+    min-height:44px;padding:0 14px;font-size:11px;letter-spacing:1.1px;
+  }
+}
+@media(max-width:360px){
+  .nb{max-width:min(120px,32vw)}
+  .nav-right .nav-quiet{padding:0 5px !important;font-size:10.5px;letter-spacing:.4px}
+  .nav-right .nav-join{padding:0 12px;font-size:11px;letter-spacing:.8px}
+  nav{padding-left:max(14px,env(safe-area-inset-left));padding-right:max(14px,env(safe-area-inset-right))}
+}
+@media(max-width:400px){
+  .nav-right .nav-quiet,.nav-right .nav-join{padding:0 11px;font-size:10.5px;letter-spacing:.8px}
+  .nav-right{gap:6px}
+}
 .nt{display:none;background:none;border:none;cursor:pointer;flex-direction:column;gap:5px;padding:10px;min-width:44px;min-height:44px;justify-content:center;align-items:center}
 .nt span{display:block;width:24px;height:1.5px;background:var(--gold)}
-.mm{display:none;position:fixed;inset:0;background:rgba(6,6,6,0.97);z-index:99;flex-direction:column;align-items:center;justify-content:center;gap:28px;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
-.mm.open{display:flex}
-.mm a{color:var(--cream);text-decoration:none;font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:4px;padding:12px;min-height:48px;display:flex;align-items:center}
-.mm a:hover{color:var(--gold)}
-.mm-c{position:absolute;top:max(18px,env(safe-area-inset-top));right:max(24px,env(safe-area-inset-right));background:none;border:none;color:var(--gold);font-size:30px;cursor:pointer;padding:8px;min-width:44px;min-height:44px}
+/* The mobile menu lives in /css/mobile-menu.css — one definition for every
+   public page, so the four copies can never drift apart again. */
+
 
 /* PWA Add to Home Screen */
 .pwa-add-homescreen.standalone-hidden{display:none !important}
@@ -122,7 +168,7 @@ body.site-nav-hidden nav#nv{display:none !important}
 .nav-refresh-btn:hover{background:rgba(200,164,78,0.1);border-color:var(--gold)}
 .nav-refresh-btn svg{width:16px;height:16px;display:block}
 .admin-nav-link.pwa-add-homescreen,.user-sidebar-link.pwa-add-homescreen,.mm .pwa-add-homescreen{cursor:pointer;flex-shrink:0}
-.mm .pwa-add-homescreen{color:var(--cream);text-decoration:none;font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:4px;padding:12px;min-height:48px;display:flex;align-items:center;background:none;border:none;width:100%;justify-content:center;font:inherit}
+.mm .pwa-add-homescreen{color:var(--muted,#8a8880);text-decoration:none;font-family:inherit;font-size:12.5px;letter-spacing:.06em;padding:12px;min-height:44px;display:flex;align-items:center;background:none;border:none;width:100%;justify-content:center}
 .mm .pwa-add-homescreen:hover{color:var(--gold)}
 .pwa-ios-modal{position:fixed;inset:0;z-index:100020;background:rgba(6,6,6,0.95);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;padding-left:max(24px,env(safe-area-inset-left));padding-right:max(24px,env(safe-area-inset-right));padding-bottom:max(24px,env(safe-area-inset-bottom));padding-top:max(24px,env(safe-area-inset-top))}
 .pwa-ios-modal.hidden{display:none}
@@ -657,19 +703,42 @@ body.admin-dashboard-open .wa-public-fab{display:none!important}
 .rv{opacity:0;transform:translateY(32px);transition:opacity .8s ease,transform .8s ease}
 .rv.v{opacity:1;transform:translateY(0)}
 
+@media(max-width:1280px){
+  .nm{display:none}
+  .nt{display:flex}
+}
+
 @media(max-width:900px){
   body{font-size:17px;line-height:1.65}
-  nav{padding:10px 28px;padding-left:max(20px,env(safe-area-inset-left));padding-right:max(28px,env(safe-area-inset-right));padding-top:max(20px,env(safe-area-inset-top));gap:12px;min-width:0}
+  nav{padding:8px 28px;padding-left:max(18px,env(safe-area-inset-left));padding-right:max(18px,env(safe-area-inset-right));padding-top:max(10px,env(safe-area-inset-top));gap:12px;min-width:0}
   .nm{display:none}
   .nb{flex-shrink:1;min-width:0;max-width:min(240px,46vw)}
   .nav-logo-img{max-width:100%;width:auto;height:auto;object-fit:contain}
   .nav-right{display:flex;align-items:center;gap:10px;margin-left:auto;flex:1;min-width:0;justify-content:flex-end}
   .nav-tagline{flex:1 1 auto;min-width:0;max-width:100%;overflow:hidden;text-overflow:ellipsis}
-  .nt{display:flex;flex-shrink:0;margin-left:0;padding:10px 12px;min-width:48px;min-height:48px}
+  .nt{display:flex;flex-shrink:0;margin-left:0;padding:10px 10px;min-width:44px;min-height:44px}
+  /* a slimmer bar: the logo was eating a third of the width */
+  nav{gap:10px}
+  .nb{max-width:min(150px,38vw)}
+  .nav-logo-img{height:38px}
+  .nav-right{gap:4px}
+  /* Login: a word, not a box */
+  .nav-right .nav-quiet{
+    border:0 !important;background:transparent !important;
+    padding:0 8px !important;min-height:44px;
+    font-size:11px;letter-spacing:.9px;color:var(--creamd,#bfb9ab);
+  }
+  .nav-right .nav-quiet:active{color:var(--gold)}
+  /* Join: the only filled thing on the bar */
+  .nav-right .nav-join{
+    min-height:44px;padding:0 16px;border-radius:22px;
+    font-size:11.5px;letter-spacing:1.2px;
+    box-shadow:0 6px 16px -8px rgba(200,164,78,0.9);
+  }
   .pwa-standalone nav{padding-right:max(36px,env(safe-area-inset-right))}
   .pwa-standalone .nav-right{gap:16px}
   .pwa-standalone .nt{margin-left:14px;padding:10px 14px}
-  .nav-login-btn.desktop-only{display:none !important}
+  .nav-tagline{display:none}
   .nav-tagline{font-size:11px;font-weight:500;letter-spacing:1.5px;padding-left:8px;border-left-width:1px}
   .nav-logo-img{height:46px}
   .hero{padding:calc(100px + env(safe-area-inset-top,0px)) 24px calc(60px + env(safe-area-inset-bottom,0px));min-height:min(var(--app-height),720px)}
@@ -717,14 +786,14 @@ body.admin-dashboard-open .wa-public-fab{display:none!important}
   .scroll-ind{width:20px;height:32px}
   .sec{padding:26px 16px}.sec-heading{font-size:36px}.sec-sub{font-size:16px;margin-bottom:18px}.sec-label{font-size:12px}
   .nav-logo-img{height:44px}
-  .mm a{font-size:28px}
+  .mm a.mm-link{font-size:28px}
   .plx-body{padding:4px 16px 18px 64px}
   .phase-heading-top{font-size:15px;letter-spacing:3px}
   .phase-heading-bot{font-size:clamp(32px,10vw,48px)}
   .fail-item h4{font-size:16px}.fail-item p{font-size:16px}
   .origin-inner p{font-size:18px}
   .fq{font-size:17px}.fa{font-size:16px}
-  nav{padding:10px 24px;padding-left:max(16px,env(safe-area-inset-left));padding-right:max(24px,env(safe-area-inset-right));padding-top:max(20px,env(safe-area-inset-top))}
+  nav{padding:8px 24px;padding-left:max(16px,env(safe-area-inset-left));padding-right:max(16px,env(safe-area-inset-right));padding-top:max(10px,env(safe-area-inset-top))}
   .pwa-standalone nav{padding-right:max(32px,env(safe-area-inset-right))}
   .pwa-standalone .nav-right{gap:14px}
   .pwa-standalone .nt{margin-left:12px;padding:10px 12px}
@@ -1880,6 +1949,56 @@ body.admin-dashboard-open .wa-public-fab{display:none!important}
 .bb-slot-free{color:#3dd68c;font-weight:700}
 .bb-slot-fullw{color:#f5a623;font-weight:700}
 
+/* ═══════════════════════════════════════════════════════════════════════
+   MY HEALTH REPORTS — the member's own panel ("bb-hr")
+   This was three tall cards, each with its own blood-drop, its own
+   "No report uploaded" and its own full-width gold button — four shouts of
+   the same action on one screen, and most of a phone screen spent saying
+   nothing had happened yet. It is now ONE panel: a slot counter, and three
+   quiet rows that grow into real entries as reports arrive.
+   ═══════════════════════════════════════════════════════════════════════ */
+.bb-hr-meta{display:flex;align-items:center;gap:10px;margin:0 0 10px;font-size:12px;color:var(--muted,#8a8880)}
+.bb-hr-panel{border:1px solid rgba(255,255,255,0.09);border-radius:14px;background:rgba(255,255,255,0.02);overflow:hidden}
+.bb-hr-row{display:flex;align-items:center;gap:12px;min-height:58px;padding:13px 14px;border-top:1px solid rgba(255,255,255,0.07);box-sizing:border-box}
+.bb-hr-row:first-child{border-top:0}
+/* the slot number, so no row has to shout "BLOOD REPORT 1" at it */
+.bb-hr-n{flex:none;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-size:11.5px;font-weight:700;font-variant-numeric:tabular-nums;color:var(--muted,#8a8880);border:1px dashed rgba(255,255,255,0.22)}
+.bb-hr-row.is-full .bb-hr-n{color:var(--gold,#c8a44e);border:1px solid rgba(200,164,78,0.5);background:rgba(200,164,78,0.1)}
+.bb-hr-main{flex:1;min-width:0}
+.bb-hr-t{font-size:13.5px;font-weight:650;color:var(--cream,#f0ede8);line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bb-hr-s{font-size:11.5px;color:var(--muted,#8a8880);line-height:1.4;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bb-hr-dot{display:inline-block;width:6px;height:6px;border-radius:50%;margin-right:5px;vertical-align:middle}
+.bb-hr-act{flex:none;display:flex;align-items:center;gap:6px}
+/* one button vocabulary: quiet ghost everywhere, because the panel header
+   already carries the single gold call to action */
+.bb-hr-btn{font:inherit;font-size:11.5px;font-weight:650;padding:6px 12px;border-radius:8px;cursor:pointer;white-space:nowrap;border:1px solid rgba(200,164,78,0.4);background:rgba(200,164,78,0.1);color:var(--gold,#c8a44e)}
+.bb-hr-btn:hover{background:rgba(200,164,78,0.18)}
+.bb-hr-note{font-size:11px;color:var(--muted,#8a8880);white-space:nowrap}
+/* Nothing uploaded yet. Three empty rows and a grey ghost button made the
+   one thing a member can do here the quietest thing on the screen, so the
+   empty state is now a single drop target that says what to send and what
+   happens next. Click anywhere on it, or drag a file onto it. */
+.bb-hr-empty{display:block;width:100%;box-sizing:border-box;text-align:center;padding:30px 20px;border:1.5px dashed rgba(200,164,78,0.45);border-radius:16px;cursor:pointer;font:inherit;color:inherit;background:radial-gradient(120% 100% at 50% 0%,rgba(200,164,78,0.1),rgba(255,255,255,0.015) 70%);transition:border-color .15s,background .15s}
+.bb-hr-empty:hover,.bb-hr-empty.is-over{border-color:var(--gold,#c8a44e);background:rgba(200,164,78,0.14)}
+.bb-hr-empty.is-over{border-style:solid}
+.bb-hr-empty-ico{width:48px;height:48px;margin:0 auto 14px;border-radius:50%;display:grid;place-items:center;color:var(--gold,#c8a44e);background:rgba(200,164,78,0.14);border:1px solid rgba(200,164,78,0.32)}
+.bb-hr-empty-t{font-size:15.5px;font-weight:700;color:var(--cream,#f0ede8);margin:0 0 7px;line-height:1.3}
+.bb-hr-empty-d{font-size:12.5px;line-height:1.55;color:var(--muted,#8a8880);margin:0 auto 17px;max-width:330px}
+/* the one loud control on the panel */
+.bb-hr-cta{display:inline-flex;align-items:center;gap:8px;font:inherit;font-size:13px;font-weight:700;padding:11px 22px;border-radius:10px;border:0;cursor:pointer;background:linear-gradient(180deg,#e2c071,#c8a44e);color:#1a1408;box-shadow:0 8px 20px -10px rgba(200,164,78,0.85)}
+.bb-hr-cta:hover{filter:brightness(1.07)}
+.bb-hr-foot{font-size:11px;color:var(--muted,#8a8880);margin:14px 0 0;line-height:1.5}
+/* once a slot is filled the list carries the action instead, as its last row */
+.bb-hr-add{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;box-sizing:border-box;padding:15px 14px;border:0;border-top:1px dashed rgba(200,164,78,0.34);background:rgba(200,164,78,0.06);color:var(--gold,#c8a44e);font:inherit;font-size:12.5px;font-weight:700;cursor:pointer;transition:background .15s}
+.bb-hr-add:hover,.bb-hr-add.is-over{background:rgba(200,164,78,0.14)}
+.bb-hr-full{padding:13px 14px;border-top:1px solid rgba(255,255,255,0.07);font-size:11.5px;color:var(--muted,#8a8880);text-align:center}
+.bb-hr-x{border:0;background:none;cursor:pointer;color:var(--muted,#8a8880);font-size:13px;line-height:1;padding:6px;border-radius:6px}
+.bb-hr-x:hover{color:#ff6b6b;background:rgba(255,107,107,0.1)}
+@media (max-width:420px){
+  .bb-hr-row{gap:10px;padding:12px 11px}
+  .bb-hr-btn{padding:6px 10px}
+}
+
 /* Per-client group in the admin Blood Reports list. */
 .bb-bg-group{border:1px solid rgba(255,255,255,0.08);border-radius:16px;background:rgba(255,255,255,0.015);margin-bottom:14px;overflow:hidden}
 .bb-bg-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:12px 14px;background:rgba(255,255,255,0.035);border-bottom:1px solid rgba(255,255,255,0.07)}
@@ -2384,6 +2503,16 @@ body.admin-dashboard-open .wa-public-fab{display:none!important}
 .admin-hamburger-btn:hover{border-color:var(--gold);background:rgba(200,164,78,0.06)}
 .admin-mobile-nav-label{font-size:15px;font-weight:600;letter-spacing:0.5px;color:var(--cream)}
 body.admin-drawer-open{overflow:hidden;touch-action:none}
+/* Signing in does not remove the public landing page — it covers it with a
+   fixed panel, leaving ~15,000px of hero/arsenal/stories/footer still scrollable
+   underneath. Any swipe the app did not capture scrolled the document behind
+   the panel and surfaced that near-black markup as a dead band at the bottom.
+   Locking the document while a panel is open is the whole fix.
+   Deliberately NOT touch-action:none, unlike the drawer above: the app's own
+   scrolling lives inside these panels and that would freeze it. overflow alone
+   stops the document scrolling while inner scrollers keep working, and
+   overscroll-behavior stops the rubber-band chaining out to it. */
+html.panel-open,body.panel-open{overflow:hidden;overscroll-behavior:none}
 .admin-nav-drawer-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:310;opacity:0;transition:opacity .3s;pointer-events:none}
 .admin-nav-drawer-overlay.open{display:block;opacity:1;pointer-events:auto}
 .admin-nav-drawer{position:fixed;top:0;left:0;height:var(--app-height);width:min(320px,85vw);background:var(--dark2);border-right:1px solid var(--bdr);z-index:320;transform:translateX(-100%);transition:transform .3s;display:flex;flex-direction:column;overflow:hidden;padding-left:env(safe-area-inset-left);padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}
@@ -3127,10 +3256,7 @@ body.admin-dashboard-open .admin-ai-wa-fab-wrap{display:flex}
 .bb-today-pill i{font-style:normal;font-weight:600;color:var(--muted);font-size:11px;margin-left:1px}
 .bb-today-pill{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;padding:7px 11px;border-radius:999px;border:1px solid rgba(255,255,255,0.1);background:linear-gradient(180deg,rgba(255,255,255,0.09),rgba(255,255,255,0.02));color:var(--cream);font-family:inherit;line-height:1}
 button.bb-today-pill{cursor:pointer}
-.bb-today-pill--streak b{color:#ffb454}
 .bb-today-pill--coin b{color:var(--gold)}
-.bb-today-pill--freeze{cursor:pointer;color:#9fd8ff;border-color:rgba(120,190,255,0.45);background:rgba(120,190,255,0.12)}
-.bb-today-pill--freeze:active{background:rgba(120,190,255,0.25)}
 .bb-today-body{display:flex;align-items:center;gap:18px}
 .bb-today-ring{position:relative;flex-shrink:0;width:112px;height:112px;border:none;background:none;padding:0;cursor:pointer}
 .bb-today-ring-svg{width:112px;height:112px;transform:rotate(-90deg);filter:drop-shadow(0 0 9px rgba(200,164,78,0.4))}
@@ -3407,6 +3533,176 @@ button.bb-today-pill{cursor:pointer}
 .daily-seg-btn{flex:1;min-height:40px;padding:8px 6px;border:none;background:transparent;color:var(--muted);border-radius:99px;font-family:var(--bb-font-heading,'Rajdhani',sans-serif);font-size:13px;font-weight:700;letter-spacing:.04em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:background .2s,color .2s}
 .daily-seg-btn .seg-emoji{font-size:15px}
 .daily-seg-btn.active{background:var(--goldg,var(--gold));color:var(--black,#0d0f11)}
+/* A phone number is two controls: the dialling code the country chose, and the
+   number the member types. The code is narrow and quieter — it is a
+   consequence of the country field, not a question of its own. */
+.bb-phone-row{display:grid;grid-template-columns:118px minmax(0,1fr);gap:8px}
+.bb-phone-row .bb-phone-dial{padding-left:10px;padding-right:6px;font-variant-numeric:tabular-nums;color:var(--creamd,#bfb9ab)}
+@media (max-width:380px){.bb-phone-row{grid-template-columns:104px minmax(0,1fr)}}
+
+/* ═══ Body pane — gold, black, white ══════════════════════════════════════════
+   The pane was already gold, but its neutrals were warm browns (#9b8f78,
+   #bdb3a0, #8d836d), so it read gold-on-mud rather than gold-on-black. Every
+   neutral here is a true grey, the grounds lose their brown tint, and gold is
+   spent only where it earns attention — the heading, the primary action, the
+   hairline edges. Text is white; gold is the accent, not the body copy.
+   Scoped to the pane, so nothing else on the app moves. */
+
+#daily-pane-body{
+  --bg-gold:#E2C071;        /* bright — headings, accents */
+  --bg-gold-dp:#C8A44E;     /* deep — edges, gradients */
+  --bg-white:#FFFFFF;       /* the numbers themselves */
+  --bg-ink:#F2F2F4;
+  --bg-soft:#B4B4BA;        /* neutral grey, never beige */
+  --bg-dim:#8A8A90;
+  --bg-card:linear-gradient(180deg,#101012,#0A0A0C);
+  --bg-edge:rgba(226,192,113,0.26);
+  --bg-edge-soft:rgba(255,255,255,0.09);
+}
+
+/* the card */
+#daily-pane-body .micro-goals-wrap{
+  background:
+    radial-gradient(120% 90% at 0% 0%, rgba(226,192,113,0.09), transparent 58%),
+    linear-gradient(180deg,#111113,#08080A);
+  border:1px solid var(--bg-edge);
+  box-shadow:0 20px 46px -22px rgba(0,0,0,0.9), inset 0 1px 0 rgba(226,192,113,0.12);
+}
+#daily-pane-body .micro-goals-wrap h3{color:var(--bg-gold)}
+#daily-pane-body .micro-goals-wrap .streak-badge{
+  background:rgba(226,192,113,0.08);border:1px solid rgba(226,192,113,0.3);
+  color:var(--bg-gold);font-size:12px;padding:3px 11px;
+}
+
+/* labels white, wells black, gold only on focus */
+#daily-pane-body .micro-goal-field label{color:var(--bg-soft);letter-spacing:1.3px}
+#daily-pane-body .micro-goal-field input{
+  background:#050506;
+  border:1px solid rgba(255,255,255,0.11);
+  color:var(--bg-white);font-weight:600;
+  transition:border-color .18s, box-shadow .18s, background .18s;
+}
+#daily-pane-body .micro-goal-field input::placeholder{color:#7C7C82;font-weight:400}
+#daily-pane-body .micro-goal-field input:hover{border-color:rgba(255,255,255,0.2)}
+#daily-pane-body .micro-goal-field input:focus{
+  outline:none;background:#08080A;
+  border-color:var(--bg-gold);
+  box-shadow:0 0 0 3px rgba(226,192,113,0.16);
+}
+
+#daily-pane-body .dc-btn-edit{
+  background:rgba(226,192,113,0.09);border-color:rgba(226,192,113,0.4);color:var(--bg-gold);
+}
+#daily-pane-body .dc-btn-edit:hover{background:rgba(226,192,113,0.18)}
+#daily-pane-body .dc-btn-cancel{border-color:rgba(255,255,255,0.14);color:var(--bg-soft)}
+#daily-pane-body .dc-btn-cancel:hover{border-color:rgba(255,255,255,0.3);color:var(--bg-white)}
+#daily-pane-body .dc-note{color:var(--bg-dim)}
+#daily-pane-body .micro-goals-submit{
+  background:linear-gradient(105deg,#F0D89A,#C8A44E);
+  color:#100C02;
+  box-shadow:0 12px 28px -10px rgba(200,164,78,0.6);
+}
+
+/* ── weekly insights ─────────────────────────────────────────────────────────
+   The bb-wi / bb-lwr / bb-cu families all carry the same warm-brown neutrals.
+   They are listed as a set rather than one component at a time, so a future
+   card cannot quietly reintroduce beige. */
+#daily-pane-body .bb-wi-eyebrow{color:var(--bg-gold)}
+#daily-pane-body .bb-wi-title,
+#daily-pane-body .bb-wi-stat-val,
+#daily-pane-body .bb-wi-sr-label,
+#daily-pane-body .bb-wi-ring-center b,
+#daily-pane-body .bb-lwr-ring-c b{color:var(--bg-white)}
+#daily-pane-body .bb-wi-sec-title{color:var(--bg-soft)}
+#daily-pane-body .bb-wi-edit{color:var(--bg-gold);background:rgba(226,192,113,0.09);border-color:rgba(226,192,113,0.36)}
+
+#daily-pane-body .bb-wi-sub,
+#daily-pane-body .bb-wi-ring-center i,
+#daily-pane-body .bb-wi-rank-sub,
+#daily-pane-body .bb-wi-sr-detail,
+#daily-pane-body .bb-wi-row-val,
+#daily-pane-body .bb-wi-row-pct,
+#daily-pane-body .bb-wi-gauge-val,
+#daily-pane-body .bb-wi-hero-kicker,
+#daily-pane-body .bb-wi-empty,
+#daily-pane-body .bb-lwr-dates,
+#daily-pane-body .bb-lwr-quote,
+#daily-pane-body .bb-lwr-prog-sub,
+#daily-pane-body .bb-lwr-ring-c b i,
+#daily-pane-body .bb-lwr-ring-c span,
+#daily-pane-body .bb-lwr-c-stats span,
+#daily-pane-body .bb-lwr-c-val,
+#daily-pane-body .bb-lwr-c-goal,
+#daily-pane-body .bb-lwr-d.flat,
+#daily-pane-body .bb-lwr-hl-item span,
+#daily-pane-body .bb-cu-lead-sub,
+#daily-pane-body .bb-cu-row-val i,
+#daily-pane-body .bb-cu-prog-top span,
+#daily-pane-body .bb-cu-prog-stats span,
+#daily-pane-body .bb-cu-ring-c b i,
+#daily-pane-body .bb-cu-ring-c span{color:var(--bg-dim)}
+
+#daily-pane-body .bb-lwr-hero-recap p,
+#daily-pane-body .bb-lwr-c-tip,
+#daily-pane-body .bb-cu-note p{color:var(--bg-soft)}
+
+/* grounds lose the brown tint */
+#daily-pane-body .bb-wi-card,
+#daily-pane-body .bb-wi-score,
+#daily-pane-body .bb-wi-hero,
+#daily-pane-body .bb-wi-row,
+#daily-pane-body .bb-wi-gauge,
+#daily-pane-body .bb-wi-chart-card,
+#daily-pane-body .bb-wi-dcard,
+#daily-pane-body .bb-wi-rcard,
+#daily-pane-body .bb-lwr-hero,
+#daily-pane-body .bb-lwr-card,
+#daily-pane-body .bb-lwr-hl,
+#daily-pane-body .bb-cu{
+  background:linear-gradient(180deg,#101012,#0A0A0C);
+  border-color:rgba(226,192,113,0.15);
+}
+#daily-pane-body .bb-wi-card::before{background:radial-gradient(120% 80% at 0% 0%, rgba(226,192,113,0.06), transparent 60%)}
+#daily-pane-body .bb-wi-ico,
+#daily-pane-body .bb-lwr-cal,
+#daily-pane-body .bb-lwr-hl-ic{background:rgba(226,192,113,0.08);border-color:rgba(226,192,113,0.24)}
+#daily-pane-body .bb-wi-status-row{background:rgba(255,255,255,0.03);border-color:var(--bg-edge-soft)}
+#daily-pane-body .bb-wi-ring-track{stroke:rgba(255,255,255,0.09)}
+#daily-pane-body .bb-lwr-hl-item em{color:var(--bg-gold)}
+#daily-pane-body .bb-cu-note{background:rgba(226,192,113,0.045);border-color:rgba(226,192,113,0.16)}
+#daily-pane-body .bb-cu-note-ico{border-color:rgba(226,192,113,0.5);color:var(--bg-gold)}
+#daily-pane-body .bb-cu-fill{background:linear-gradient(90deg,#C8A44E,#F0D89A);box-shadow:0 0 10px rgba(226,192,113,0.5)}
+#daily-pane-body .bb-lwr-prog-bubble{background:linear-gradient(180deg,#231B08,#120E04);border-color:rgba(226,192,113,0.55);color:var(--bg-gold)}
+#daily-pane-body .bb-lwr-ring-arrow{color:var(--bg-gold);filter:drop-shadow(0 0 5px rgba(226,192,113,0.5))}
+
+/* Inherited body text in this app is --cream, a warm off-white. In a pane meant
+   to be gold, black and WHITE, cream reads as a third, muddier gold. Redefining
+   the token alone does nothing here: inheritance carries the already-resolved
+   colour down from the section above, so the var is never re-evaluated. The
+   colour has to be set on the pane itself. */
+#daily-pane-body{--cream:#F4F4F6;color:#F4F4F6}
+
+/* Three strays the original design carried that are neither gold, black nor
+   white: a blue progress label and a blue and a purple icon ring in the
+   catch-up plan. Re-cast as gold tiers so the pane holds one palette. */
+#daily-pane-body .bb-lwr-prog-k{color:var(--bg-gold)}
+#daily-pane-body .bb-cu-ico-blue{background:rgba(240,216,154,0.13);border-color:rgba(240,216,154,0.32)}
+#daily-pane-body .bb-cu-ico-purple{background:rgba(169,139,62,0.18);border-color:rgba(169,139,62,0.38)}
+
+/* two last beiges hiding in the highlights and the catch-up rows */
+#daily-pane-body .bb-lwr-hl-mc b,
+#daily-pane-body .bb-cu-row-label{color:var(--bg-ink)}
+
+/* The catch-up plan marks a good state in green — Food's colour, and the only
+   green left in the pane. In a gold/black/white system gold IS the positive, so
+   the badge and the tick take it. Red stays on genuinely negative status
+   ("BEHIND"): losing that would make the card prettier and less honest. */
+#daily-pane-body .bb-cu-badge{color:var(--bg-gold);background:rgba(226,192,113,0.1);border-color:rgba(226,192,113,0.34)}
+#daily-pane-body .bb-cu-check{border-color:rgba(226,192,113,0.5);color:var(--bg-gold)}
+
+@media (prefers-reduced-motion: reduce){
+  #daily-pane-body .micro-goal-field input{transition:none}
+}
 .daily-pane{animation:bbDailyPaneFade .25s ease}
 @keyframes bbDailyPaneFade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
 /* ===== Mind (mental-fitness) — exact Beyond The Body "Brain Tips" replica, SCOPED ===== */
@@ -3731,6 +4027,20 @@ button.bb-today-pill{cursor:pointer}
 .bb-step-btn:active{background:rgba(200,164,78,0.28)}
 .bb-step-btn:disabled{opacity:.4;cursor:not-allowed}
 .micro-goals-submit{width:100%;padding:12px;background:var(--goldg);border:none;border-radius:8px;color:var(--black);font-weight:700;font-size:13px;letter-spacing:1px;cursor:pointer;transition:opacity .2s,transform .1s}
+/* Editing today: the entry is saved, so the loud button steps aside for a
+   quiet one, and turns back into Save only while a correction is open. */
+.dc-actions{display:flex;gap:8px;align-items:center}
+.dc-actions > button{flex:1}
+.dc-btn-edit,.dc-btn-cancel{padding:12px;border-radius:8px;font-family:inherit;font-weight:700;font-size:13px;letter-spacing:1px;cursor:pointer;transition:background .18s,border-color .18s,color .18s}
+.dc-btn-edit{background:rgba(200,164,78,0.1);border:1px solid rgba(200,164,78,0.42);color:var(--gold,#c8a44e)}
+.dc-btn-edit:hover{background:rgba(200,164,78,0.2)}
+.dc-btn-cancel{background:transparent;border:1px solid rgba(255,255,255,0.16);color:var(--muted,#8a8880)}
+.dc-btn-cancel:hover{border-color:rgba(255,255,255,0.32);color:var(--cream,#f0ede8)}
+.dc-err{margin:10px 0 0;padding:9px 12px;border-radius:8px;font-size:12px;line-height:1.45;color:#ffb4b4;background:rgba(255,92,92,0.1);border:1px solid rgba(255,92,92,0.34)}
+.dc-err[hidden]{display:none}
+.dc-note{margin:9px 0 0;font-size:11.5px;line-height:1.45;color:var(--muted,#8a8880);text-align:center}
+.dc-note[hidden]{display:none}
+.micro-goal-field input.is-bad{border-color:rgba(255,92,92,0.65) !important;box-shadow:0 0 0 3px rgba(255,92,92,0.14) !important}
 .micro-goals-submit:hover{opacity:.92}
 .micro-goals-submit:active{transform:scale(0.97);opacity:.85;transition:transform .08s,opacity .08s}
 .weekly-recap{display:flex;flex-wrap:wrap;gap:12px;margin-top:16px;padding-top:16px;border-top:1px solid var(--bdr)}
@@ -3775,7 +4085,35 @@ button.bb-today-pill{cursor:pointer}
 .skeleton-line.short{width:60%}
 .schedule-call-block{padding:24px;background:rgba(200,164,78,0.06);border:1px solid var(--bdr);border-radius:14px;margin-bottom:24px;min-width:0;overflow:hidden}
 .schedule-call-block h3{font-size:16px;font-weight:600;color:var(--gold);margin-bottom:20px;letter-spacing:1px}
-.my-meetings{margin-top:24px}
+/* ---- Consultations ------------------------------------------------------
+   A slot grid rather than a dropdown, because the thing a member needs to see
+   is which times are GONE — a <select> can only hide that. Past and taken
+   slots stay on screen, struck through, so the day still reads as a day. */
+.mtg-slots{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px}
+.mtg-slot{padding:11px 6px;border-radius:9px;border:1.5px solid var(--bdr);background:rgba(255,255,255,0.04);color:var(--cream);font-family:inherit;font-size:13.5px;font-weight:600;cursor:pointer;transition:border-color .18s,background .18s,color .18s}
+.mtg-slot:hover:not(:disabled){border-color:rgba(200,164,78,0.55);background:rgba(200,164,78,0.07)}
+.mtg-slot.selected{border-color:var(--gold);background:rgba(200,164,78,0.16);color:var(--gold)}
+.mtg-slot:disabled{opacity:.32;cursor:not-allowed;text-decoration:line-through}
+.mtg-slot-why{display:block;font-size:9.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;opacity:.85;margin-top:3px;text-decoration:none}
+.mtg-err{margin:12px 0 0;padding:9px 12px;border-radius:8px;font-size:12.5px;line-height:1.45;color:#ffb4b4;background:rgba(255,92,92,0.1);border:1px solid rgba(255,92,92,0.34)}
+.mtg-err[hidden]{display:none}
+.mtg-editing{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px;padding:10px 13px;border-radius:10px;font-size:12.5px;line-height:1.45;color:var(--gold);background:rgba(200,164,78,0.1);border:1px solid rgba(200,164,78,0.36)}
+.mtg-editing[hidden]{display:none}
+.mtg-editing span{flex:1;min-width:180px}
+.mtg-editing-x{border:1px solid rgba(255,255,255,0.2);background:transparent;color:var(--cream);font:inherit;font-size:11.5px;font-weight:600;padding:5px 11px;border-radius:7px;cursor:pointer}
+.mtg-editing-x:hover{border-color:rgba(255,255,255,0.4)}
+/* status is the whole point of the list — it reads before the date does */
+.m-status{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:3px 9px;border-radius:99px;white-space:nowrap}
+.m-status--scheduled{color:#3dd68c;background:rgba(61,214,140,0.12);border:1px solid rgba(61,214,140,0.34)}
+.m-status--cancelled{color:#ff6b6b;background:rgba(255,80,80,0.1);border:1px solid rgba(255,80,80,0.3)}
+.m-status--completed{color:var(--gold);background:rgba(200,164,78,0.12);border:1px solid rgba(200,164,78,0.34)}
+.m-status--past{color:var(--muted);background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.14)}
+.m-when{display:block;margin-top:5px;font-size:12px;color:var(--muted)}
+.my-meeting-item .m-info{flex:1;min-width:168px}
+.m-group-label{font-size:10.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:18px 0 9px}
+.m-group-label:first-child{margin-top:0}
+.m-btn-reschedule{background:rgba(200,164,78,0.15);color:var(--gold);border:1px solid rgba(200,164,78,0.4)}
+.my-meetings{margin-top:4px}
 .my-meeting-item{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;padding:14px 18px;background:rgba(255,255,255,0.03);border:1px solid var(--bdr);border-radius:10px;margin-bottom:10px}
 .my-meeting-item .m-info{font-size:14px;color:var(--cream)}
 .my-meeting-item .m-date{color:var(--gold);font-weight:600}
@@ -3850,6 +4188,12 @@ button.bb-today-pill{cursor:pointer}
 }
 @media(max-width:767px){
   .user-body{margin-left:0;padding-bottom:calc(70px + env(safe-area-inset-bottom,0px))}
+  /* The bottom nav is a 64px pill floating 12px off the edge, so it occupies
+     76px — but .user-body only reserves 70px and the last card slid under it.
+     The clearance goes on .user-section, which is the element that actually
+     scrolls: the .user-body value is contested by four rules including an
+     Android-only !important override, so adding to it is not reliable. */
+  .user-panel .user-section{padding-bottom:32px}
   .user-bottom-nav{display:flex!important;width:100%!important;left:0!important;right:0!important}
 }
 @media(max-width:768px){
@@ -4706,17 +5050,19 @@ button.bb-today-pill{cursor:pointer}
 #adminChartWater,#adminChartSessionDuration,#adminChartBodyFat{margin-bottom:0}
 
 </style>
+<link rel="stylesheet" href="/css/mobile-menu.css?v=1">
 <link rel="stylesheet" href="/mobile-fix.css?v=20">
 <link rel="stylesheet" href="/ios-pwa-fix.css?v=20">
 <link rel="stylesheet" href="/css/blood-report-editor.css?v=2">
 <link rel="stylesheet" href="css/admin-home.css?v=3">
-<link rel="stylesheet" href="css/member-home.css?v=11">
+<link rel="stylesheet" href="css/member-home.css?v=12">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <script src="js/notification-sounds.js?v=4"></script>
-<script src="js/operator-console.js?v=9"></script>
+<script src="js/operator-console.js?v=10"></script>
 <script src="js/admin-home.js?v=3"></script>
-<script src="js/member-home.js?v=4"></script>
+<script src="js/countries.js?v=1"></script>
+<script src="js/member-home.js?v=5"></script>
 <!-- ═══════════════ MUSCLE RANKING STYLES ═══════════════ -->
 <style>
 /* ── Variables ── */
@@ -6476,7 +6822,7 @@ select.admin-filter-date option{background:#141317;color:var(--cream)}
           <p class="mh-line" id="mhLine">Loading your day…</p>
           <div class="mh-hero-row">
             <div class="mh-streak"><b id="mhStreak">0</b><span id="mhStreakL">day streak</span></div>
-            <div class="mh-week" id="mhWeek" aria-label="Your last seven days"></div>
+            <div class="mh-week" id="mhWeek" aria-label="This week, Sunday to Saturday"></div>
           </div>
           <div class="mh-pills" id="mhSlotPills"></div>
         </section>
@@ -6506,8 +6852,8 @@ select.admin-filter-date option{background:#141317;color:var(--cream)}
         </section>
 
         <section class="mh-block mh-slot" id="mhSecBody" hidden>
-          <div class="mh-head"><h3 class="mh-title">Readiness &amp; Signal</h3></div>
-          <div class="mh-two" id="mhSlotBody"></div>
+          <div class="mh-head"><h3 class="mh-title">Readiness</h3></div>
+          <div id="mhSlotBody"></div>
         </section>
         <section class="mh-block">
           <div class="mh-head"><h3 class="mh-title">Send us your reports</h3></div>
@@ -6593,13 +6939,6 @@ select.admin-filter-date option{background:#141317;color:var(--cream)}
              desktop home swap hides at >=768px (#usec-home .user-welcome{display:none}).
              Without this copy the whole readiness feature is invisible on the web.
              Same class, same renderer — bbRdHomeLoad fills every .bb-rd-card. -->
-        <!-- Signal (desktop). Mirror of the card in the mobile Today hero — same class,
-             same renderer, so the two surfaces cannot drift apart. -->
-        <section class="bb-sig-home-desktop" id="bbSigHomeSectionDesktop" aria-label="Your signal" hidden style="margin:0 0 24px;max-width:860px">
-          <div class="bb-pulse-sec-label" style="margin-top:0">Your signal</div>
-          <button type="button" class="bb-sig-card" id="bbSigHomeDesktop" onclick="bbOpenSignal()" aria-label="Open your signal — today's directive and what your own data has taught us" hidden></button>
-        </section>
-
         <section class="bb-rd-home-desktop" id="bbRdHomeSectionDesktop" aria-label="Readiness" hidden style="margin:0 0 24px;max-width:860px">
           <div class="bb-pulse-sec-label" style="margin-top:0">Readiness</div>
           <button type="button" class="bb-rd-card" id="bbRdHomeDesktop" onclick="bbOpenReadiness()" aria-label="Open your readiness detail" hidden></button>
@@ -6735,11 +7074,8 @@ select.admin-filter-date option{background:#141317;color:var(--cream)}
             </div>
           </div>
           <div class="bb-today-stats">
-            <span class="bb-today-pill bb-today-pill--streak" id="bbTodayStreakPill" title="Daily check-in streak">🔥 <b id="bbTodayStreakNum">0</b> <i>streak</i></span>
             <button type="button" class="bb-today-pill bb-today-pill--coin" id="bbTodayCoinPill" onclick="bbOpenCoinHistory()" title="Gold coins — tap for activity">◉ <b id="bbTodayCoinNum">0</b> <i>coins</i></button>
-            <button type="button" class="bb-today-pill bb-today-pill--freeze" id="bbTodayFreezeBtn" onclick="bbUseStreakFreeze()" title="Protect your streak across a missed day (1/month)" hidden>🧊 Freeze</button>
             <button type="button" class="bb-today-pill bb-today-pill--refer" onclick="bbOpenRewards()" title="Refer a friend and win your membership back">🎁 <b>Refer</b></button>
-            <button type="button" class="bb-today-pill bb-today-pill--signal" onclick="bbOpenSignal()" title="Your signal — today's directive, your body's laws and your bloodwork connection">✦ <b>Signal</b></button>
             <button type="button" class="bb-today-pill bb-today-pill--whoop" onclick="bbOpenReadiness()" title="Your readiness, recovery and Whoop data">⌚ <b>Readiness</b></button>
           </div>
           <div class="bb-pulse-score">
@@ -6767,12 +7103,6 @@ select.admin-filter-date option{background:#141317;color:var(--cream)}
               </div>
             </div>
           </div>
-          <!-- Signal (mobile). The desktop copy lives in .bb-user-desktop-dashboard —
-               the desktop home swap hides .user-welcome wholesale at >=768px, so a card
-               that exists only here is invisible on the web. Both carry .bb-sig-card and
-               are filled by the same renderer. -->
-          <div class="bb-pulse-sec-label" id="bbSigHomeLabel" hidden>Your signal</div>
-          <button type="button" class="bb-sig-card" id="bbSigHome" onclick="bbOpenSignal()" aria-label="Open your signal — today's directive and what your own data has taught us" hidden></button>
           <div class="bb-pulse-sec-label" id="bbRdHomeLabel" hidden>Readiness</div>
           <button type="button" class="bb-rd-card" id="bbRdHome" onclick="bbOpenReadiness()" aria-label="Open your readiness detail" hidden></button>
           <div class="bb-pulse-sec-label">This week · pillars</div>
@@ -6914,7 +7244,7 @@ select.admin-filter-date option{background:#141317;color:var(--cream)}
             <div class="micro-goals-grid">
               <div class="micro-goal-field">
                 <label>Steps</label>
-                <input type="number" id="dailySteps" placeholder="e.g. 8000" min="0">
+                <input type="number" id="dailySteps" placeholder="e.g. 8000" min="0" max="100000" step="1" inputmode="numeric">
               </div>
               <div class="micro-goal-field">
                 <label>Water (L)</label>
@@ -6922,14 +7252,20 @@ select.admin-filter-date option{background:#141317;color:var(--cream)}
               </div>
               <div class="micro-goal-field">
                 <label>Protein (g)</label>
-                <input type="number" id="dailyProtein" placeholder="e.g. 120" min="0">
+                <input type="number" id="dailyProtein" placeholder="e.g. 120" min="0" max="500" step="1" inputmode="numeric">
               </div>
               <div class="micro-goal-field">
                 <label>Sleep (hrs)</label>
-                <input type="number" id="dailySleep" placeholder="e.g. 7.5" min="0" step="0.5">
+                <input type="number" id="dailySleep" placeholder="e.g. 7.5" min="0" max="24" step="0.5" inputmode="decimal">
               </div>
             </div>
-            <button type="submit" class="micro-goals-submit">Save today</button>
+            <p class="dc-err" id="dailyCheckinErr" role="alert" hidden></p>
+            <div class="dc-actions">
+              <button type="submit" class="micro-goals-submit" id="dailyCheckinSave">Save today</button>
+              <button type="button" class="dc-btn-edit" id="dailyCheckinEdit" onclick="bbDailyBeginEdit()" hidden>Edit today's entry</button>
+              <button type="button" class="dc-btn-cancel" id="dailyCheckinCancel" onclick="bbDailyCancelEdit()" hidden>Cancel</button>
+            </div>
+            <p class="dc-note" id="dailyCheckinNote" hidden></p>
           </form>
         </div>
         <section id="weeklyInsights" class="bb-wi" aria-label="Weekly insights"></section>
@@ -7581,32 +7917,31 @@ select.admin-filter-date option{background:#141317;color:var(--cream)}
     <!-- CONTACT US -->
     <div class="user-section" id="usec-contact">
       <div class="user-section-back"><button type="button" class="back-btn" onclick="switchUserTab('home')">← Back</button></div>
-      <div class="form-section-title">Schedule a meeting</div>
+      <div class="form-section-title" id="mtgFormTitle">Book a consultation</div>
       <div class="schedule-call-block">
         <input type="hidden" id="mtgEditId" value="">
-        <div class="form-row">
-          <div class="form-group"><label>Date <span class="req">*</span></label><input type="date" class="form-input" id="mtgDate" min=""></div>
-          <div class="form-group"><label>Time Slot <span class="req">*</span></label>
-            <select class="form-input" id="mtgTime">
-              <option value="">Select time</option>
-              <option value="9:00 AM">9:00 AM</option>
-              <option value="10:00 AM">10:00 AM</option>
-              <option value="11:00 AM">11:00 AM</option>
-              <option value="12:00 PM">12:00 PM</option>
-              <option value="2:00 PM">2:00 PM</option>
-              <option value="3:00 PM">3:00 PM</option>
-              <option value="4:00 PM">4:00 PM</option>
-              <option value="5:00 PM">5:00 PM</option>
-              <option value="6:00 PM">6:00 PM</option>
-            </select>
-          </div>
+        <input type="hidden" id="mtgTime" value="">
+        <div class="mtg-editing" id="mtgEditingBanner" hidden>
+          <span>Moving your consultation from <b id="mtgEditingFrom">—</b>. Pick a new date and time.</span>
+          <button type="button" class="mtg-editing-x" onclick="cancelMeetingEdit()">Keep original</button>
         </div>
-        <button class="form-submit" onclick="submitMeetingRequest()" id="mtgSubmitBtn">Schedule Call</button>
-        <div id="meetingsListSkeleton" class="skeleton-wrapper" style="display:none">
-          <div class="skeleton skeleton-line"></div><div class="skeleton skeleton-line short"></div>
+        <div class="form-group">
+          <label>Date <span class="req">*</span></label>
+          <input type="date" class="form-input" id="mtgDate" onchange="onMeetingDateChange()">
+          <span class="form-hint" id="mtgDateHint">Pick any day from today onwards.</span>
         </div>
-        <div class="my-meetings" id="myMeetingsList"></div>
+        <div class="form-group">
+          <label>Time slot <span class="req">*</span></label>
+          <div class="mtg-slots" id="mtgSlots"><p class="form-hint" style="margin:0">Pick a date to see the available times.</p></div>
+        </div>
+        <p class="mtg-err" id="mtgErr" role="alert" hidden></p>
+        <button class="form-submit" onclick="submitMeetingRequest()" id="mtgSubmitBtn">Book consultation</button>
       </div>
+      <div class="form-section-title" style="margin-top:28px">Your consultations</div>
+      <div id="meetingsListSkeleton" class="skeleton-wrapper" style="display:none">
+        <div class="skeleton skeleton-line"></div><div class="skeleton skeleton-line short"></div>
+      </div>
+      <div class="my-meetings" id="myMeetingsList"></div>
     </div>
 
       </div>
@@ -8847,12 +9182,7 @@ select.admin-filter-date option{background:#141317;color:var(--cream)}
           <!-- Readiness sub-tab — the member's own readiness view, mounted on the coach's
                read-only client endpoints. Filled by bbRdMountClient, not by markup. -->
           <div id="adminCpReadinessPanel" style="display:none;margin-top:20px;max-width:860px">
-            <!-- Signal intelligence first: the directive, the risk flags the client is
-                 never shown, every hypothesis the engine tested, and the bloodwork
-                 bridge. The raw Whoop mirror below it is the supporting evidence. -->
-            <h4 class="admin-subsection-title" style="margin:0 0 10px">✦ Signal intelligence</h4>
-            <div id="adminCpSignalBody"><p class="admin-cp-placeholder">Loading signal…</p></div>
-            <h4 class="admin-subsection-title" style="margin:24px 0 10px">⌚ Raw readiness &amp; recovery</h4>
+            <h4 class="admin-subsection-title" style="margin:0 0 10px">⌚ Raw readiness &amp; recovery</h4>
             <div id="adminCpReadinessBody"><p class="admin-cp-placeholder">Loading readiness…</p></div>
           </div>
         </div>
@@ -10108,22 +10438,33 @@ select.admin-filter-date option{background:#141317;color:var(--cream)}
   </ul>
   <div class="nav-right">
     <span class="nav-tagline">Lifestyle Management</span>
-    <a href="#" class="nav-cta nav-login-btn desktop-only" onclick="openModal('loginModal');return false;">Login</a>
-    <button class="nt" id="navHamburger" onclick="var m=document.getElementById('mo');m.classList.toggle('open');m.classList.contains('open')?lockBodyScroll():unlockBodyScroll()" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+    <a href="#" class="nav-quiet" onclick="openModal('loginModal');return false;">Login</a>
+    <a href="/signup" class="nav-cta nav-join">Join</a>
+    <button class="nt" id="navHamburger" onclick="bbToggleNavMenu()" aria-label="Open menu" aria-expanded="false" aria-controls="mo"><span></span><span></span><span></span></button>
   </div>
 </nav>
 
-<div class="mm" id="mo">
-  <button class="mm-c" onclick="document.getElementById('mo').classList.remove('open');unlockBodyScroll()">&times;</button>
-  <a href="#hero" onclick="document.getElementById('mo').classList.remove('open');unlockBodyScroll()">Home</a>
-  <a href="#success-stories" onclick="document.getElementById('mo').classList.remove('open');unlockBodyScroll()">Stories</a>
-  <a href="#results" onclick="document.getElementById('mo').classList.remove('open');unlockBodyScroll()">Transformations</a>
-  <a href="tribe-stories.html" onclick="document.getElementById('mo').classList.remove('open');unlockBodyScroll()">Tribe Stories</a>
-  <a href="our-story.html" onclick="document.getElementById('mo').classList.remove('open');unlockBodyScroll()">Our Story</a>
-  <a href="blog.html" onclick="document.getElementById('mo').classList.remove('open');unlockBodyScroll()">Blog</a>
-  <a href="#contact" onclick="document.getElementById('mo').classList.remove('open');unlockBodyScroll()">Contact us</a>
-  <a href="#" onclick="document.getElementById('mo').classList.remove('open');unlockBodyScroll();openModal('loginModal');return false;">Login</a>
-  <a href="#" class="pwa-add-homescreen" onclick="document.getElementById('mo').classList.remove('open');unlockBodyScroll();handlePwaAddToHomescreen();return false;">Add to Home Screen</a>
+<div class="mm" id="mo" role="dialog" aria-modal="true" aria-label="Menu">
+  <div class="mm-head">
+    <img src="img/logo.png" alt="BodyBank" decoding="async">
+    <button type="button" class="mm-c" onclick="bbCloseNavMenu()" aria-label="Close menu">&times;</button>
+  </div>
+  <div class="mm-body">
+    <div class="mm-links" role="navigation" aria-label="Site">
+      <a class="mm-link" href="#hero" onclick="bbCloseNavMenu()">Home<span class="mm-chev" aria-hidden="true">&rsaquo;</span></a>
+      <a class="mm-link" href="#success-stories" onclick="bbCloseNavMenu()">Stories<span class="mm-chev" aria-hidden="true">&rsaquo;</span></a>
+      <a class="mm-link" href="#results" onclick="bbCloseNavMenu()">Transformations<span class="mm-chev" aria-hidden="true">&rsaquo;</span></a>
+      <a class="mm-link" href="tribe-stories.html" onclick="bbCloseNavMenu()">Tribe Stories<span class="mm-chev" aria-hidden="true">&rsaquo;</span></a>
+      <a class="mm-link" href="our-story.html" onclick="bbCloseNavMenu()">Our Story<span class="mm-chev" aria-hidden="true">&rsaquo;</span></a>
+      <a class="mm-link" href="blog.html" onclick="bbCloseNavMenu()">Blog<span class="mm-chev" aria-hidden="true">&rsaquo;</span></a>
+      <a class="mm-link" href="#contact" onclick="bbCloseNavMenu()">Contact us<span class="mm-chev" aria-hidden="true">&rsaquo;</span></a>
+      <a class="mm-link" href="#" onclick="bbCloseNavMenu();openModal('loginModal');return false;">Login<span class="mm-chev" aria-hidden="true">&rsaquo;</span></a>
+      <a class="mm-cta" href="/signup">Join BodyBank</a>
+      <div class="mm-foot">
+        <a href="#" class="pwa-add-homescreen" onclick="bbCloseNavMenu();handlePwaAddToHomescreen();return false;">Add to Home Screen</a>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- PWA iOS Add to Home Screen Instructions -->
@@ -10155,7 +10496,7 @@ select.admin-filter-date option{background:#141317;color:var(--cream)}
     </div>
     <button class="form-submit" onclick="event.preventDefault();adminLogin()">Login Now</button>
     <p class="login-footer" style="margin-top:8px"><a href="#" style="color:var(--gold);font-size:13px" onclick="closeModal('loginModal');openPopup('forgotModal');return false;">Forgot password?</a></p>
-    <p class="login-footer">Don't Have An Account? <a href="#" onclick="openModal('signupModal');closeModal('loginModal');return false;">Sign-up</a></p>
+    <p class="login-footer">Don't have an account? <a href="/signup">Join BodyBank</a></p>
   </div>
 </div>
 
@@ -10174,56 +10515,11 @@ select.admin-filter-date option{background:#141317;color:var(--cream)}
 
 
 <!-- SIGNUP MODAL -->
-<div class="modal-overlay" id="signupModal" onclick="if(event.target===this)closeModal('signupModal')">
-  <div class="modal login-modal modal-with-scroll">
-    <button class="modal-close" onclick="closeModal('signupModal')">&times;</button>
-    <h2>Create your account</h2>
-    <div class="modal-body-scroll">
-    <div class="form-row">
-      <div class="form-group"><label>First Name <span class="req">*</span></label><input type="text" class="form-input" id="suFirst" placeholder="First name" required></div>
-      <div class="form-group"><label>Last Name <span class="req">*</span></label><input type="text" class="form-input" id="suLast" placeholder="Last name" required></div>
-    </div>
-    <div class="form-group"><label>Email <span class="req">*</span></label><input type="email" class="form-input" id="suEmail" placeholder="Enter your email" required></div>
-    <div class="form-group"><label>Mobile / WhatsApp <span class="req">*</span></label><input type="tel" class="form-input" id="suPhone" placeholder="+91XXXXXXXXXX" required></div>
-    <div class="form-row">
-      <div class="form-group"><label>Date of Birth <span class="req">*</span></label><input type="date" class="form-input" id="suDob" required></div>
-      <div class="form-group"><label>Gender <span class="req">*</span></label><select class="form-input" id="suGender" required><option value="">Select</option><option value="Male">Male</option><option value="Female">Female</option><option value="Other">Other</option><option value="Prefer not to say">Prefer not to say</option></select></div>
-    </div>
-    <div class="form-group"><label>Height (cm) <span class="req">*</span></label><input type="number" class="form-input" id="suHeightCm" min="100" max="230" step="1" inputmode="numeric" placeholder="e.g. 175" required><span class="form-hint">Whole centimeters (100–230). Used for your nutrition energy estimate (RMR).</span></div>
-    <div class="form-row">
-      <div class="form-group"><label>Country <span class="req">*</span></label><input type="text" class="form-input" id="suCountry" placeholder="Your country" required></div>
-      <div class="form-group"><label>Timezone <span class="req">*</span></label><select class="form-input" id="suTimezone" required><option value="">Detecting…</option><optgroup label="Asia"><option value="Asia/Kolkata">India (IST, UTC+5:30)</option><option value="Asia/Dubai">UAE / Dubai (GST, UTC+4)</option><option value="Asia/Riyadh">Saudi Arabia (AST, UTC+3)</option><option value="Asia/Kuwait">Kuwait (AST, UTC+3)</option><option value="Asia/Qatar">Qatar (AST, UTC+3)</option><option value="Asia/Bahrain">Bahrain (AST, UTC+3)</option><option value="Asia/Muscat">Oman / Muscat (GST, UTC+4)</option><option value="Asia/Karachi">Pakistan (PKT, UTC+5)</option><option value="Asia/Dhaka">Bangladesh (BST, UTC+6)</option><option value="Asia/Kathmandu">Nepal (NPT, UTC+5:45)</option><option value="Asia/Colombo">Sri Lanka (SLST, UTC+5:30)</option><option value="Asia/Singapore">Singapore (SGT, UTC+8)</option><option value="Asia/Kuala_Lumpur">Malaysia (MYT, UTC+8)</option><option value="Asia/Jakarta">Indonesia / Jakarta (WIB, UTC+7)</option><option value="Asia/Manila">Philippines (PHT, UTC+8)</option><option value="Asia/Tokyo">Japan (JST, UTC+9)</option><option value="Asia/Seoul">South Korea (KST, UTC+9)</option><option value="Asia/Shanghai">China (CST, UTC+8)</option></optgroup><optgroup label="Europe"><option value="Europe/London">UK / London (GMT/BST)</option><option value="Europe/Paris">France / Paris (CET, UTC+1)</option><option value="Europe/Berlin">Germany / Berlin (CET, UTC+1)</option><option value="Europe/Rome">Italy / Rome (CET, UTC+1)</option><option value="Europe/Amsterdam">Netherlands (CET, UTC+1)</option><option value="Europe/Oslo">Norway / Oslo (CET, UTC+1)</option><option value="Europe/Stockholm">Sweden / Stockholm (CET, UTC+1)</option><option value="Europe/Copenhagen">Denmark (CET, UTC+1)</option><option value="Europe/Helsinki">Finland (EET, UTC+2)</option><option value="Europe/Dublin">Ireland / Dublin (GMT/IST)</option></optgroup><optgroup label="Americas"><option value="America/New_York">US — New York (ET, UTC-5/-4)</option><option value="America/Chicago">US — Chicago (CT, UTC-6/-5)</option><option value="America/Denver">US — Denver (MT, UTC-7/-6)</option><option value="America/Los_Angeles">US — Los Angeles (PT, UTC-8/-7)</option><option value="America/Phoenix">US — Phoenix (MST, UTC-7)</option><option value="America/Anchorage">US — Anchorage (AKST, UTC-9)</option><option value="Pacific/Honolulu">US — Hawaii (HST, UTC-10)</option><option value="America/Toronto">Canada / Toronto (ET, UTC-5/-4)</option><option value="America/Vancouver">Canada / Vancouver (PT, UTC-8/-7)</option><option value="America/Sao_Paulo">Brazil / São Paulo (BRT, UTC-3)</option><option value="America/Mexico_City">Mexico (CST, UTC-6)</option></optgroup><optgroup label="Oceania"><option value="Australia/Sydney">Australia / Sydney (AEST, UTC+10/11)</option><option value="Australia/Brisbane">Australia / Brisbane (AEST, UTC+10)</option><option value="Australia/Perth">Australia / Perth (AWST, UTC+8)</option><option value="Pacific/Auckland">New Zealand (NZST, UTC+12/13)</option></optgroup><optgroup label="Africa"><option value="Africa/Johannesburg">South Africa (SAST, UTC+2)</option><option value="Africa/Lagos">Nigeria (WAT, UTC+1)</option><option value="Africa/Nairobi">Kenya (EAT, UTC+3)</option></optgroup><optgroup label="UTC"><option value="UTC">UTC (Coordinated Universal Time)</option></optgroup></select></div>
-    </div>
-    <div class="form-row">
-      <div class="form-group"><label>State / Province</label><input type="text" class="form-input" id="suState" placeholder="State or Province"></div>
-      <div class="form-group"><label>City</label><input type="text" class="form-input" id="suCity" placeholder="Your city"></div>
-    </div>
-    <div class="form-group"><label>Password <span class="req">*</span></label><div class="pw-wrap"><input type="password" class="form-input" placeholder="Create a password" id="pwSignup"><button class="pw-toggle" onclick="document.getElementById('pwSignup').type=document.getElementById('pwSignup').type==='password'?'text':'password'">&#128065;</button></div></div>
-    <div class="form-group"><label>Confirm Password <span class="req">*</span></label><input type="password" class="form-input" id="suConfirmPw" placeholder="Confirm your password"></div>
-    <details class="signup-blood-opt" style="margin:12px 0;border:1px solid rgba(200,164,78,0.25);border-radius:10px;padding:10px 12px;background:rgba(0,0,0,0.15)">
-      <summary style="cursor:pointer;font-size:13px;color:var(--gold);font-weight:600">Optional: blood lab report (after approval we&apos;ll upload it when you first log in)</summary>
-      <p class="form-hint" style="margin:8px 0 10px;font-size:12px">PDF or photo — max 8 MB. You can skip and upload anytime from Home.</p>
-      <input type="file" id="signupBloodFile" accept=".pdf,image/*" style="font-size:12px;width:100%" />
-      <div class="form-hint" style="margin:10px 0 6px;font-size:11px;text-transform:uppercase;letter-spacing:0.04em">Symptoms (optional)</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
-        <label class="form-hint" style="display:flex;align-items:center;gap:6px;font-size:11px"><input type="checkbox" name="signupSym" value="fatigue" /> Fatigue</label>
-        <label class="form-hint" style="display:flex;align-items:center;gap:6px;font-size:11px"><input type="checkbox" name="signupSym" value="poor_sleep" /> Poor sleep</label>
-        <label class="form-hint" style="display:flex;align-items:center;gap:6px;font-size:11px"><input type="checkbox" name="signupSym" value="brain_fog" /> Brain fog</label>
-        <label class="form-hint" style="display:flex;align-items:center;gap:6px;font-size:11px"><input type="checkbox" name="signupSym" value="bloating" /> Bloating</label>
-      </div>
-    </details>
-    <button class="form-submit" onclick="handleSignup()">Sign-up Now</button>
-    <div id="googleBtnSignup" class="google-btn-wrap" style="margin-top:12px;min-height:48px"></div>
-    <button type="button" id="appleBtnSignup" onclick="bbAppleSignIn()" aria-label="Sign up with Apple" style="display:none;width:100%;margin-top:10px;min-height:44px;align-items:center;justify-content:center;gap:8px;background:#000;color:#fff;border:1px solid #000;border-radius:8px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:16px;font-weight:500;cursor:pointer;line-height:1;padding:0 16px">
-      <svg width="15" height="18" viewBox="0 0 16 20" fill="#fff" aria-hidden="true" style="display:block;margin-bottom:2px"><path d="M13.476 10.62c-.02-2.06 1.68-3.05 1.757-3.097-.957-1.4-2.446-1.59-2.974-1.612-1.266-.128-2.47.745-3.113.745-.64 0-1.633-.726-2.685-.706-1.383.02-2.656.803-3.366 2.04-1.435 2.49-.367 6.176 1.03 8.197.683.99 1.498 2.1 2.567 2.06 1.03-.04 1.42-.666 2.666-.666 1.247 0 1.597.666 2.69.646 1.11-.02 1.814-1.01 2.493-2.003.785-1.15 1.108-2.26 1.127-2.317-.025-.012-2.163-.83-2.185-3.29zM11.43 4.62c.567-.69.95-1.65.846-2.605-.817.033-1.806.545-2.392 1.234-.525.61-.985 1.586-.86 2.522.91.07 1.84-.462 2.406-1.15z"/></svg>
-      <span>Sign up with Apple</span>
-    </button>
-    <p class="login-footer">Already have an account? <a href="#" onclick="openModal('loginModal');closeModal('signupModal');return false;">Login</a></p>
-    </div>
-  </div>
-</div>
+<!-- Sign-up lives at /signup.html — one form, one URL. The modal that used
+     to sit here was a second copy of the same fields, reachable only from
+     inside the Login modal, and it drifted from the page every time one of
+     them changed. -->
 
-<!-- GOOGLE SIGNUP: Complete Profile Modal (shown after Google auth for new users) -->
 <div class="modal-overlay" id="googleCompleteModal" onclick="if(event.target===this)closeModal('googleCompleteModal')">
   <div class="modal login-modal modal-with-scroll">
     <button class="modal-close" onclick="closeModal('googleCompleteModal')">&times;</button>
@@ -10234,14 +10530,14 @@ select.admin-filter-date option{background:#141317;color:var(--cream)}
       <div class="form-group"><label>Last Name</label><input type="text" class="form-input" id="gcLast" placeholder="Last name" readonly style="opacity:0.9"></div>
     </div>
     <div class="form-group"><label>Email</label><input type="email" class="form-input" id="gcEmail" placeholder="Your email" readonly style="opacity:0.9"></div>
-    <div class="form-group"><label>Mobile / WhatsApp <span class="req">*</span></label><input type="tel" class="form-input" id="gcPhone" placeholder="+91XXXXXXXXXX" required></div>
+    <div class="form-group"><label>Mobile / WhatsApp <span class="req">*</span></label><div class="bb-phone-row"><select class="form-input bb-phone-dial" id="gcDial" aria-label="Country dialling code"></select><input type="tel" class="form-input" id="gcPhone" placeholder="98765 43210" inputmode="tel" required></div><span class="form-hint">The code follows the country you pick below.</span></div>
     <div class="form-row">
       <div class="form-group"><label>Date of Birth <span class="req">*</span></label><input type="date" class="form-input" id="gcDob" required></div>
       <div class="form-group"><label>Gender <span class="req">*</span></label><select class="form-input" id="gcGender" required><option value="">Select</option><option value="Male">Male</option><option value="Female">Female</option><option value="Other">Other</option><option value="Prefer not to say">Prefer not to say</option></select></div>
     </div>
     <div class="form-group"><label>Height (cm) <span class="req">*</span></label><input type="number" class="form-input" id="gcHeightCm" min="100" max="230" step="1" inputmode="numeric" placeholder="e.g. 175" required><span class="form-hint">Whole centimeters (100–230). Used for your nutrition energy estimate (RMR).</span></div>
     <div class="form-row">
-      <div class="form-group"><label>Country <span class="req">*</span></label><input type="text" class="form-input" id="gcCountry" placeholder="Your country" required></div>
+      <div class="form-group"><label>Country <span class="req">*</span></label><select class="form-input" id="gcCountry" required></select></div>
       <div class="form-group"><label>Timezone <span class="req">*</span></label><select class="form-input" id="gcTimezone" required><option value="">Detecting…</option><optgroup label="Asia"><option value="Asia/Kolkata">India (IST, UTC+5:30)</option><option value="Asia/Dubai">UAE / Dubai (GST, UTC+4)</option><option value="Asia/Riyadh">Saudi Arabia (AST, UTC+3)</option><option value="Asia/Kuwait">Kuwait (AST, UTC+3)</option><option value="Asia/Qatar">Qatar (AST, UTC+3)</option><option value="Asia/Bahrain">Bahrain (AST, UTC+3)</option><option value="Asia/Muscat">Oman / Muscat (GST, UTC+4)</option><option value="Asia/Karachi">Pakistan (PKT, UTC+5)</option><option value="Asia/Dhaka">Bangladesh (BST, UTC+6)</option><option value="Asia/Kathmandu">Nepal (NPT, UTC+5:45)</option><option value="Asia/Colombo">Sri Lanka (SLST, UTC+5:30)</option><option value="Asia/Singapore">Singapore (SGT, UTC+8)</option><option value="Asia/Kuala_Lumpur">Malaysia (MYT, UTC+8)</option><option value="Asia/Jakarta">Indonesia / Jakarta (WIB, UTC+7)</option><option value="Asia/Manila">Philippines (PHT, UTC+8)</option><option value="Asia/Tokyo">Japan (JST, UTC+9)</option><option value="Asia/Seoul">South Korea (KST, UTC+9)</option><option value="Asia/Shanghai">China (CST, UTC+8)</option></optgroup><optgroup label="Europe"><option value="Europe/London">UK / London (GMT/BST)</option><option value="Europe/Paris">France / Paris (CET, UTC+1)</option><option value="Europe/Berlin">Germany / Berlin (CET, UTC+1)</option><option value="Europe/Rome">Italy / Rome (CET, UTC+1)</option><option value="Europe/Amsterdam">Netherlands (CET, UTC+1)</option><option value="Europe/Oslo">Norway / Oslo (CET, UTC+1)</option><option value="Europe/Stockholm">Sweden / Stockholm (CET, UTC+1)</option><option value="Europe/Copenhagen">Denmark (CET, UTC+1)</option><option value="Europe/Helsinki">Finland (EET, UTC+2)</option><option value="Europe/Dublin">Ireland / Dublin (GMT/IST)</option></optgroup><optgroup label="Americas"><option value="America/New_York">US — New York (ET, UTC-5/-4)</option><option value="America/Chicago">US — Chicago (CT, UTC-6/-5)</option><option value="America/Denver">US — Denver (MT, UTC-7/-6)</option><option value="America/Los_Angeles">US — Los Angeles (PT, UTC-8/-7)</option><option value="America/Phoenix">US — Phoenix (MST, UTC-7)</option><option value="America/Anchorage">US — Anchorage (AKST, UTC-9)</option><option value="Pacific/Honolulu">US — Hawaii (HST, UTC-10)</option><option value="America/Toronto">Canada / Toronto (ET, UTC-5/-4)</option><option value="America/Vancouver">Canada / Vancouver (PT, UTC-8/-7)</option><option value="America/Sao_Paulo">Brazil / São Paulo (BRT, UTC-3)</option><option value="America/Mexico_City">Mexico (CST, UTC-6)</option></optgroup><optgroup label="Oceania"><option value="Australia/Sydney">Australia / Sydney (AEST, UTC+10/11)</option><option value="Australia/Brisbane">Australia / Brisbane (AEST, UTC+10)</option><option value="Australia/Perth">Australia / Perth (AWST, UTC+8)</option><option value="Pacific/Auckland">New Zealand (NZST, UTC+12/13)</option></optgroup><optgroup label="Africa"><option value="Africa/Johannesburg">South Africa (SAST, UTC+2)</option><option value="Africa/Lagos">Nigeria (WAT, UTC+1)</option><option value="Africa/Nairobi">Kenya (EAT, UTC+3)</option></optgroup><optgroup label="UTC"><option value="UTC">UTC (Coordinated Universal Time)</option></optgroup></select></div>
     </div>
     <div class="form-row">
@@ -10290,9 +10586,9 @@ select.admin-filter-date option{background:#141317;color:var(--cream)}
         <div class="form-group"><label>Sex <span class="req">*</span></label><select class="form-input" name="sex" required><option value="">Select</option><option>Male</option><option>Female</option><option>Other</option></select></div>
       </div>
       <div class="form-group"><label>Email <span class="req">*</span></label><input type="email" class="form-input" placeholder="Enter your email" name="email" required></div>
-      <div class="form-group"><label>Mobile (WhatsApp) <span class="req">*</span></label><input type="tel" class="form-input" placeholder="Enter your WhatsApp number" name="phone" required></div>
+      <div class="form-group"><label>Mobile (WhatsApp) <span class="req">*</span></label><div class="bb-phone-row"><select class="form-input bb-phone-dial" id="auditDial" aria-label="Country dialling code"></select><input type="tel" class="form-input" id="auditPhone" name="phone" placeholder="98765 43210" inputmode="tel" required></div><span class="form-hint">The code follows the country you pick below.</span></div>
       <div class="form-row">
-        <div class="form-group"><label>Country <span class="req">*</span></label><input type="text" class="form-input" placeholder="Your country" name="country" required></div>
+        <div class="form-group"><label>Country <span class="req">*</span></label><select class="form-input" id="auditCountry" name="country" required></select></div>
         <div class="form-group"><label>City <span class="req">*</span></label><input type="text" class="form-input" placeholder="Your city" name="city" required></div>
       </div>
       <div class="form-group"><label>Occupation <span class="req">*</span></label><input type="text" class="form-input" placeholder="What work do you do?" name="occupation" required></div>
@@ -10513,8 +10809,9 @@ select.admin-filter-date option{background:#141317;color:var(--cream)}
     <h1><span class="w">Stop Chasing Quick Fixes.</span><br><span class="g">Build Real, Sustainable</span><br><span class="w">Transformation.</span></h1>
     <p class="hero-sub">Our Lifestyle Management Program delivers real lasting transformation through 3 phases: upgrading your mind, nutrition, and building permanent results.</p>
     <div class="hero-btns">
-      <a href="#" class="btn-p btn-p-audit" onclick="openModal('auditModal');return false;">Start Your Body Audit<span class="btn-p-pointer" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#0a0a0a"><path d="M4 4l7.07 16.97 2.51-7.39 7.39-2.51L4 4z"/></svg></span></a>
-      
+      <a href="#" class="btn-p btn-p-audit" onclick="openModal('auditModal');return false;">Book Your Free Body Audit<span class="btn-p-pointer" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#0a0a0a"><path d="M4 4l7.07 16.97 2.51-7.39 7.39-2.51L4 4z"/></svg></span></a>
+      <p class="hero-alt">A free call with a coach — no account needed.<br>
+        <a href="/signup">Ready to join? Create your account &rsaquo;</a></p>
     </div>
   </div>
   <div class="hero-scroll"><div class="scroll-ind"></div></div>
@@ -11114,7 +11411,7 @@ select.admin-filter-date option{background:#141317;color:var(--cream)}
       <p>Your consistency earns BB Coins. Redeem them at renewal and reduce what you pay. The more verified activity you complete, the more you can win back.</p>
       <span class="winback-meta">Workouts + meal logs + body submissions + streaks -> renewal value. Terms apply.</span>
     </div>
-    <a href="#" class="winback-cta" onclick="openModal('signupModal');return false;">See Eligibility</a>
+    <a href="/signup" class="winback-cta">See Eligibility</a>
   </div>
 </section>
 
@@ -11126,7 +11423,8 @@ select.admin-filter-date option{background:#141317;color:var(--cream)}
     <h2><span class="w">Your Best Body Isn't </span><span class="g">Weeks Away.</span><br><span class="w">It's One Decision Away.</span></h2>
     <p>You already know how the Lifestyle Management 3-Phase system works. Now see how it applies to YOUR body, YOUR goals, YOUR life.</p>
     <p class="bold">Start Your Transformation Today<span class="gold-exclaim">!</span></p>
-    <a href="#" class="btn-p btn-p-audit" onclick="openModal('auditModal');return false;">Start Your Body Audit<span class="btn-p-pointer" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#0a0a0a"><path d="M4 4l7.07 16.97 2.51-7.39 7.39-2.51L4 4z"/></svg></span></a>
+    <a href="#" class="btn-p btn-p-audit" onclick="openModal('auditModal');return false;">Book Your Free Body Audit<span class="btn-p-pointer" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#0a0a0a"><path d="M4 4l7.07 16.97 2.51-7.39 7.39-2.51L4 4z"/></svg></span></a>
+    <p class="hero-alt">Or skip the call &mdash; <a href="/signup">create your account</a> and start today.</p>
   </div>
 </div>
 
@@ -11364,7 +11662,7 @@ function initBodyBankArsenal(){
     var action = cta.getAttribute('data-cta-action');
     if(action === 'openSignup'){
       e.preventDefault();
-      if (typeof openModal === 'function') openModal('signupModal');
+      window.location.href = '/signup';
       return;
     }
     if(action === 'clientOnlyAiTrainer'){
@@ -11907,6 +12205,53 @@ function unlockBodyScroll(){
   h.style.overflow='';
   window.scrollTo(0,_savedScrollY);
 }
+/* ---- Mobile menu ---------------------------------------------------------
+   One pair of functions instead of the same toggle inlined onto ten elements,
+   so the body-scroll lock, the aria state and the page furniture can never get
+   out of step with what is on screen. */
+function bbNavMenuEl(){ return document.getElementById('mo'); }
+
+function bbOpenNavMenu(){
+  var m = bbNavMenuEl();
+  if (!m || m.classList.contains('open')) return;
+  m.classList.add('open');
+  document.body.classList.add('bb-nav-open');
+  lockBodyScroll();
+  var b = document.getElementById('navHamburger');
+  if (b) b.setAttribute('aria-expanded', 'true');
+  // Land on the sheet, not wherever focus happened to be behind it.
+  var first = m.querySelector('.mm-c');
+  if (first) { try { first.focus({ preventScroll: true }); } catch (_) { first.focus(); } }
+  // A menu reopened after scrolling should start at the top of its own list.
+  var body = m.querySelector('.mm-body');
+  if (body) body.scrollTop = 0;
+}
+
+function bbCloseNavMenu(){
+  var m = bbNavMenuEl();
+  if (!m || !m.classList.contains('open')) return;
+  m.classList.remove('open');
+  document.body.classList.remove('bb-nav-open');
+  unlockBodyScroll();
+  var b = document.getElementById('navHamburger');
+  if (b) {
+    b.setAttribute('aria-expanded', 'false');
+    try { b.focus({ preventScroll: true }); } catch (_) {}
+  }
+}
+
+function bbToggleNavMenu(){
+  var m = bbNavMenuEl();
+  if (m && m.classList.contains('open')) bbCloseNavMenu(); else bbOpenNavMenu();
+}
+
+// Escape closes it, and the links stay reachable by keyboard while it is open.
+document.addEventListener('keydown', function (e) {
+  if (e.key !== 'Escape') return;
+  var m = bbNavMenuEl();
+  if (m && m.classList.contains('open')) { e.stopPropagation(); bbCloseNavMenu(); }
+}, true);
+
 function isOverlayOpen(){
   return document.querySelector('.modal-overlay.open, .popup-overlay.show, .mm.open');
 }
@@ -12547,99 +12892,10 @@ async function adminLogin() {
   else trySet();
 })();
 
-async function handleSignup() {
-  var first_name = (document.getElementById('suFirst') || {}).value || '';
-  var last_name  = (document.getElementById('suLast')  || {}).value || '';
-  var email      = (document.getElementById('suEmail') || {}).value || '';
-  var phone      = (document.getElementById('suPhone') || {}).value || '';
-  var dob        = (document.getElementById('suDob')    || {}).value || '';
-  var gender     = (document.getElementById('suGender') || {}).value || '';
-  var country    = (document.getElementById('suCountry')|| {}).value || '';
-  var timezone   = (document.getElementById('suTimezone')|| {}).value || '';
-  var state_province = (document.getElementById('suState') || {}).value || '';
-  var city       = (document.getElementById('suCity')   || {}).value || '';
-  var height_cm_raw = (document.getElementById('suHeightCm') || {}).value || '';
-  var password   = (document.getElementById('pwSignup') || {}).value || '';
-  var confirm    = (document.getElementById('suConfirmPw')|| {}).value || '';
-  first_name = String(first_name).trim();
-  last_name  = String(last_name).trim();
-  email      = String(email).trim();
-  phone      = String(phone).trim();
-  dob        = String(dob).trim();
-  gender     = String(gender).trim();
-  country    = String(country).trim();
-  timezone   = String(timezone).trim();
-  state_province = String(state_province).trim();
-  city       = String(city).trim();
-  var height_cm = parseInt(String(height_cm_raw).trim(), 10);
-  if (!first_name) { showPopup('Missing Fields', 'First name is required.', '', 'OK'); return; }
-  if (!email) { showPopup('Missing Fields', 'Email is required.', '', 'OK'); return; }
-  if (!phone) { showPopup('Missing Fields', 'Mobile number is required.', '', 'OK'); return; }
-  if (!dob) { showPopup('Missing Fields', 'Date of birth is required.', '', 'OK'); return; }
-  if (!gender) { showPopup('Missing Fields', 'Please select your gender.', '', 'OK'); return; }
-  if (!country) { showPopup('Missing Fields', 'Country is required.', '', 'OK'); return; }
-  if (!timezone) { showPopup('Missing Fields', 'Please select your timezone.', '', 'OK'); return; }
-  if (!Number.isFinite(height_cm) || height_cm < 100 || height_cm > 230) { showPopup('Height', 'Please enter your height in centimeters (whole number between 100 and 230).', '', 'OK'); return; }
-  if (!password) { showPopup('Missing Fields', 'Password is required.', '', 'OK'); return; }
-  if (password !== confirm) { showPopup('Password Mismatch', 'Passwords do not match. Please try again.', '', 'OK'); return; }
-
-  window.__bbSignupBloodQueued = null;
-  var bloodIn = document.getElementById('signupBloodFile');
-  if (bloodIn && bloodIn.files && bloodIn.files[0]) {
-    var file = bloodIn.files[0];
-    if (file.size > 8 * 1024 * 1024) {
-      showPopup('File too large', 'Blood report must be 8 MB or smaller for sign-up. You can upload a larger file after you log in.', '', 'OK');
-      return;
-    }
-    try {
-      var dataUrl = await new Promise(function (resolve, reject) {
-        var fr = new FileReader();
-        fr.onload = function () { resolve(fr.result); };
-        fr.onerror = function () { reject(new Error('read')); };
-        fr.readAsDataURL(file);
-      });
-      var comma = String(dataUrl).indexOf(',');
-      var b64 = comma >= 0 ? String(dataUrl).slice(comma + 1) : String(dataUrl);
-      var symptoms = Array.prototype.slice.call(document.querySelectorAll('input[name="signupSym"]:checked')).map(function (c) { return c.value; });
-      window.__bbSignupBloodQueued = { b64: b64, mime: file.type || 'application/pdf', symptoms: symptoms };
-    } catch (e) {
-      showPopup('Upload', 'Could not read the blood report file. Try again or skip for now.', '', 'OK');
-      return;
-    }
-  }
-  
-  var modal = document.getElementById('signupModal');
-  var sBtn = modal ? modal.querySelector('.form-submit') : null;
-  if(sBtn){sBtn.disabled=true;sBtn.classList.add('loading');sBtn._orig=sBtn.innerHTML;sBtn.innerHTML='<span class="btn-spinner"></span> Creating account...';}
-  try {
-    const data = await apiCall('POST', '/api/auth/signup', { email, password, first_name, last_name, phone, dob, gender, country, timezone, state_province, city, height_cm, client: window.IS_BODYBANK_APP ? 'app' : 'web', ref: (window.bbRefCode ? window.bbRefCode() : '') });
-    if (data.error) {
-      window.__bbSignupBloodQueued = null;
-      if(sBtn){sBtn.disabled=false;sBtn.classList.remove('loading');sBtn.innerHTML=sBtn._orig||'Sign-up Now';}
-      showPopup('Sign-up Error', data.error, '', 'OK', null, 'error');
-      return;
-    }
-    if(sBtn){sBtn.disabled=false;sBtn.classList.remove('loading');sBtn.innerHTML=sBtn._orig||'Sign-up Now';}
-    closeModal('signupModal');
-    if (bloodIn) bloodIn.value = '';
-    if (data.trial) {
-      var td = data.trial_days || 7;
-      showPopup("You're in! 🎉", 'Your account is ready with ' + td + ' days of full access. Log in now and complete your body audit to see your scorecard.', '', 'Login Now', () => { openModal('loginModal'); });
-    } else if (data.pending_approval) {
-      showPopup('Sign-up Successful!', 'Waiting for Admin approval. You will be able to log in once approved. For instant approval, reach out to Admin on WhatsApp.', '', 'OK', () => {});
-    } else {
-      showPopup('Registered Successfully!', 'CONSISTENCY has its fruits, so does PATIENCE.', 'We will get back to you after the review', 'Login Now', () => { openModal('loginModal'); });
-    }
-  } catch (e) {
-    window.__bbSignupBloodQueued = null;
-    if(sBtn){sBtn.disabled=false;sBtn.classList.remove('loading');sBtn.innerHTML=sBtn._orig||'Sign-up Now';}
-    showPopup('Error', 'Sign-up failed. Please try again.', '', 'OK', null, 'error');
-  }
-}
 
 async function handleGoogleCompleteSubmit() {
   if (!_pendingGoogleToken) { showPopup('Error', 'Session expired. Please sign up with Google again.', '', 'OK', null, 'error'); return; }
-  var phone    = ((document.getElementById('gcPhone')||{}).value||'').trim();
+  var phone    = bbPhoneValue('gc');
   var dob      = ((document.getElementById('gcDob')||{}).value||'').trim();
   var gender   = ((document.getElementById('gcGender')||{}).value||'').trim();
   var country  = ((document.getElementById('gcCountry')||{}).value||'').trim();
@@ -12674,6 +12930,41 @@ async function handleGoogleCompleteSubmit() {
   }
 }
 
+/* ===== Country + dialling code ============================================
+   Country used to be free text beside a phone box that accepted any prefix or
+   none, so the two could never agree. Every form that asks for both now draws
+   its country list from /js/countries.js and derives the code from it. */
+var BB_COUNTRY_FORMS = [['gc', 'gcCountry'], ['audit', 'auditCountry']];
+
+function bbInitCountryFields() {
+  if (typeof BBCountries === 'undefined') return;
+  BB_COUNTRY_FORMS.forEach(function (pair) {
+    var prefix = pair[0];
+    var countrySel = document.getElementById(pair[1]);
+    var dialSel = document.getElementById(prefix + 'Dial');
+    if (!countrySel || countrySel.options.length) return;   // already built
+    BBCountries.fillCountrySelect(countrySel);
+    if (dialSel) BBCountries.fillDialSelect(dialSel);
+    // The browser timezone is the best guess available before they type.
+    try {
+      var guess = (window.BB && typeof BB.guessCountry === 'function') ? BB.guessCountry() : '';
+      if (guess && !countrySel.value) countrySel.value = guess;
+    } catch (_) {}
+    if (dialSel) BBCountries.linkPhoneToCountry(countrySel, dialSel);
+  });
+}
+
+/** The dialling code and the typed number as one string. */
+function bbPhoneValue(prefix) {
+  var dial = document.getElementById(prefix + 'Dial');
+  var num = document.getElementById(prefix + 'Phone');
+  if (typeof BBCountries === 'undefined') return String((num && num.value) || '').trim();
+  return BBCountries.composePhone(dial ? dial.value : '', num ? num.value : '');
+}
+
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bbInitCountryFields);
+else bbInitCountryFields();
+
 // ========== BODY AUDIT FORM ==========
 async function submitAudit(form) {
   var btn=form.querySelector('button[type=submit]');
@@ -12685,7 +12976,7 @@ async function submitAudit(form) {
     age: parseInt(fd.get('age')) || null,
     sex: fd.get('sex'),
     email: fd.get('email'),
-    phone: fd.get('phone'),
+    phone: bbPhoneValue('audit'),
     country: fd.get('country'),
     city: fd.get('city'),
     occupation: fd.get('occupation'),
@@ -17961,11 +18252,8 @@ async function loadAdminUserProgressDetail(userId, userName) {
   if (window._adminCpRdLoadedFor !== userId) {
     window._adminCpRdLoadedFor = null;
     if (typeof window.bbRdUnmount === 'function') window.bbRdUnmount('admincp');
-    if (typeof window.bbSigUnmount === 'function') window.bbSigUnmount('admincp');
     var rdHost = document.getElementById('adminCpReadinessBody');
     if (rdHost) rdHost.innerHTML = '<p class="admin-cp-placeholder">Loading readiness…</p>';
-    var sgHost = document.getElementById('adminCpSignalBody');
-    if (sgHost) sgHost.innerHTML = '<p class="admin-cp-placeholder">Loading signal…</p>';
   }
   var detailEl = document.getElementById('adminCpDetail');
   var kpisEl = document.getElementById('adminCpKpis');
@@ -18115,8 +18403,6 @@ function bbAdminCpLoadReadiness() {
     host.innerHTML = '<p class="admin-cp-placeholder">Select a user from the list first.</p>';
     return;
   }
-  var sigHost = document.getElementById('adminCpSignalBody');
-  if (sigHost && !userId) sigHost.innerHTML = '<p class="admin-cp-placeholder">Select a user from the list first.</p>';
   if (typeof window.bbRdMountClient !== 'function') {
     host.innerHTML = '<div class="admin-cp-error-msg">Readiness view is unavailable on this build.</div>';
     return;
@@ -18125,18 +18411,6 @@ function bbAdminCpLoadReadiness() {
   // chosen window and any report they just generated.
   if (window._adminCpRdLoadedFor === userId) return;
   window._adminCpRdLoadedFor = userId;
-  // Signal panel is additive: an older build without it still renders readiness below.
-  if (sigHost && typeof window.bbSigMountStaff === 'function') {
-    window.bbSigMountStaff({
-      key: 'admincp',
-      scope: 'admin',
-      el: 'adminCpSignalBody',
-      userId: userId,
-      name: window._adminCpSelectedClientName || ''
-    });
-  } else if (sigHost) {
-    sigHost.innerHTML = '<div class="admin-cp-error-msg">Signal view is unavailable on this build.</div>';
-  }
   window.bbRdMountClient({
     key: 'admincp',
     scope: 'admin',
@@ -18406,7 +18680,6 @@ async function loadClientProgressUsers() {
   if (cpRdPanel) cpRdPanel.style.display = 'none';
   window._adminCpRdLoadedFor = null;
   if (typeof window.bbRdUnmount === 'function') window.bbRdUnmount('admincp');
-  if (typeof window.bbSigUnmount === 'function') window.bbSigUnmount('admincp');
   window._adminCpSelectedUserId = null;
   window._adminCpSelectedClientName = '';
   destroyAdminProgressCharts();
@@ -19671,15 +19944,10 @@ function switchUserTab(tab) {
   }
   if (tab === 'elitefeed' && typeof loadUserEliteFeedGrid === 'function') loadUserEliteFeedGrid();
   if (tab === 'contact') {
-    var today = new Date().toISOString().split('T')[0];
-    var mtgDateEl = document.getElementById('mtgDate');
-    if (mtgDateEl) mtgDateEl.min = today;
-    document.getElementById('mtgEditId').value = '';
-    document.getElementById('mtgDate').value = '';
-    document.getElementById('mtgTime').value = '';
-    var mtgBtn = document.getElementById('mtgSubmitBtn');
-    if (mtgBtn) mtgBtn.textContent = 'Schedule Call';
-    loadMyMeetings();
+    // The bookable window, the slot picture and the list all come from the
+    // server, so opening the tab is the only thing to do here.
+    cancelMeetingEdit();
+    initConsultations();
   }
   if (tab === 'programs') loadUserPrograms();
   if (tab === 'body' && typeof loadBodySnapshots === 'function') loadBodySnapshots();
@@ -19834,14 +20102,9 @@ function renderTodayHero(data){
   bbSetPulseAvatar(profile.profile_picture || (window.currentUser && window.currentUser.profile_picture), name);
   var d = document.getElementById('bbTodayDate');
   if (d) d.textContent = new Date().toLocaleDateString(undefined, { weekday:'long', month:'long', day:'numeric' });
-  var sNum = document.getElementById('bbTodayStreakNum'); if (sNum) sNum.textContent = streak.streak || 0;
-  var sPill = document.getElementById('bbTodayStreakPill');
-  if (sPill) { sPill.firstChild && (sPill.firstChild.nodeValue = bbStreakFlair(streak.streak) + ' '); }
   var cNum = document.getElementById('bbTodayCoinNum'); if (cNum) cNum.textContent = (coins.balance != null ? coins.balance : 0);
   var cPill = document.getElementById('bbTodayCoinPill');
   if (cPill) { var tier = bbCoinTier(coins.lifetimeEarned != null ? coins.lifetimeEarned : coins.balance); cPill.title = 'Gold coins — ' + tier.label + ' tier'; }
-  var freezeBtn = document.getElementById('bbTodayFreezeBtn');
-  if (freezeBtn) freezeBtn.hidden = !streak.freezeAvailable;
   // ---- metrics (today value/goal + 7-day series + weekly avg) ----
   var waterMl = (ci.water_ml != null) ? ci.water_ml : (ci.water_liters != null ? Math.round(ci.water_liters * 1000) : 0);
   function pct(v, goal){ if (!goal || goal <= 0) return v > 0 ? 1 : 0; return Math.max(0, Math.min(1, (v || 0) / goal)); }
@@ -19939,8 +20202,6 @@ function renderTodayHero(data){
   }
   // Readiness card — its own endpoint, so it loads alongside rather than inside /api/me/home.
   try { if (typeof bbRdHomeLoad === 'function') bbRdHomeLoad(); } catch(e){ console.warn('readiness card', e); }
-  // Signal card — same pattern. Deterministic server-side, so this is a cheap read.
-  try { if (typeof bbSigHomeLoad === 'function') bbSigHomeLoad(); } catch(e){ console.warn('signal card', e); }
   hero.hidden = false;
 }
 
@@ -20022,18 +20283,6 @@ async function bbCloseGuide(){
   if (typeof closeModal === 'function') closeModal('bbGuideModal');
   if (window._bbHomeData && window._bbHomeData.profile) window._bbHomeData.profile.guideSeen = true;
   try { await apiCall('POST', '/api/me/guide-seen', {}); } catch(_){}
-}
-
-// Streak freeze (#12)
-async function bbUseStreakFreeze(){
-  if (!confirm('Use your monthly streak freeze to protect your streak for the missed day?')) return;
-  try {
-    var r = await apiCall('POST', '/api/me/streak-freeze', {});
-    if (r && r.error) { showPopup('Heads up', r.error, '', 'OK'); return; }
-    bbHaptic(16);
-    showPopup('Streak protected 🧊', 'Your streak is safe — but log today to keep it going!', '', 'OK', null, 'success');
-    loadHomeAggregate();
-  } catch (e) { showPopup('Error', e.message || 'Could not apply freeze.', '', 'OK', null, 'error'); }
 }
 
 function bbIsTypingInputContext() {
@@ -20930,8 +21179,133 @@ async function submitMicroGoals() {
   }
 }
 
+/* ===== Daily check-in: bounds, and correcting today =========================
+   These mirror DAILY_CHECKIN_LIMITS on the server, which stays the authority —
+   this copy exists so a mistake is caught under the field that caused it
+   instead of coming back as a failed request. /api/daily-checkin/limits
+   refreshes them at load so the two cannot drift. */
+var BB_DAILY_LIMITS = {
+  steps:       { el: 'dailySteps',   label: 'Steps',   min: 0, max: 100000, unit: '',     integer: true },
+  water_l:     { el: 'dailyWater',   label: 'Water',   min: 0, max: 15,     unit: ' L' },
+  protein_g:   { el: 'dailyProtein', label: 'Protein', min: 0, max: 500,    unit: ' g',   integer: true },
+  sleep_hours: { el: 'dailySleep',   label: 'Sleep',   min: 0, max: 24,     unit: ' hrs' }
+};
+var bbDailyEditing = false;
+var bbDailySnapshot = null;   // what was on screen before an edit began
+
+async function bbDailyLoadLimits() {
+  try {
+    var lim = await apiCall('GET', '/api/daily-checkin/limits');
+    if (!lim || lim.error) return;
+    Object.keys(BB_DAILY_LIMITS).forEach(function (k) {
+      if (!lim[k]) return;
+      var mine = BB_DAILY_LIMITS[k];
+      mine.min = lim[k].min; mine.max = lim[k].max;
+      mine.label = lim[k].label; mine.unit = lim[k].unit;
+      var el = document.getElementById(mine.el);
+      if (el) { el.min = String(mine.min); el.max = String(mine.max); }
+    });
+  } catch (e) { /* the built-in copy is already correct */ }
+}
+
+function bbDailyShowErr(msg, badEl) {
+  var box = document.getElementById('dailyCheckinErr');
+  if (box) { box.textContent = msg || ''; box.hidden = !msg; }
+  Object.keys(BB_DAILY_LIMITS).forEach(function (k) {
+    var el = document.getElementById(BB_DAILY_LIMITS[k].el);
+    if (el) el.classList.remove('is-bad');
+  });
+  if (badEl) {
+    badEl.classList.add('is-bad');
+    try { badEl.focus(); } catch (_) {}
+  }
+}
+
+/**
+ * Reads the four fields, holding each to its bound. Returns the request body,
+ * or null after painting the first problem it found under that field.
+ */
+function bbDailyReadForm() {
+  var body = {};
+  var keys = Object.keys(BB_DAILY_LIMITS);
+  for (var i = 0; i < keys.length; i += 1) {
+    var k = keys[i], lim = BB_DAILY_LIMITS[k];
+    var el = document.getElementById(lim.el);
+    if (!el) continue;
+    var raw = String(el.value == null ? '' : el.value).replace(/,/g, '').trim();
+    if (raw === '') continue;
+    var n = Number(raw);
+    if (!isFinite(n)) { bbDailyShowErr(lim.label + ' must be a number.', el); return null; }
+    if (n < lim.min || n > lim.max) {
+      bbDailyShowErr(lim.label + ' must be between ' + lim.min + lim.unit + ' and ' + lim.max + lim.unit + '.', el);
+      return null;
+    }
+    body[k === 'water_l' ? 'water_liters' : k] = lim.integer ? Math.round(n) : n;
+  }
+  bbDailyShowErr(null);
+  return body;
+}
+
+function bbDailyFieldEls() {
+  return Object.keys(BB_DAILY_LIMITS).map(function (k) {
+    return document.getElementById(BB_DAILY_LIMITS[k].el);
+  }).filter(Boolean);
+}
+
+/** Open today's saved entry for correction. Today only — there is no other day
+    this form can reach, and the server refuses any date but its own today. */
+function bbDailyBeginEdit() {
+  bbDailyEditing = true;
+  bbDailySnapshot = {};
+  bbDailyFieldEls().forEach(function (el) {
+    bbDailySnapshot[el.id] = el.value;
+    el.disabled = false;
+  });
+  bbDailyShowErr(null);
+  bbDailyPaintControls(true);
+  var first = document.getElementById('dailySteps');
+  if (first) { try { first.focus(); first.select(); } catch (_) {} }
+}
+
+function bbDailyCancelEdit() {
+  bbDailyEditing = false;
+  bbDailyFieldEls().forEach(function (el) {
+    if (bbDailySnapshot && bbDailySnapshot[el.id] != null) el.value = bbDailySnapshot[el.id];
+    el.disabled = true;
+  });
+  bbDailySnapshot = null;
+  bbDailyShowErr(null);
+  bbDailyPaintControls(true);
+}
+
+/**
+ * Which controls the form shows. `saved` means today is already recorded, so the
+ * gold Save button only comes back while a correction is actually open.
+ */
+function bbDailyPaintControls(saved) {
+  var save = document.getElementById('dailyCheckinSave');
+  var edit = document.getElementById('dailyCheckinEdit');
+  var cancel = document.getElementById('dailyCheckinCancel');
+  var note = document.getElementById('dailyCheckinNote');
+  var editing = saved && bbDailyEditing;
+  if (save) {
+    save.hidden = saved && !editing;
+    save.disabled = false;
+    save.textContent = editing ? 'Save changes' : 'Save today';
+  }
+  if (edit) edit.hidden = !saved || editing;
+  if (cancel) cancel.hidden = !editing;
+  if (note) {
+    note.hidden = !saved;
+    note.textContent = editing
+      ? 'You can correct today until midnight. Past days are locked.'
+      : 'Checked in today. You can still correct today\'s numbers.';
+  }
+}
+
 async function loadDailyCheckinForm() {
   if (!window.currentUser) return;
+  bbDailyLoadLimits();            // keep the form bounds in step with the server
   try {
     var [today, streak] = await Promise.all([
       apiCall('GET', '/api/daily-checkin/today'),
@@ -20939,18 +21313,22 @@ async function loadDailyCheckinForm() {
     ]);
     var el;
     var alreadyFilled = today && (today.steps != null || today.water_ml != null || today.water_liters != null || today.protein_g != null || today.sleep_hours != null);
-    if (alreadyFilled) {
-      if (el = document.getElementById('dailySteps')) { el.value = today.steps != null ? today.steps : ''; el.disabled = true; }
-      if (el = document.getElementById('dailyWater')) { el.value = bbFmtWaterLitersForInput(bbDailyWaterLitersFromRow(today)); el.disabled = true; }
-      if (el = document.getElementById('dailyProtein')) { el.value = today.protein_g != null ? today.protein_g : ''; el.disabled = true; }
-      if (el = document.getElementById('dailySleep')) { el.value = today.sleep_hours != null ? today.sleep_hours : ''; el.disabled = true; }
-      if (el = document.querySelector('#dailyCheckinForm .micro-goals-submit')) { el.disabled = true; el.textContent = 'Already checked in today'; }
-    } else {
-      if (el = document.getElementById('dailySteps')) { el.disabled = false; el.value = today && today.steps != null ? today.steps : ''; }
-      if (el = document.getElementById('dailyWater')) { el.disabled = false; el.value = today ? bbFmtWaterLitersForInput(bbDailyWaterLitersFromRow(today)) : ''; }
-      if (el = document.getElementById('dailyProtein')) { el.disabled = false; el.value = today && today.protein_g != null ? today.protein_g : ''; }
-      if (el = document.getElementById('dailySleep')) { el.disabled = false; el.value = today && today.sleep_hours != null ? today.sleep_hours : ''; }
-      if (el = document.querySelector('#dailyCheckinForm .micro-goals-submit')) { el.disabled = false; el.textContent = 'Save today'; }
+    // A streak-freeze day is a marker, not data — there is nothing to correct.
+    var frozen = !!(today && (today.is_freeze === true || today.is_freeze === 't'));
+    // Never stamp over what the member is mid-way through typing.
+    if (!bbDailyEditing) {
+      if (el = document.getElementById('dailySteps')) { el.value = today && today.steps != null ? today.steps : ''; el.disabled = alreadyFilled; }
+      if (el = document.getElementById('dailyWater')) { el.value = today ? bbFmtWaterLitersForInput(bbDailyWaterLitersFromRow(today)) : ''; el.disabled = alreadyFilled; }
+      if (el = document.getElementById('dailyProtein')) { el.value = today && today.protein_g != null ? today.protein_g : ''; el.disabled = alreadyFilled; }
+      if (el = document.getElementById('dailySleep')) { el.value = today && today.sleep_hours != null ? today.sleep_hours : ''; el.disabled = alreadyFilled; }
+    }
+    bbDailyPaintControls(alreadyFilled && !frozen);
+    if (frozen) {
+      if (el = document.getElementById('dailyCheckinSave')) el.hidden = true;
+      if (el = document.getElementById('dailyCheckinNote')) {
+        el.hidden = false;
+        el.textContent = 'Today is covered by your streak freeze — no check-in needed.';
+      }
     }
     if (streak && (el = document.getElementById('dailyStreakBadge'))) {
       var n = streak.streak || 0;
@@ -20963,33 +21341,40 @@ async function loadDailyCheckinForm() {
 
 async function submitDailyCheckinForm() {
   if (!window.currentUser) return;
-  var steps = parseInt(document.getElementById('dailySteps').value, 10);
-  var water = parseFloat(String(document.getElementById('dailyWater').value || '').replace(/,/g, ''));
-  var protein = parseInt(document.getElementById('dailyProtein').value, 10);
-  var sleep = parseFloat(document.getElementById('dailySleep').value);
-  var body = {};
-  if (!isNaN(steps)) body.steps = steps;
-  if (!isNaN(water) && water >= 0) body.water_liters = water;
-  if (!isNaN(protein)) body.protein_g = protein;
-  if (!isNaN(sleep)) body.sleep_hours = sleep;
-  if (Object.keys(body).length === 0) return;
-  var btn = document.querySelector('#dailyCheckinForm .micro-goals-submit');
+  var editing = bbDailyEditing;
+  var body = bbDailyReadForm();
+  if (!body) return;                       // the bad field is already flagged
+  if (Object.keys(body).length === 0) {
+    bbDailyShowErr('Enter at least one value before saving.');
+    return;
+  }
+  var btn = document.getElementById('dailyCheckinSave');
   if (btn) { btn.disabled = true; btn.textContent = 'Saving…'; }
   try {
-    var res = await apiCall('POST', '/api/daily-checkin', body);
+    // Today only: the edit route derives the date itself, so nothing here can
+    // name a past or future day.
+    var res = editing
+      ? await apiCall('PUT', '/api/daily-checkin/today', body)
+      : await apiCall('POST', '/api/daily-checkin', body);
     if (res && res.error) {
-      showPopup('Error', res.error, '', 'OK', null, 'error');
-      if (btn) { btn.disabled = false; btn.textContent = 'Save today'; }
+      bbDailyShowErr(res.error);
+      if (btn) { btn.disabled = false; btn.textContent = editing ? 'Save changes' : 'Save today'; }
       return;
     }
+    bbDailyEditing = false;
+    bbDailySnapshot = null;
+    bbDailyShowErr(null);
     loadDailyCheckinForm();
     loadMicroGoals();
     bbLoadCoinSummary(true);
+    if (typeof loadHomeAggregate === 'function') { try { loadHomeAggregate(); } catch (_) {} }
+    if (typeof loadMemberHome === 'function') { try { loadMemberHome(true); } catch (_) {} }
     try { renderWeeklyInsights(); } catch (_) {}   // refresh the weekly graphs/data with the just-saved values
-    showPopup('Saved', 'Daily check-in saved. Streak updated!', '', 'OK', null, 'success');
+    bbHaptic(14);
+    showPopup('Saved', editing ? 'Today\'s check-in updated.' : 'Daily check-in saved. Streak updated!', '', 'OK', null, 'success');
   } catch (e) {
-    showPopup('Error', e.message || 'Failed to save.', '', 'OK', null, 'error');
-    if (btn) { btn.disabled = false; btn.textContent = 'Save today'; }
+    bbDailyShowErr((e && e.message) || 'Failed to save.');
+    if (btn) { btn.disabled = false; btn.textContent = editing ? 'Save changes' : 'Save today'; }
   }
 }
 
@@ -21004,11 +21389,15 @@ function bbWiMd(ymd){
   return mo + ' ' + parseInt(p[2], 10);
 }
 // per-metric display config (water is stored in ml; everything else in its own unit)
+// Metric identity colours. These live only in the Body pane, which is gold,
+// black and white — so the four metrics are told apart by their icon and their
+// card, not by four competing hues. Gold is tiered instead: bright for the two
+// you act on during the day, deep for the two you accumulate.
 var BB_WI_FMT = {
-  steps:   { ico: '🚶', label: 'Steps',   disp: function (v) { return bbWiInt(v); }, unit: '',  color: '#f6a740' }, // movement — amber
-  water:   { ico: '💧', label: 'Water',   disp: function (v) { return bbWiL(v); },   unit: 'L', color: '#4aa8e0' }, // hydration — blue
-  protein: { ico: '🥩', label: 'Protein', disp: function (v) { return bbWiInt(v); }, unit: 'g', color: '#5fc88a' }, // nutrition — green
-  sleep:   { ico: '😴', label: 'Sleep',   disp: function (v) { return bbWiH(v); },   unit: 'h', color: '#9b8cf0' }  // recovery — indigo
+  steps:   { ico: '🚶', label: 'Steps',   disp: function (v) { return bbWiInt(v); }, unit: '',  color: '#E2C071' },
+  water:   { ico: '💧', label: 'Water',   disp: function (v) { return bbWiL(v); },   unit: 'L', color: '#F0D89A' },
+  protein: { ico: '🥩', label: 'Protein', disp: function (v) { return bbWiInt(v); }, unit: 'g', color: '#C8A44E' },
+  sleep:   { ico: '😴', label: 'Sleep',   disp: function (v) { return bbWiH(v); },   unit: 'h', color: '#A98B3E' }
 };
 function bbWiVal(key, v){ var c = BB_WI_FMT[key]; return c.disp(v) + c.unit; }
 
@@ -21208,11 +21597,11 @@ function bbLwrBuildCharts(d){
     var vals = d.totalProgress.series.map(function (p) { return p.cumulative; });
     var ctx = ac.getContext('2d');
     var grad = ctx.createLinearGradient(0, 0, 0, 130);
-    grad.addColorStop(0, 'rgba(246,197,68,0.32)'); grad.addColorStop(1, 'rgba(61,214,140,0.03)');
+    grad.addColorStop(0, 'rgba(226,192,113,0.34)'); grad.addColorStop(1, 'rgba(226,192,113,0.02)');
     window._bbLwrCharts.area = new Chart(ctx, {
       type: 'line',
-      data: { labels: labels, datasets: [{ data: vals, borderColor: '#6fe09a', borderWidth: 2.5, fill: true, backgroundColor: grad, tension: 0.4, pointRadius: vals.map(function (_, i) { return i === vals.length - 1 ? 4 : 0; }), pointBackgroundColor: '#9af0c0', pointBorderColor: '#0d2418', pointBorderWidth: 2, pointHoverRadius: 4 }] },
-      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false }, ticks: { color: '#7c715c', font: { size: 9 } } }, y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#7c715c', font: { size: 9 }, maxTicksLimit: 5, callback: function (v) { return v >= 1000 ? (Math.round(v / 1000) + 'K') : v; } } } } }
+      data: { labels: labels, datasets: [{ data: vals, borderColor: '#E2C071', borderWidth: 2.5, fill: true, backgroundColor: grad, tension: 0.4, pointRadius: vals.map(function (_, i) { return i === vals.length - 1 ? 4 : 0; }), pointBackgroundColor: '#F0D89A', pointBorderColor: '#171106', pointBorderWidth: 2, pointHoverRadius: 4 }] },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false }, ticks: { color: '#8A8A90', font: { size: 9 } } }, y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#8A8A90', font: { size: 9 }, maxTicksLimit: 5, callback: function (v) { return v >= 1000 ? (Math.round(v / 1000) + 'K') : v; } } } } }
     });
   }
 
@@ -21232,7 +21621,7 @@ function bbLwrBuildCharts(d){
         { type: 'bar', data: dayVals, backgroundColor: function (cx) { var ch = cx.chart; if (!ch.chartArea) return f.color; var g = cx.chart.ctx.createLinearGradient(0, ch.chartArea.top, 0, ch.chartArea.bottom); g.addColorStop(0, f.color); g.addColorStop(1, f.color + '33'); return g; }, borderRadius: 4, barPercentage: 0.62, categoryPercentage: 0.82 },
         { type: 'line', data: labels.map(function () { return goal; }), borderColor: 'rgba(255,255,255,0.32)', borderWidth: 1.4, borderDash: [5, 4], pointRadius: 0, fill: false }
       ] },
-      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false }, ticks: { color: '#7c715c', font: { size: 9 } } }, y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#7c715c', font: { size: 9 }, maxTicksLimit: 4, callback: fmtY } } } }
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false }, ticks: { color: '#8A8A90', font: { size: 9 } } }, y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#8A8A90', font: { size: 9 }, maxTicksLimit: 4, callback: fmtY } } } }
     });
   });
 }
@@ -25212,13 +25601,35 @@ function loadMyHealthReports() {
       // Stable slot order — oldest upload is always Blood Report 1.
       reports.sort(function (a, b) { return new Date(a.createdAt || 0) - new Date(b.createdAt || 0); });
       var statusColor = { Good: '#3dd68c', Excellent: '#3dd68c', Fair: '#f5a623', Poor: '#ff5c5c', Critical: '#ff5c5c' };
-      var html = '<div class="bb-blood-slots" style="display:grid;gap:10px">';
-      for (var i = 0; i < BLOOD_REPORT_SLOTS; i += 1) {
-        html += bbBloodSlotCard(i + 1, reports[i], statusColor);
+      // With nothing uploaded there is no list to draw — only an invitation.
+      var html;
+      if (!reports.length) {
+        html = bbBloodEmptyState();
+      } else {
+        var pips = '';
+        for (var p = 0; p < BLOOD_REPORT_SLOTS; p += 1) {
+          pips += '<span class="bb-slot-pip' + (reports[p] ? ' is-full' : '') + '"></span>';
+        }
+        var left = BLOOD_REPORT_SLOTS - reports.length;
+        html = '<div class="bb-hr-meta"><span class="bb-slot-pips">' + pips + '</span>'
+          + '<span>' + reports.length + ' of ' + BLOOD_REPORT_SLOTS + ' used'
+          + (left ? ' · ' + left + ' left' : '') + '</span></div>'
+          + '<div class="bb-hr-panel">';
+        // Only real reports get a row. Empty slots were three lines of nothing.
+        for (var i = 0; i < reports.length; i += 1) {
+          html += bbBloodSlotRow(i + 1, reports[i], statusColor);
+        }
+        html += left
+          ? '<button type="button" class="bb-hr-add" onclick="openBloodUploadPicker()"'
+            + ' ondragover="bbHrDragOver(event)" ondragleave="bbHrDragLeave(event)" ondrop="bbHrDrop(event)">'
+            + bbHrUploadIcon(15) + 'Upload another report</button>'
+          : '<div class="bb-hr-full">All ' + BLOOD_REPORT_SLOTS + ' slots used — remove one to upload another.</div>';
+        html += '</div>';
       }
-      html += '</div>';
       targets.forEach(function (el) { el.innerHTML = html; });
-      bbToggleBloodUploadBtns(reports.length < BLOOD_REPORT_SLOTS);
+      // The panel always carries its own upload control now, in exactly one place,
+      // so the header button would only ever be a second way to say the same thing.
+      bbToggleBloodUploadBtns(false);
       bbLoadMyProgress();
     })
     .catch(function () {
@@ -25395,36 +25806,61 @@ function bbDownloadMyProgressPdf(id) {
   }).catch(function (err) { showPopup('Download', (err && err.message) || 'Report not ready.', '', 'OK', null, 'error'); });
 }
 
-function bbBloodSlotCard(n, r, statusColor) {
-  var head = '<div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted,#8a8880);margin-bottom:8px">Blood Report ' + n + '</div>';
-  if (!r) {
-    return '<div style="padding:16px;background:var(--surface,#161a1e);border:1px dashed rgba(255,255,255,0.14);border-radius:12px;text-align:center">' +
-      head +
-      '<div style="font-size:1.5rem;margin-bottom:6px;opacity:.7">🩸</div>' +
-      '<p class="form-hint" style="margin:0 0 10px">No report uploaded</p>' +
-      '<button type="button" class="form-submit" style="width:auto;padding:9px 16px;font-size:12px" onclick="openBloodUploadPicker()">Upload report ' + n + '</button></div>';
-  }
+/** The upload glyph, shared by the empty state and the add row. */
+function bbHrUploadIcon(size) {
+  return '<svg width="' + size + '" height="' + size + '" viewBox="0 0 24 24" fill="none" stroke="currentColor"'
+    + ' stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:none">'
+    + '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/>'
+    + '<line x1="12" y1="3" x2="12" y2="15"/></svg>';
+}
+
+/** Nothing uploaded: one target, one sentence of what to send, one button. */
+function bbBloodEmptyState() {
+  return '<div class="bb-hr-empty" role="button" tabindex="0" onclick="openBloodUploadPicker()"'
+    + ' onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();openBloodUploadPicker();}"'
+    + ' ondragover="bbHrDragOver(event)" ondragleave="bbHrDragLeave(event)" ondrop="bbHrDrop(event)"'
+    + ' aria-label="Upload your blood report">'
+    + '<div class="bb-hr-empty-ico">' + bbHrUploadIcon(21) + '</div>'
+    + '<p class="bb-hr-empty-t">Upload your blood report</p>'
+    + '<p class="bb-hr-empty-d">Send a PDF or a photo of your lab results. We read every marker, flag what matters, and your coach reviews it before it comes back to you.</p>'
+    + '<span class="bb-hr-cta">' + bbHrUploadIcon(15) + 'Upload report</span>'
+    + '<p class="bb-hr-foot">Drag a file here, or tap to browse · PDF, JPG or PNG<br>'
+    + BLOOD_REPORT_SLOTS + ' reports included with your membership</p>'
+    + '</div>';
+}
+
+/* Drag and drop lands on the same upload path as the file picker. */
+function bbHrDragOver(ev) { ev.preventDefault(); ev.currentTarget.classList.add('is-over'); }
+function bbHrDragLeave(ev) { ev.currentTarget.classList.remove('is-over'); }
+function bbHrDrop(ev) {
+  ev.preventDefault();
+  ev.stopPropagation();
+  ev.currentTarget.classList.remove('is-over');
+  var f = ev.dataTransfer && ev.dataTransfer.files && ev.dataTransfer.files[0];
+  if (f) bbUploadBloodFile(f);
+}
+
+// One filled slot, one row.
+function bbBloodSlotRow(n, r, statusColor) {
+  var num = '<span class="bb-hr-n" aria-hidden="true">' + n + '</span>';
   var ar = r.aiReport || {};
   var rid = String(r._id || r.id || '').replace(/'/g, "\\'");
-  var dt = r.createdAt ? new Date(r.createdAt).toLocaleDateString(undefined, { day: 'numeric', month: 'long', year: 'numeric' }) : '';
+  var dt = r.createdAt ? new Date(r.createdAt).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' }) : '';
   var complete = r.status === 'complete';
-  var titleCol = complete ? (statusColor[ar.overall_status] || 'var(--text,#f0ede8)') : '#f5a623';
-  var titleText = complete ? (ar.overall_status || 'Complete') : 'Processing…';
-  var sum = complete && ar.overall_summary_short ? escapeHtml(String(ar.overall_summary_short).slice(0, 120)) + '…' : '';
-  var action =
-    complete && r.sentToUser
-      ? '<button type="button" class="form-submit" style="padding:8px 14px;font-size:12px" onclick="userBloodDownloadPdf(\'' + rid + '\')">Download PDF</button>'
-      : complete
-        ? '<span class="form-hint" style="background:rgba(245,166,35,0.12);padding:5px 10px;border-radius:6px;font-size:11px">Pending coach review</span>'
-        : '<span class="form-hint" style="font-size:11px">Analysing…</span>';
-  var del = '<button type="button" title="Remove report" aria-label="Remove report" onclick="userBloodDeleteReport(\'' + rid + '\')" style="background:none;border:none;color:#ff6b6b;cursor:pointer;font-size:11px;padding:4px 2px">✕ Remove</button>';
-  return '<div style="padding:14px;background:var(--surface,#161a1e);border:1px solid rgba(255,255,255,0.08);border-radius:12px">' +
-    head +
-    '<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">' +
-    '<div style="flex:1;min-width:140px"><div class="form-hint" style="margin:0 0 4px">' + escapeHtml(dt) + '</div>' +
-    '<div style="font-weight:700;color:' + titleCol + '">' + escapeHtml(titleText) + '</div>' +
-    (sum ? '<div class="form-hint" style="margin-top:4px;line-height:1.4">' + sum + '</div>' : '') +
-    '</div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">' + action + del + '</div>' +
+  var col = complete ? (statusColor[ar.overall_status] || 'var(--muted,#8a8880)') : '#f5a623';
+  var state = complete ? (ar.overall_status || 'Complete') : 'Analysing';
+  // The date is the identity of the report; the verdict is its state.
+  var sub = '<span class="bb-hr-dot" style="background:' + col + '"></span>'
+    + '<span style="color:' + col + ';font-weight:650">' + escapeHtml(state) + '</span>'
+    + (complete && !r.sentToUser ? '<span style="opacity:.75"> · awaiting coach review</span>' : '');
+  var action = complete && r.sentToUser
+    ? '<button type="button" class="bb-hr-btn" onclick="userBloodDownloadPdf(\'' + rid + '\')">Download PDF</button>'
+    : '<span class="bb-hr-note">' + (complete ? 'With your coach' : 'In progress') + '</span>';
+  return '<div class="bb-hr-row is-full">' + num +
+    '<div class="bb-hr-main"><div class="bb-hr-t">' + escapeHtml(dt || 'Blood report ' + n) + '</div>' +
+    '<div class="bb-hr-s">' + sub + '</div></div>' +
+    '<div class="bb-hr-act">' + action +
+    '<button type="button" class="bb-hr-x" title="Remove report" aria-label="Remove blood report ' + n + '" onclick="userBloodDeleteReport(\'' + rid + '\')">✕</button>' +
     '</div></div>';
 }
 
@@ -25449,6 +25885,11 @@ function bbToggleBloodUploadBtns(show) {
 
 function uploadUserBloodReport(ev) {
   var f = ev.target && ev.target.files && ev.target.files[0];
+  ev.target.value = '';
+  bbUploadBloodFile(f);
+}
+
+function bbUploadBloodFile(f) {
   if (!f || !window.currentUser || !window.currentUser.token) return;
   var reader = new FileReader();
   reader.onload = function () {
@@ -25464,7 +25905,6 @@ function uploadUserBloodReport(ev) {
     });
   };
   reader.readAsDataURL(f);
-  ev.target.value = '';
 }
 
 // Push notifications (opt-in) — mobile + desktop copies; always refresh status even if micro-goals fail
@@ -26762,84 +27202,270 @@ async function loadWorkoutHistory() {
 }
 
 // Schedule a call with admin
-async function submitMeetingRequest() {
-  if (!window.currentUser) return;
-  var date = document.getElementById('mtgDate').value;
-  var time = document.getElementById('mtgTime').value;
-  var editId = document.getElementById('mtgEditId').value;
-  if (!date || !time) { alert('Please select date and time slot'); return; }
+/* ===== Consultations =====================================================
+   Booking, rescheduling and tracking one consultation. The rules about which
+   slots exist and which are still open are the SERVER's — this asks it rather
+   than assuming, so a slot taken thirty seconds ago is already gone here. */
+var bbMtg = { date: '', slot: '', meta: null, editing: null, loading: false };
 
-  var payload = {
-    user_id: window.currentUser.id,
-    user_name: (window.currentUser.first_name + ' ' + window.currentUser.last_name).trim(),
-    user_email: window.currentUser.email || '',
-    user_phone: window.currentUser.phone || '',
-    meeting_date: date,
-    time_slot: time
-  };
-
-  var method = editId ? 'PUT' : 'POST';
-  var url = editId ? '/api/meetings/' + editId : '/api/meetings';
-
-  if (editId) {
-    payload = { meeting_date: date, time_slot: time };
-  }
-
-  var mBtn=document.getElementById('mtgSubmitBtn');
-  if(mBtn){mBtn.disabled=true;mBtn.classList.add('loading');mBtn._orig=mBtn.textContent;mBtn.textContent='Scheduling...';}
-  try {
-  var data = method === 'POST' ? await apiCall('POST', url, payload) : await apiCall('PUT', url, payload);
-  if (data.error) { if(mBtn){mBtn.disabled=false;mBtn.classList.remove('loading');mBtn.textContent=mBtn._orig||'Schedule Call';} alert(data.error); return; }
-
-  if(mBtn){mBtn.disabled=false;mBtn.classList.remove('loading');mBtn.textContent=mBtn._orig||'Schedule Call';}
-  loadUserStats();
-  showPopup('Call Scheduled!', 'Your meeting request has been sent. Admin will be notified.', '"Success is not final, failure is not fatal."', 'OK', function() {
-    document.getElementById('mtgDate').value = '';
-    document.getElementById('mtgTime').value = '';
-    document.getElementById('mtgEditId').value = '';
-    document.getElementById('mtgSubmitBtn').textContent = 'Schedule Call';
-    loadMyMeetings();
-  });
-  } catch(e) { if(mBtn){mBtn.disabled=false;mBtn.classList.remove('loading');mBtn.textContent=mBtn._orig||'Schedule Call';} alert('Failed to schedule.'); }
+function bbMtgErr(msg) {
+  var el = document.getElementById('mtgErr');
+  if (el) { el.textContent = msg || ''; el.hidden = !msg; }
 }
 
+function bbMtgPretty(dateStr) {
+  if (!dateStr) return '';
+  try {
+    return new Date(dateStr + 'T12:00:00').toLocaleDateString(undefined, { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
+  } catch (_) { return dateStr; }
+}
+
+/** Open the booking panel and load the slot picture for today. */
+async function initConsultations() {
+  if (!window.currentUser || !document.getElementById('mtgSlots')) return;
+  loadMyMeetings();
+  try {
+    var meta = await apiCall('GET', '/api/meetings/availability');
+    if (!meta || meta.error) return;
+    bbMtg.meta = meta;
+    var d = document.getElementById('mtgDate');
+    if (d) {
+      // Past days are not selectable in the native picker at all.
+      d.min = meta.today || '';
+      d.max = meta.maxDate || '';
+      if (!d.value) d.value = meta.today;
+    }
+    var hint = document.getElementById('mtgDateHint');
+    if (hint) hint.textContent = 'Today to ' + bbMtgPretty(meta.maxDate) + ' · times shown in ' + (meta.timezone || 'IST') + '.';
+    onMeetingDateChange();
+  } catch (e) { /* the list below still renders */ }
+}
+
+async function onMeetingDateChange() {
+  var d = document.getElementById('mtgDate');
+  var host = document.getElementById('mtgSlots');
+  if (!d || !host) return;
+  bbMtgErr(null);
+  bbMtg.date = d.value;
+  bbMtg.slot = '';
+  var hidden = document.getElementById('mtgTime');
+  if (hidden) hidden.value = '';
+  if (!bbMtg.date) {
+    host.innerHTML = '<p class="form-hint" style="margin:0">Pick a date to see the available times.</p>';
+    return;
+  }
+  host.innerHTML = '<p class="form-hint" style="margin:0">Loading available times…</p>';
+  try {
+    var r = await apiCall('GET', '/api/meetings/availability?date=' + encodeURIComponent(bbMtg.date));
+    if (!r || r.error) { host.innerHTML = '<p class="form-hint" style="margin:0">Could not load times.</p>'; return; }
+    renderMeetingSlots(r.slots || []);
+  } catch (e) {
+    host.innerHTML = '<p class="form-hint" style="margin:0">Could not load times.</p>';
+  }
+}
+
+/** Every slot stays visible; the gone ones say why. */
+function renderMeetingSlots(slots) {
+  var host = document.getElementById('mtgSlots');
+  if (!host) return;
+  if (!slots.length) { host.innerHTML = '<p class="form-hint" style="margin:0">No times on this day.</p>'; return; }
+  var open = 0;
+  host.innerHTML = slots.map(function (s) {
+    var why = s.taken ? 'Booked' : (s.past ? 'Passed' : '');
+    if (s.available) open++;
+    return '<button type="button" class="mtg-slot" data-slot="' + escapeHtml(s.label) + '"'
+      + (s.available ? '' : ' disabled')
+      + ' title="' + escapeHtml(s.available ? s.label : s.label + ' — ' + why) + '"'
+      + ' onclick="selectMeetingSlot(this)">' + escapeHtml(s.label)
+      + (why ? '<span class="mtg-slot-why">' + why + '</span>' : '')
+      + '</button>';
+  }).join('');
+  if (!open) {
+    host.innerHTML += '<p class="form-hint" style="grid-column:1/-1;margin:4px 0 0">Every slot on this day is gone. Try the next one.</p>';
+  }
+}
+
+function selectMeetingSlot(btn) {
+  if (!btn || btn.disabled) return;
+  bbMtg.slot = btn.getAttribute('data-slot') || '';
+  var hidden = document.getElementById('mtgTime');
+  if (hidden) hidden.value = bbMtg.slot;
+  var host = document.getElementById('mtgSlots');
+  if (host) {
+    host.querySelectorAll('.mtg-slot').forEach(function (b) { b.classList.remove('selected'); });
+  }
+  btn.classList.add('selected');
+  bbMtgErr(null);
+}
+
+/** Move an existing booking: same picker, different verb. */
+function rescheduleMeeting(id, date, slot) {
+  bbMtg.editing = { id: id, date: date, slot: slot };
+  var el = document.getElementById('mtgEditId');
+  if (el) el.value = id;
+  el = document.getElementById('mtgEditingBanner'); if (el) el.hidden = false;
+  el = document.getElementById('mtgEditingFrom');
+  if (el) el.textContent = bbMtgPretty(date) + ' at ' + (slot || '');
+  el = document.getElementById('mtgFormTitle'); if (el) el.textContent = 'Reschedule your consultation';
+  el = document.getElementById('mtgSubmitBtn'); if (el) el.textContent = 'Confirm new time';
+  var d = document.getElementById('mtgDate');
+  if (d) {
+    // Only offer the original day again if it has not already gone by.
+    d.value = (bbMtg.meta && date < bbMtg.meta.today) ? (bbMtg.meta.today || d.value) : date;
+  }
+  onMeetingDateChange();
+  bbMtgErr(null);
+  try {
+    document.getElementById('mtgFormTitle').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  } catch (_) {}
+}
+
+function cancelMeetingEdit() {
+  bbMtg.editing = null;
+  var el = document.getElementById('mtgEditId'); if (el) el.value = '';
+  el = document.getElementById('mtgEditingBanner'); if (el) el.hidden = true;
+  el = document.getElementById('mtgFormTitle'); if (el) el.textContent = 'Book a consultation';
+  el = document.getElementById('mtgSubmitBtn'); if (el) el.textContent = 'Book consultation';
+  bbMtgErr(null);
+}
+
+async function submitMeetingRequest() {
+  if (!window.currentUser || bbMtg.loading) return;
+  var date = (document.getElementById('mtgDate') || {}).value || '';
+  var slot = bbMtg.slot;
+  var editing = bbMtg.editing;
+  if (!date) { bbMtgErr('Please pick a date.'); return; }
+  if (!slot) { bbMtgErr('Please pick a time slot.'); return; }
+
+  var btn = document.getElementById('mtgSubmitBtn');
+  var label = btn ? btn.textContent : '';
+  bbMtg.loading = true;
+  if (btn) { btn.disabled = true; btn.classList.add('loading'); btn.textContent = editing ? 'Moving…' : 'Booking…'; }
+  try {
+    var data = editing
+      ? await apiCall('PUT', '/api/meetings/' + encodeURIComponent(editing.id), { meeting_date: date, time_slot: slot })
+      : await apiCall('POST', '/api/meetings', { meeting_date: date, time_slot: slot });
+    if (data && data.error) {
+      bbMtgErr(data.error);
+      // Somebody may have taken it while this form sat open — repaint the day.
+      onMeetingDateChange();
+      return;
+    }
+    cancelMeetingEdit();
+    bbMtg.slot = '';
+    bbHaptic(14);
+    if (typeof loadUserStats === 'function') { try { loadUserStats(); } catch (_) {} }
+    loadMyMeetings();
+    onMeetingDateChange();
+    showPopup(
+      editing ? 'Consultation moved' : 'Consultation booked',
+      (editing ? 'Your consultation is now on ' : 'You are booked for ') + bbMtgPretty(date) + ' at ' + slot + '.'
+        + ' You can see it under "Your consultations" below.',
+      '', 'OK', null, 'success');
+  } catch (e) {
+    bbMtgErr((e && e.message) || 'Could not save that booking.');
+  } finally {
+    bbMtg.loading = false;
+    if (btn) { btn.disabled = false; btn.classList.remove('loading'); btn.textContent = bbMtg.editing ? 'Confirm new time' : 'Book consultation'; }
+  }
+}
+
+/**
+ * Every consultation the member has, upcoming first, each one carrying its own
+ * status. Before this the list was a bare date and time with no indication of
+ * whether it was still on, already done, or cancelled — there was nothing to
+ * track a booking WITH.
+ */
 async function loadMyMeetings() {
   if (!window.currentUser) return;
   var sk = document.getElementById('meetingsListSkeleton');
   var el = document.getElementById('myMeetingsList');
   if (sk) sk.style.display = 'block';
   if (el) el.style.display = 'none';
-  var data = await apiCall('GET', '/api/meetings/user/' + window.currentUser.id);
+  var data;
+  try { data = await apiCall('GET', '/api/meetings/mine'); } catch (e) { data = { error: 'Could not load your consultations.' }; }
   if (sk) sk.style.display = 'none';
   if (!el) return;
   el.style.display = 'block';
-  if (data.error || !Array.isArray(data) || data.length === 0) {
-    el.innerHTML = '<p style="text-align:center;color:var(--muted);margin-top:12px">No scheduled calls yet.</p>';
+  if (!data || data.error) {
+    el.innerHTML = '<p class="form-hint" style="text-align:center;margin-top:12px">'
+      + escapeHtml((data && data.error) || 'Could not load your consultations.') + '</p>';
     return;
   }
-  el.innerHTML = '<h4 style="margin-bottom:12px;color:var(--cream);font-size:14px">Your Scheduled Calls</h4>' + data.map(function(m) {
-    var date = new Date(m.meeting_date + 'T12:00:00').toLocaleDateString();
-    var cancelled = m.status === 'cancelled';
-    var actions = '';
-    if (!cancelled) {
-      actions = '<div class="m-actions"><button class="m-btn m-btn-edit" onclick="editMeeting(\'' + m.id + '\',\'' + m.meeting_date + '\',\'' + (m.time_slot||'').replace(/'/g,"\\'") + '\')">Edit</button><button class="m-btn m-btn-cancel" onclick="cancelMeeting(\'' + m.id + '\')">Cancel</button></div>';
-    }
-    return '<div class="my-meeting-item' + (cancelled ? ' cancelled' : '') + '"><div class="m-info"><span class="m-date">' + date + '</span> at ' + (m.time_slot || '') + '</div>' + actions + '</div>';
-  }).join('');
+  var list = data.meetings || [];
+  if (!list.length) {
+    el.innerHTML = '<p class="form-hint" style="text-align:center;margin-top:12px">'
+      + 'No consultations yet. Pick a date and time above to book your first one.</p>';
+    return;
+  }
+
+  // Upcoming is what a member came here for; everything else is a record.
+  var upcoming = list.filter(function (m) { return m.status === 'scheduled' && !m.is_past; });
+  var history = list.filter(function (m) { return upcoming.indexOf(m) === -1; });
+  upcoming.sort(function (a, b) { return String(a.meeting_date).localeCompare(String(b.meeting_date)); });
+
+  var html = '';
+  if (upcoming.length) {
+    html += '<div class="m-group-label">Upcoming</div>' + upcoming.map(bbMeetingRow).join('');
+  }
+  if (history.length) {
+    html += '<div class="m-group-label">Past &amp; cancelled</div>' + history.map(bbMeetingRow).join('');
+  }
+  el.innerHTML = html;
 }
 
-function editMeeting(id, date, timeSlot) {
-  document.getElementById('mtgEditId').value = id;
-  document.getElementById('mtgDate').value = date;
-  document.getElementById('mtgTime').value = timeSlot || '';
-  document.getElementById('mtgSubmitBtn').textContent = 'Update Call';
+/** One consultation: when it is, where it stands, and what can still be done. */
+function bbMeetingRow(m) {
+  var cancelled = m.status === 'cancelled';
+  var completed = m.status === 'completed';
+  var when = bbMtgPretty(m.meeting_date);
+  var tone, label;
+  if (cancelled) { tone = 'cancelled'; label = 'Cancelled'; }
+  else if (completed) { tone = 'completed'; label = 'Completed'; }
+  else if (m.is_past) { tone = 'past'; label = 'Done'; }
+  else { tone = 'scheduled'; label = 'Confirmed'; }
+
+  var sub = [];
+  if (m.rescheduled_count > 0) sub.push('Rescheduled ' + m.rescheduled_count + (m.rescheduled_count === 1 ? ' time' : ' times'));
+  if (m.created_at) {
+    try {
+      sub.push('Booked ' + new Date(m.created_at).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' }));
+    } catch (_) {}
+  }
+
+  var actions = '';
+  if (m.can_change) {
+    var esc = function (v) { return String(v || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'"); };
+    actions = '<div class="m-actions">'
+      + '<button class="m-btn m-btn-reschedule" onclick="rescheduleMeeting(&quot;' + esc(m.id) + '&quot;,&quot;' + esc(m.meeting_date) + '&quot;,&quot;' + esc(m.time_slot) + '&quot;)">Reschedule</button>'
+      + '<button class="m-btn m-btn-cancel" onclick="cancelMeeting(&quot;' + esc(m.id) + '&quot;)">Cancel</button>'
+      + '</div>';
+  }
+
+  return '<div class="my-meeting-item' + (cancelled ? ' cancelled' : '') + '">'
+    + '<div class="m-info">'
+    + '<span class="m-status m-status--' + tone + '">' + label + '</span>'
+    + '<span class="m-when"><span class="m-date">' + escapeHtml(when) + '</span> at ' + escapeHtml(m.time_slot || '') + '</span>'
+    + (sub.length ? '<span class="m-when" style="font-size:11px;opacity:.8">' + escapeHtml(sub.join(' · ')) + '</span>' : '')
+    + '</div>' + actions + '</div>';
 }
+
+// Kept because older builds and deep links still call it; a reschedule is what
+// "edit" always meant here.
+function editMeeting(id, date, timeSlot) { rescheduleMeeting(id, date, timeSlot); }
 
 async function cancelMeeting(id) {
-  if (!confirm('Cancel this scheduled call?')) return;
-  var data = await apiCall('PUT', '/api/meetings/' + id, { status: 'cancelled' });
-  if (data.error) { alert(data.error); return; }
-  loadMyMeetings();
+  if (!confirm('Cancel this consultation? You can always book another one.')) return;
+  try {
+    var data = await apiCall('PUT', '/api/meetings/' + encodeURIComponent(id), { status: 'cancelled' });
+    if (data && data.error) { showPopup('Cancel', data.error, '', 'OK', null, 'error'); return; }
+    // If they were mid-way through moving the one they just cancelled, drop that.
+    if (bbMtg.editing && bbMtg.editing.id === id) cancelMeetingEdit();
+    loadMyMeetings();
+    onMeetingDateChange();
+  } catch (e) {
+    showPopup('Cancel', (e && e.message) || 'Could not cancel that consultation.', '', 'OK', null, 'error');
+  }
 }
 
 // Sunday Check-in – prefill "Last week" from user's previous check-in
@@ -27607,7 +28233,7 @@ async function handleAppleCompleteSubmit() {
   if (!_pendingAppleAuth) { showPopup('Error', 'Session expired. Please sign in with Apple again.', '', 'OK', null, 'error'); return; }
   var first  = ((document.getElementById('gcFirst')||{}).value||'').trim();
   var last   = ((document.getElementById('gcLast')||{}).value||'').trim();
-  var phone    = ((document.getElementById('gcPhone')||{}).value||'').trim();
+  var phone    = bbPhoneValue('gc');
   var dob      = ((document.getElementById('gcDob')||{}).value||'').trim();
   var gender   = ((document.getElementById('gcGender')||{}).value||'').trim();
   var country  = ((document.getElementById('gcCountry')||{}).value||'').trim();
@@ -28169,6 +28795,42 @@ window.addEventListener('resize', applySafeAreaFix);
     window.addEventListener('load', setAppHeight);
     setAppHeight();
   }
+})();
+
+/* Keeps body.panel-open in step with whichever role panel is showing.
+   The `open` class is added and removed in ~19 places across sign-in, sign-out,
+   role switching and session restore; observing the panels is one hook that
+   cannot fall out of sync with them, and it keeps working if another one is
+   added later. */
+(function () {
+  var PANELS = ['userPanel', 'adminPanel', 'superadminPanel', 'operatorPanel'];
+  function sync() {
+    var open = PANELS.some(function (id) {
+      var el = document.getElementById(id);
+      return !!el && el.classList.contains('open');
+    });
+    document.documentElement.classList.toggle('panel-open', open);
+    document.body.classList.toggle('panel-open', open);
+    // If the document had already been scrolled before the panel opened, the
+    // landing page would sit offset behind it and show through any gap.
+    if (open && (document.body.scrollTop || document.documentElement.scrollTop)) {
+      document.body.scrollTop = 0;
+      document.documentElement.scrollTop = 0;
+    }
+  }
+  function boot() {
+    if (!document.body) return;
+    if (typeof MutationObserver === 'function') {
+      var obs = new MutationObserver(sync);
+      PANELS.forEach(function (id) {
+        var el = document.getElementById(id);
+        if (el) obs.observe(el, { attributes: true, attributeFilter: ['class'] });
+      });
+    }
+    sync();
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+  else boot();
 })();
 </script>
 <style id="desktop-sidebar-force">
@@ -31349,13 +32011,9 @@ function bbBodyOnboardingKeyHandler(ev) {
           : '<div class="bb-rw-ok">Imported ' + line + '.</div>';
         if (!r.partial && msg) {
           msg.innerHTML += '<div class="bb-rw-code" style="margin-top:12px">' +
-            '<button type="button" class="bb-rw-btn" onclick="bbCloseWhoop();bbOpenSignal()">✦ See your signal</button>' +
-            '<button type="button" class="bb-rw-btn bb-rw-btn--ghost" style="margin-left:8px" onclick="bbCloseWhoop();bbOpenReadiness()">📈 Readiness</button></div>';
+            '<button type="button" class="bb-rw-btn" onclick="bbCloseWhoop();bbOpenReadiness()">📈 Readiness</button></div>';
         }
         if (typeof window.bbRdHomeLoad === 'function') window.bbRdHomeLoad(true);
-        // A fresh import can change today's directive and unlock new laws — the cached
-        // signal would otherwise sit stale behind a 5-minute window.
-        if (typeof window.bbSigHomeLoad === 'function') window.bbSigHomeLoad(true);
       }
     } catch (e) {
       if (msg) msg.innerHTML = '<div class="bb-rw-err">Could not save that export.</div>';
@@ -32304,633 +32962,6 @@ function bbBodyOnboardingKeyHandler(ev) {
 })();
 </script>
 <!-- =================== END READINESS =================== -->
-
-<!-- ===================== SIGNAL — the Why engine (self-contained) =====================
-     Whoop already shows the member recovery, HRV, sleep and strain. Everything in this
-     block is the OTHER half: what their own food, water, training, mind sessions,
-     journal answers and bloodwork did to that physiology.
-
-     Three audiences, ONE renderer family, and the split is enforced on the SERVER:
-       member   GET /api/wearables/signal                  — verdict, reason, one move,
-                                                             laws, bloodwork connection
-       admin    GET /api/wearables/admin/:userId/signal     — all of the above plus every
-       operator GET /api/wearables/operator/:userId/signal    tested hypothesis, the risk
-                                                             flags, coverage and the
-                                                             audit table
-     The member payload physically does not contain HRV in ms, resting bpm, strain, p
-     values or risk flags, so nothing here can leak them by rendering the wrong field.
-=================================================================================== -->
-<style>
-/* ---- the home card (mobile hero + desktop dashboard) ---- */
-.bb-sig-card{display:block;width:100%;border:1px solid rgba(200,164,78,.28);background:linear-gradient(158deg,rgba(200,164,78,.13),rgba(255,255,255,.02) 62%);border-radius:16px;padding:14px;margin:0;text-align:left;cursor:pointer;font-family:inherit;color:var(--cream)}
-/* An author-origin `display` beats the UA sheet's [hidden]{display:none}: without this
-   the card ignores its own hidden attribute and a skeleton stays wedged on the Today
-   screen whenever the request fails. Same fix as .bb-rd-card. */
-.bb-sig-card[hidden]{display:none}
-.bb-sig-card:active{background:rgba(200,164,78,.17)}
-.bb-sig-top{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
-.bb-sig-verdict{display:inline-flex;align-items:center;gap:6px;font-family:'Bebas Neue',sans-serif;font-size:19px;letter-spacing:2.2px;line-height:1;padding:7px 13px 5px;border-radius:8px;border:1px solid;text-transform:uppercase}
-.bb-sig-verdict--restore{color:#fca5a5;border-color:rgba(239,68,68,.5);background:rgba(239,68,68,.13)}
-.bb-sig-verdict--hold{color:#fcd34d;border-color:rgba(245,158,11,.5);background:rgba(245,158,11,.13)}
-.bb-sig-verdict--build{color:#f7dd93;border-color:rgba(200,164,78,.5);background:rgba(200,164,78,.13)}
-.bb-sig-verdict--push{color:#86efac;border-color:rgba(37,211,102,.5);background:rgba(37,211,102,.13)}
-.bb-sig-when{font-size:11px;color:#8d856f;letter-spacing:.5px}
-.bb-sig-stale{font-size:11px;color:#fcd34d;letter-spacing:.3px}
-.bb-sig-headline{font-size:14px;font-weight:650;color:#fbf6ec;line-height:1.35;margin:10px 0 0}
-.bb-sig-reason{font-size:12.5px;color:#a9a08c;line-height:1.5;margin:5px 0 0}
-.bb-sig-lever{display:flex;flex-direction:column;gap:3px;margin-top:11px;padding:10px 12px;border-radius:11px;background:rgba(0,0,0,.26);border:1px solid rgba(200,164,78,.2)}
-.bb-sig-lever__k{font-size:10px;letter-spacing:1.3px;text-transform:uppercase;color:#a9975f;font-weight:700}
-.bb-sig-lever__t{font-size:13px;font-weight:650;color:#f7dd93;line-height:1.35}
-.bb-sig-lever__d{font-size:11.5px;color:#9d947f;line-height:1.45}
-.bb-sig-cta{display:block;margin-top:11px;font-size:11px;letter-spacing:1.2px;text-transform:uppercase;color:#c8a44e;font-weight:700}
-.bb-sig-empty{font-size:12.5px;color:#9d947f;line-height:1.5}
-.bb-today-pill--signal{cursor:pointer}
-
-/* ---- the member modal ---- */
-#bbSignalModal{padding-top:calc(var(--safe-top, 20px) + 8px);padding-bottom:calc(var(--safe-bottom, 0px) + 24px)}
-.bb-sig-box{max-width:760px}
-.bb-sig-hero{border:1px solid rgba(200,164,78,.28);border-radius:15px;padding:16px;background:linear-gradient(158deg,rgba(200,164,78,.11),rgba(255,255,255,.015) 62%)}
-.bb-sig-guide{font-size:12.5px;color:#c9c0aa;line-height:1.55;margin:11px 0 0;padding-top:11px;border-top:1px solid rgba(200,164,78,.16)}
-.bb-sig-list{display:flex;flex-direction:column;gap:9px}
-.bb-sig-item{border:1px solid rgba(255,255,255,.09);background:rgba(255,255,255,.028);border-radius:12px;padding:12px 13px}
-.bb-sig-item__t{font-size:13.5px;font-weight:650;color:#f7dd93;line-height:1.4;margin:0}
-.bb-sig-item__d{font-size:12.5px;color:#b9b09a;line-height:1.55;margin:5px 0 0}
-.bb-sig-item__e{display:inline-block;font-size:10.5px;color:#8d856f;letter-spacing:.4px;margin-top:7px;padding:3px 8px;border-radius:20px;border:1px solid rgba(255,255,255,.11)}
-.bb-sig-law{border-left:2px solid rgba(200,164,78,.6)}
-.bb-sig-blood{border-left:2px solid rgba(220,80,80,.55)}
-.bb-sig-blood__m{font-size:10.5px;letter-spacing:1.2px;text-transform:uppercase;color:#e0857a;font-weight:700;margin:0 0 5px}
-.bb-sig-prog{display:flex;align-items:center;gap:10px;margin-top:9px}
-.bb-sig-prog__bar{flex:1;height:6px;border-radius:4px;background:rgba(255,255,255,.09);overflow:hidden}
-.bb-sig-prog__fill{display:block;height:100%;background:linear-gradient(90deg,#c8a44e,#f7dd93);border-radius:4px}
-.bb-sig-prog__n{font-size:11px;color:#8d856f;font-variant-numeric:tabular-nums;white-space:nowrap}
-
-/* ---- the staff panel (admin + operator share every rule below) ---- */
-.bb-sg-wrap{display:flex;flex-direction:column;gap:16px}
-.bb-sg-sec{border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:13px 14px;background:rgba(255,255,255,.022)}
-.bb-sg-lbl{font-size:11px;letter-spacing:.9px;text-transform:uppercase;color:#a9975f;font-weight:700;margin:0 0 9px}
-.bb-sg-note{font-size:11px;color:#8d856f;line-height:1.5;margin-top:8px}
-.bb-sg-range{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:10px}
-.bb-sg-rbtn{background:transparent;border:1px solid rgba(200,164,78,.35);color:#c8a44e;border-radius:8px;padding:6px 11px;font-size:11.5px;cursor:pointer;font-family:inherit}
-.bb-sg-rbtn.active{background:rgba(200,164,78,.18);color:#f7dd93}
-.bb-sg-flag{display:flex;gap:10px;align-items:flex-start;border-radius:10px;padding:10px 12px;margin-bottom:8px;border:1px solid}
-.bb-sg-flag:last-child{margin-bottom:0}
-.bb-sg-flag--high{border-color:rgba(239,68,68,.42);background:rgba(239,68,68,.1)}
-.bb-sg-flag--medium{border-color:rgba(245,158,11,.4);background:rgba(245,158,11,.09)}
-.bb-sg-flag--low{border-color:rgba(255,255,255,.13);background:rgba(255,255,255,.03)}
-.bb-sg-flag__b{flex:0 0 auto;font-size:9.5px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;padding:3px 7px;border-radius:5px;background:rgba(0,0,0,.32)}
-.bb-sg-flag--high .bb-sg-flag__b{color:#fca5a5}
-.bb-sg-flag--medium .bb-sg-flag__b{color:#fcd34d}
-.bb-sg-flag--low .bb-sg-flag__b{color:#b9b09a}
-.bb-sg-flag__t{font-size:13px;font-weight:650;color:#f0e9da;margin:0;line-height:1.35}
-.bb-sg-flag__d{font-size:12px;color:#a9a08c;margin:4px 0 0;line-height:1.5}
-.bb-sg-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(96px,1fr));gap:8px}
-.bb-sg-stat{border:1px solid rgba(255,255,255,.08);border-radius:9px;padding:9px 10px;background:rgba(0,0,0,.2)}
-.bb-sg-stat b{display:block;font-size:16px;font-weight:700;color:#f0e9da;font-variant-numeric:tabular-nums;line-height:1.2}
-.bb-sg-stat span{display:block;font-size:10.5px;color:#8d856f;margin-top:3px;letter-spacing:.3px}
-.bb-sg-find{border-top:1px solid rgba(255,255,255,.07);padding:9px 0}
-.bb-sg-find:first-of-type{border-top:0}
-.bb-sg-find__h{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.bb-sg-tier{font-size:9.5px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;padding:2px 7px;border-radius:5px;border:1px solid}
-.bb-sg-tier--high{color:#86efac;border-color:rgba(37,211,102,.45);background:rgba(37,211,102,.11)}
-.bb-sg-tier--moderate{color:#f7dd93;border-color:rgba(200,164,78,.45);background:rgba(200,164,78,.11)}
-.bb-sg-tier--emerging{color:#fcd34d;border-color:rgba(245,158,11,.38);background:rgba(245,158,11,.09)}
-.bb-sg-tier--none{color:#8d856f;border-color:rgba(255,255,255,.13)}
-.bb-sg-find__s{font-size:12.5px;color:#c9c0aa;line-height:1.5;margin:5px 0 0}
-.bb-sg-find__m{font-size:10.5px;color:#7d7666;margin-top:4px;font-variant-numeric:tabular-nums}
-.bb-sg-verdict{font-size:9.5px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;padding:2px 7px;border-radius:5px;border:1px solid}
-.bb-sg-verdict--concordant{color:#86efac;border-color:rgba(37,211,102,.45)}
-.bb-sg-verdict--mixed{color:#fcd34d;border-color:rgba(245,158,11,.4)}
-.bb-sg-verdict--discordant{color:#fca5a5;border-color:rgba(239,68,68,.42)}
-.bb-sg-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
-.bb-sg-preview{border:1px dashed rgba(200,164,78,.35);border-radius:11px;padding:12px 13px;background:rgba(200,164,78,.05)}
-@media (max-width:560px){
-  .bb-sig-verdict{font-size:17px;letter-spacing:1.8px}
-  .bb-sig-headline{font-size:13.5px}
-}
-</style>
-
-<div id="bbSignalModal" class="bb-rw-modal" role="dialog" aria-modal="true" aria-label="Your signal" onclick="bbSigBg(event)">
-  <div class="bb-rw-box bb-sig-box" onclick="event.stopPropagation()">
-    <div class="bb-rw-head">
-      <span class="bb-rw-title">✦ Your Signal</span>
-      <button type="button" class="bb-rw-close" onclick="bbCloseSignal()">✕ Close</button>
-    </div>
-    <div class="bb-rw-body" id="bbSignalBody"><div class="bb-rw-muted">Loading…</div></div>
-  </div>
-</div>
-
-<script>
-(function () {
-  'use strict';
-
-  /* ─────────────────────────── shared helpers ─────────────────────────── */
-
-  function esc(s) {
-    return String(s == null ? '' : s)
-      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-  }
-  var EM = '—';
-  function nn(v, dp) {
-    if (v == null || !isFinite(Number(v))) return EM;
-    var f = Math.pow(10, dp || 0);
-    return String(Math.round(Number(v) * f) / f);
-  }
-  function api() {
-    return (typeof apiCall === 'function') ? apiCall : null;
-  }
-  function loggedIn() {
-    return !!(window.currentUser && window.currentUser.token);
-  }
-  /* The verdict codes are a closed set from the server; anything else falls back to a
-     neutral class rather than interpolating an unknown value into a selector. */
-  var VERDICTS = { restore: 1, hold: 1, build: 1, push: 1 };
-  function verdictClass(code) { return VERDICTS[code] ? code : 'build'; }
-
-  /* ──────────────────────── MEMBER: the home card ──────────────────────── */
-
-  var sig = { data: null, at: 0, busy: false, mountedStaff: {} };
-
-  /** Every Signal home card on the page — the mobile hero one and the desktop one. */
-  function homeCards() {
-    return Array.prototype.slice.call(document.querySelectorAll('.bb-sig-card'));
-  }
-
-  /** Reveal a card and whatever chrome wraps it (a label on mobile, a section on desktop). */
-  function revealCard(card) {
-    card.hidden = false;
-    var sec = card.closest ? card.closest('.bb-sig-home-desktop') : null;
-    if (sec) sec.hidden = false;
-    var label = document.getElementById('bbSigHomeLabel');
-    if (label && card.id === 'bbSigHome') label.hidden = false;
-  }
-
-  function cardHtml(d) {
-    if (!d || !d.directive) {
-      // No directive is an honest state, not an error: the engine returns null rather
-      // than inventing a verdict out of thin evidence.
-      var p = (d && d.progress) || {};
-      return '<div class="bb-sig-top"><span class="bb-sig-verdict bb-sig-verdict--build">Signal</span>' +
-        '<span class="bb-sig-when">Not enough data yet</span></div>' +
-        '<p class="bb-sig-empty" style="margin:10px 0 0">Keep checking in and import your Whoop export. Once your days line up, this becomes a daily directive built from your own body — not a copy of your watch.</p>' +
-        ((p.pairsNeed) ? progressHtml(p) : '') +
-        '<span class="bb-sig-cta">Open your signal →</span>';
-    }
-    var dir = d.directive;
-    var when = dir.isToday ? 'Today' : ('As of ' + esc(dir.asOf || ''));
-    var stale = (!dir.isToday && dir.stalenessDays > 2)
-      ? '<span class="bb-sig-stale">· ' + nn(dir.stalenessDays, 0) + ' days behind</span>' : '';
-    var lever = d.lever
-      ? '<div class="bb-sig-lever"><span class="bb-sig-lever__k">Your one move</span>' +
-        '<span class="bb-sig-lever__t">' + esc(d.lever.title) + '</span>' +
-        (d.lever.detail ? '<span class="bb-sig-lever__d">' + esc(d.lever.detail) + '</span>' : '') +
-        '</div>'
-      : '';
-    return '<div class="bb-sig-top">' +
-        '<span class="bb-sig-verdict bb-sig-verdict--' + verdictClass(dir.code) + '">' + esc(dir.label) + '</span>' +
-        '<span class="bb-sig-when">' + when + '</span>' + stale +
-      '</div>' +
-      '<p class="bb-sig-headline">' + esc(dir.headline) + '</p>' +
-      (dir.reason ? '<p class="bb-sig-reason">Because ' + esc(dir.reason) + '</p>' : '') +
-      lever +
-      '<span class="bb-sig-cta">Open your signal →</span>';
-  }
-
-  function progressHtml(p) {
-    var have = Number(p.pairsHave) || 0;
-    var need = Number(p.pairsNeed) || 14;
-    var pct = Math.max(0, Math.min(100, Math.round((have / need) * 100)));
-    return '<div class="bb-sig-prog">' +
-      '<span class="bb-sig-prog__bar"><span class="bb-sig-prog__fill" style="width:' + pct + '%"></span></span>' +
-      '<span class="bb-sig-prog__n">' + have + ' / ' + need + ' days</span>' +
-    '</div>';
-  }
-
-  /**
-   * Load the member's signal and paint every card. Cached for 5 minutes, because this is
-   * a pure read over a deterministic engine — nothing about it changes between two taps.
-   */
-  window.bbSigHomeLoad = async function (force) {
-    var cards = homeCards();
-    if (!cards.length || !loggedIn() || !api()) return;
-    if (!force && sig.at && (Date.now() - sig.at) < 300000 && sig.data) { paintCards(); return; }
-    if (sig.busy) return;
-    sig.busy = true;
-    cards.forEach(function (c) {
-      if (!c.innerHTML) c.innerHTML = '<div class="bb-sig-empty">Reading your signal…</div>';
-    });
-    try {
-      var r = await apiCall('GET', '/api/wearables/signal?days=90');
-      sig.data = (r && !r.error) ? r : null;
-      sig.at = Date.now();
-    } catch (_) {
-      sig.data = null;
-    } finally {
-      sig.busy = false;
-    }
-    paintCards();
-  };
-
-  function paintCards() {
-    var cards = homeCards();
-    if (!cards.length) return;
-    // A failed request must not leave a live-looking card behind. Hide instead.
-    if (!sig.data) {
-      cards.forEach(function (c) { c.innerHTML = ''; c.hidden = true;
-        var s = c.closest ? c.closest('.bb-sig-home-desktop') : null; if (s) s.hidden = true;
-        var l = document.getElementById('bbSigHomeLabel'); if (l && c.id === 'bbSigHome') l.hidden = true;
-      });
-      return;
-    }
-    var html = cardHtml(sig.data);
-    cards.forEach(function (c) { c.innerHTML = html; revealCard(c); });
-  }
-
-  /* ──────────────────────── MEMBER: the detail modal ──────────────────────── */
-
-  window.bbSigBg = function (e) {
-    if (e && e.target && e.target.id === 'bbSignalModal') window.bbCloseSignal();
-  };
-  window.bbCloseSignal = function () {
-    var m = document.getElementById('bbSignalModal');
-    if (m) m.classList.remove('open');
-  };
-
-  window.bbOpenSignal = async function () {
-    if (!loggedIn()) { alert('Please log in first.'); return; }
-    var m = document.getElementById('bbSignalModal');
-    var body = document.getElementById('bbSignalBody');
-    if (!m || !body) return;
-    m.classList.add('open');
-    body.innerHTML = '<div class="bb-rw-muted">Reading your signal…</div>';
-    if (!sig.data || (Date.now() - sig.at) > 300000) await window.bbSigHomeLoad(true);
-    if (!sig.data) {
-      body.innerHTML = '<div class="bb-rw-err">Could not build your signal right now. Please try again in a moment.</div>';
-      return;
-    }
-    body.innerHTML = memberDetailHtml(sig.data);
-  };
-
-  function memberDetailHtml(d) {
-    var out = '';
-    var dir = d.directive;
-
-    /* 1 — the directive */
-    if (dir) {
-      out += '<div class="bb-rw-sec"><div class="bb-sig-hero">' +
-        '<div class="bb-sig-top">' +
-          '<span class="bb-sig-verdict bb-sig-verdict--' + verdictClass(dir.code) + '">' + esc(dir.label) + '</span>' +
-          '<span class="bb-sig-when">' + (dir.isToday ? 'Today' : 'As of ' + esc(dir.asOf || '')) + '</span>' +
-        '</div>' +
-        '<p class="bb-sig-headline">' + esc(dir.headline) + '</p>' +
-        (dir.reason ? '<p class="bb-sig-reason">Because ' + esc(dir.reason) + '</p>' : '') +
-        (dir.guidance ? '<p class="bb-sig-guide">' + esc(dir.guidance) + '</p>' : '') +
-      '</div>' +
-      (dir.confidence === 'low'
-        ? '<div class="bb-rw-warn">This is provisional — we are still building your baseline, so treat it as a nudge rather than a verdict.</div>'
-        : '') +
-      ((!dir.isToday && dir.stalenessDays > 2)
-        ? '<div class="bb-rw-warn">Your most recent measured day is ' + esc(dir.asOf) + '. Import a fresh Whoop export to bring this up to date.</div>'
-        : '') +
-      '</div>';
-    } else {
-      out += '<div class="bb-rw-sec"><div class="bb-sig-hero">' +
-        '<p class="bb-sig-headline">Your signal is still forming.</p>' +
-        '<p class="bb-sig-reason">We build your directive from your own baseline, so it appears once there are enough measured days to compare against. Nothing here is ever guessed.</p>' +
-      '</div></div>';
-    }
-
-    /* 2 — today's moves */
-    if (d.levers && d.levers.length) {
-      out += '<div class="bb-rw-sec"><div class="bb-rw-lbl">What to do today</div><div class="bb-sig-list">' +
-        d.levers.map(function (l) {
-          return '<div class="bb-sig-item">' +
-            '<p class="bb-sig-item__t">' + esc(l.title) + '</p>' +
-            (l.detail ? '<p class="bb-sig-item__d">' + esc(l.detail) + '</p>' : '') +
-            (l.evidence ? '<span class="bb-sig-item__e">' + esc(l.evidence) + '</span>' : '') +
-          '</div>';
-        }).join('') +
-      '</div></div>';
-    }
-
-    /* 3 — the laws: the part no other app can show, because no other app has the inputs */
-    out += '<div class="bb-rw-sec"><div class="bb-rw-lbl">Your body’s laws</div>';
-    if (d.laws && d.laws.length) {
-      out += '<div class="bb-sig-list">' + d.laws.map(function (l) {
-        return '<div class="bb-sig-item bb-sig-law">' +
-          '<p class="bb-sig-item__d" style="margin:0;color:#e8e0cd;font-size:13px">' + esc(l.statement) + '</p>' +
-          '<span class="bb-sig-item__e">Found across ' + nn(l.days, 0) + ' of your own days</span>' +
-        '</div>';
-      }).join('') + '</div>' +
-      '<div class="bb-rw-note">These come from your own history — what you ate, drank and did on one day, measured against how your body responded the next morning. We only show one once it clears a statistical test, so a coincidence never becomes a rule.</div>';
-    } else {
-      var p = d.progress || {};
-      out += '<p class="bb-sig-empty">Nothing has cleared the evidence bar yet. That is deliberate — we would rather show you nothing than a coincidence dressed up as a rule.</p>' +
-        (p.pairsNeed ? progressHtml(p) : '') +
-        '<div class="bb-rw-note">Log your food and check in daily. Each day you log is another day of evidence, and your first law unlocks at ' + nn(p.pairsNeed || 14, 0) + ' matched days.</div>';
-    }
-    out += '</div>';
-
-    /* 4 — the bloodwork bridge */
-    out += '<div class="bb-rw-sec"><div class="bb-rw-lbl">Your bloodwork connection</div>';
-    if (d.blood && d.blood.length) {
-      out += '<div class="bb-sig-list">' + d.blood.map(function (b) {
-        return '<div class="bb-sig-item bb-sig-blood">' +
-          '<p class="bb-sig-blood__m">' + esc(b.marker) + '</p>' +
-          '<p class="bb-sig-item__d" style="margin:0;color:#e8e0cd;font-size:13px">' + esc(b.statement) + '</p>' +
-          (b.why ? '<p class="bb-sig-item__d">' + esc(b.why) + '</p>' : '') +
-        '</div>';
-      }).join('') + '</div>' +
-      '<div class="bb-rw-note">Your lab results and your overnight physiology, put side by side over the same weeks. This is an association in your own data, not a diagnosis — your Lifestyle Manager will take it from here.</div>';
-    } else if (d.bloodPending) {
-      out += '<p class="bb-sig-empty">You have one blood report on file. A second one unlocks the before-and-after: what changed in your blood, and what changed in your body over the same weeks.</p>';
-    } else {
-      out += '<p class="bb-sig-empty">Upload a blood report and we will connect it to what your body has actually been doing — the part a lab report on its own can never tell you.</p>';
-    }
-    out += '</div>';
-
-    /* 5 — how it is built. Trust is the product; say plainly how the sausage is made. */
-    out += '<div class="bb-rw-sec"><div class="bb-rw-lbl">How this is built</div>' +
-      '<div class="bb-rw-note" style="margin-top:0">Every line above is arithmetic on your own data — no AI wrote any of it, and nothing is averaged in from anybody else. ' +
-      'We compare each day against your own 30-day baseline, never a population norm. ' +
-      'A figure nobody measured stays blank rather than being filled in. ' +
-      'Your detailed physiology stays available to your Lifestyle Manager, who reviews it with the full picture.</div>' +
-      '<div class="bb-rw-note">Window: ' + esc((d.window && d.window.from) || EM) + ' → ' + esc((d.window && d.window.to) || EM) +
-      ' · ' + nn(d.progress && d.progress.daysWithData, 0) + ' days with measured data</div>' +
-    '</div>';
-
-    return out;
-  }
-
-  /* ──────────────────── STAFF: admin + operator intelligence ──────────────────── */
-
-  /**
-   * Coaches and operators get the whole engine: every hypothesis it tested, what it
-   * rejected, the risk flags a member is deliberately never shown, and a preview of the
-   * exact sentences their client is reading right now.
-   */
-  window.bbSigMountStaff = function (cfg) {
-    cfg = cfg || {};
-    if (!cfg.key || !cfg.el || !cfg.userId) return;
-    var scope = cfg.scope === 'operator' ? 'operator' : 'admin';
-    sig.mountedStaff[cfg.key] = {
-      key: String(cfg.key),
-      scope: scope,
-      el: cfg.el,
-      userId: String(cfg.userId),
-      name: cfg.name || '',
-      days: Number(cfg.days) || 90,
-      showAll: false,
-      data: null
-    };
-    loadStaff(cfg.key);
-  };
-
-  window.bbSigUnmount = function (key) { delete sig.mountedStaff[key]; };
-
-  window.bbSigStaffRange = function (key, days) {
-    var v = sig.mountedStaff[key];
-    if (!v) return;
-    v.days = Number(days) || 90;
-    loadStaff(key);
-  };
-
-  window.bbSigStaffToggleAll = function (key) {
-    var v = sig.mountedStaff[key];
-    if (!v || !v.data) return;
-    v.showAll = !v.showAll;
-    render(v);
-  };
-
-  async function loadStaff(key) {
-    var v = sig.mountedStaff[key];
-    if (!v) return;
-    var host = document.getElementById(v.el);
-    if (!host || !api()) return;
-    host.innerHTML = '<div class="bb-rw-muted">Building the signal…</div>';
-    var base = v.scope === 'operator'
-      ? '/api/wearables/operator/' + encodeURIComponent(v.userId) + '/signal'
-      : '/api/wearables/admin/' + encodeURIComponent(v.userId) + '/signal';
-    try {
-      var r = await apiCall('GET', base + '?days=' + v.days);
-      if (!r || r.error) {
-        host.innerHTML = '<div class="bb-rw-err">' + esc((r && r.error) || 'Could not build that signal.') + '</div>';
-        return;
-      }
-      v.data = r;
-      render(v);
-    } catch (_) {
-      host.innerHTML = '<div class="bb-rw-err">Could not build that signal.</div>';
-    }
-  }
-
-  function render(v) {
-    var host = document.getElementById(v.el);
-    if (!host) return;
-    host.innerHTML = staffHtml(v);
-  }
-
-  function staffHtml(v) {
-    var d = v.data || {};
-    var q = esc(v.key);
-    var cov = d.coverage || {};
-    var diag = d.diagnostics || {};
-    var dir = d.directive || null;
-    var findings = Array.isArray(d.findings) ? d.findings : [];
-    var flags = Array.isArray(d.flags) ? d.flags : [];
-    var mv = d.memberView || {};
-
-    var out = '<div class="bb-sg-wrap">';
-
-    /* window picker + coverage */
-    out += '<div class="bb-sg-sec">' +
-      '<p class="bb-sg-lbl">Window</p>' +
-      '<div class="bb-sg-range">' +
-        [30, 90, 180, 365].map(function (n) {
-          return '<button type="button" class="bb-sg-rbtn' + (v.days === n ? ' active' : '') +
-            '" onclick="bbSigStaffRange(\'' + q + '\',' + n + ')">' + n + ' days</button>';
-        }).join('') +
-      '</div>' +
-      '<div class="bb-sg-grid">' +
-        stat(cov.wearableDays, 'Wearable days') +
-        stat(cov.nutritionDays, 'Nutrition days') +
-        stat(cov.checkinDays, 'Check-in days') +
-        stat(cov.usablePairs, 'Usable pairs') +
-        stat(cov.pct == null ? null : cov.pct + '%', 'Coverage') +
-      '</div>' +
-      '<div class="bb-sg-note">A usable pair is a day carrying an input next to the following morning’s measurement — that is the unit the correlation engine actually consumes, and ' +
-        nn(diag.minPairs, 0) + ' of them are required before anything is tested.</div>' +
-    '</div>';
-
-    /* risk flags — the whole reason this panel is staff-only */
-    out += '<div class="bb-sg-sec"><p class="bb-sg-lbl">Risk flags · never shown to the member</p>';
-    if (flags.length) {
-      out += flags.map(function (f) {
-        return '<div class="bb-sg-flag bb-sg-flag--' + esc(f.severity) + '">' +
-          '<span class="bb-sg-flag__b">' + esc(f.severity) + '</span>' +
-          '<span><p class="bb-sg-flag__t">' + esc(f.title) + '</p>' +
-          '<p class="bb-sg-flag__d">' + esc(f.detail) + '</p></span>' +
-        '</div>';
-      }).join('');
-    } else {
-      out += '<div class="bb-rw-muted">No risk pattern detected in this window.</div>';
-    }
-    out += '<div class="bb-sg-note">These are patterns in this client’s own data, not diagnoses. The member feels them only through their directive.</div></div>';
-
-    /* directive + exactly what the member is being shown */
-    out += '<div class="bb-sg-sec"><p class="bb-sg-lbl">Directive</p>';
-    if (dir) {
-      var dt = dir.detail || {};
-      var dv = dt.deviations || {};
-      out += '<div class="bb-sig-top">' +
-          '<span class="bb-sig-verdict bb-sig-verdict--' + verdictClass(dir.code) + '">' + esc(dir.label) + '</span>' +
-          '<span class="bb-sig-when">as of ' + esc(dir.asOf || '') + (dir.isToday ? ' · today' : '') +
-          ' · confidence ' + esc(dir.confidence) + ' (' + nn(dir.baselineDays, 0) + 'd baseline)</span>' +
-        '</div>' +
-        (dir.reason ? '<p class="bb-sig-reason">Because ' + esc(dir.reason) + '</p>' : '') +
-        '<div class="bb-sg-grid" style="margin-top:10px">' +
-          devStat('Recovery', dv.score) + devStat('HRV', dv.hrvMs) + devStat('Resting HR', dv.restingHr) +
-          devStat('Resp. rate', dv.respiratoryRate) + devStat('Sleep', dv.sleepHours) +
-          stat(dt.sleepDebt ? Math.round(dt.sleepDebt.minutes) + 'm' : null, 'Sleep debt (3d)') +
-          stat(dt.acwr ? dt.acwr.ratio + '×' : null, 'Acute:chronic') +
-        '</div>' +
-        '<div class="bb-sg-note">Each figure is this client against their own 30-day median, never a population norm. Rules fired: ' +
-          esc((dir.basis || []).join(', ') || 'none') + '.</div>';
-    } else {
-      out += '<div class="bb-rw-muted">Not enough measured data to issue a directive.</div>';
-    }
-    out += '</div>';
-
-    /* the member's actual screen */
-    out += '<div class="bb-sg-sec"><p class="bb-sg-lbl">What the member sees right now</p>' +
-      '<div class="bb-sg-preview">' +
-        (mv.directive
-          ? '<p class="bb-sig-item__t">' + esc(mv.directive.label) + ' — ' + esc(mv.directive.headline) + '</p>' +
-            (mv.directive.reason ? '<p class="bb-sig-item__d">Because ' + esc(mv.directive.reason) + '</p>' : '')
-          : '<p class="bb-sig-item__d">No directive on their screen.</p>') +
-        (mv.lever ? '<p class="bb-sig-item__d"><b>One move:</b> ' + esc(mv.lever.title) + '</p>' : '') +
-        ((mv.laws && mv.laws.length)
-          ? '<p class="bb-sig-item__d"><b>Laws:</b></p><ul style="margin:4px 0 0 16px;padding:0">' +
-            mv.laws.map(function (l) { return '<li class="bb-sig-item__d" style="margin:2px 0">' + esc(l.statement) + '</li>'; }).join('') + '</ul>'
-          : '<p class="bb-sig-item__d">No laws have cleared the evidence bar for them yet.</p>') +
-        ((mv.blood && mv.blood.length)
-          ? '<p class="bb-sig-item__d"><b>Bloodwork:</b> ' + mv.blood.map(function (b) { return esc(b.statement); }).join(' ') + '</p>'
-          : '') +
-      '</div>' +
-      '<div class="bb-sg-note">Physiological readings, statistics and every flag above are stripped server-side before this reaches them.</div>' +
-    '</div>';
-
-    /* findings */
-    var shown = v.showAll ? findings : findings.filter(function (f) { return f.tier !== 'none'; });
-    out += '<div class="bb-sg-sec">' +
-      '<p class="bb-sg-lbl">Findings · ' + nn(diag.hypothesesTested, 0) + ' hypotheses tested of ' + nn(diag.hypothesesConsidered, 0) + ' considered</p>' +
-      '<div class="bb-sg-grid" style="margin-bottom:10px">' +
-        stat(diag.tiers && diag.tiers.high, 'High') +
-        stat(diag.tiers && diag.tiers.moderate, 'Moderate') +
-        stat(diag.tiers && diag.tiers.emerging, 'Emerging') +
-        stat(diag.tiers && diag.tiers.none, 'Rejected') +
-      '</div>';
-    if (shown.length) {
-      out += '<div class="bb-sg-scroll">' + shown.slice(0, 60).map(function (f) {
-        return '<div class="bb-sg-find">' +
-          '<div class="bb-sg-find__h">' +
-            '<span class="bb-sg-tier bb-sg-tier--' + esc(f.tier) + '">' + esc(f.tier) + '</span>' +
-            '<span style="font-size:11.5px;color:#a9a08c">' + esc(f.inputLabel) + ' → ' + esc(f.outputLabel) + '</span>' +
-            (f.memberSafe ? '<span class="bb-sg-tier bb-sg-tier--high">shown to member</span>' : '') +
-          '</div>' +
-          (f.staffStatement ? '<p class="bb-sg-find__s">' + esc(f.staffStatement) + '</p>' : '') +
-          '<p class="bb-sg-find__m">n=' + nn(f.n, 0) + ' · split ' + nn(f.nHigh, 0) + '/' + nn(f.nLow, 0) +
-            ' · ' + esc(f.effectKind === 'cohens_d' ? 'd' : 'rho') + '=' + nn(f.effect, 2) +
-            ' · ' + pq('p', f.p) + ' · ' + pq('q', f.q) + '</p>' +
-        '</div>';
-      }).join('') + '</div>' +
-      (shown.length > 60 ? '<div class="bb-sg-note">Showing the 60 strongest of ' + shown.length + '.</div>' : '');
-    } else {
-      out += '<div class="bb-rw-muted">Nothing cleared the evidence bar in this window.</div>';
-    }
-    out += '<div class="bb-sg-range" style="margin:10px 0 0">' +
-        '<button type="button" class="bb-sg-rbtn" onclick="bbSigStaffToggleAll(\'' + q + '\')">' +
-        (v.showAll ? 'Hide rejected hypotheses' : 'Show all ' + findings.length + ' incl. rejected') + '</button>' +
-      '</div>' +
-      '<div class="bb-sg-note">Input on day D against the following morning’s measurement (lag ' + nn(diag.lagDays, 0) + 'd). ' +
-        'p-values are corrected across every hypothesis for this client (' + esc(diag.correction || 'none') + '); ' +
-        'q ≤ ' + nn(diag.qHigh, 2) + ' with n ≥ 21 is required before a member ever sees a finding. ' +
-        'Association only — no causal claim is made anywhere in this engine.</div>' +
-    '</div>';
-
-    out += bloodHtml(d.blood);
-
-    if (d.loadNotes && d.loadNotes.length) {
-      out += '<div class="bb-sg-sec"><p class="bb-sg-lbl">Data sources that failed to load</p>' +
-        '<div class="bb-rw-warn" style="margin-top:0">' + esc(d.loadNotes.join(', ')) + '</div>' +
-        '<div class="bb-sg-note">These inputs were skipped, so any finding that depended on them is missing rather than wrong.</div></div>';
-    }
-
-    out += '</div>';
-    return out;
-  }
-
-  function bloodHtml(b) {
-    var out = '<div class="bb-sg-sec"><p class="bb-sg-lbl">Bloodwork bridge</p>';
-    if (!b || !b.ok) {
-      return out + '<div class="bb-rw-muted">The bloodwork bridge is unavailable.</div></div>';
-    }
-    var items = Array.isArray(b.items) ? b.items : [];
-    out += '<div class="bb-sg-grid" style="margin-bottom:10px">' +
-      stat(b.reportsSeen, 'Reports') + stat(b.markersSeen, 'Markers read') +
-      stat(items.length, 'Bridged') +
-      stat(b.config && b.config.linksKnown, 'Known links') +
-    '</div>';
-    if (items.length) {
-      out += items.map(function (it) {
-        var obs = (it.observations || []).map(function (o) {
-          return '<li class="bb-sig-item__d" style="margin:2px 0">' + esc(o.short) + ': expected ' + esc(o.expected) +
-            ', observed ' + esc(o.observed) + (o.pct != null ? ' (' + nn(o.pct, 1) + '%)' : '') +
-            (o.agrees ? ' ✓' : '') + '</li>';
-        }).join('');
-        var head = it.kind === 'change'
-          ? esc(it.marker) + ': ' + esc(String(it.from.value)) + ' → ' + esc(String(it.to.value)) + (it.unit ? ' ' + esc(it.unit) : '') +
-            ' (' + esc(it.from.date) + ' → ' + esc(it.to.date) + ')'
-          : esc(it.marker) + ': ' + esc(String(it.value)) + (it.unit ? ' ' + esc(it.unit) : '') + ' on ' + esc(it.reportDate) +
-            (it.position ? ' · ' + esc(it.position) + ' vs range' : '');
-        return '<div class="bb-sg-find">' +
-          '<div class="bb-sg-find__h">' +
-            '<span class="bb-sg-verdict bb-sg-verdict--' + esc(it.verdict) + '">' + esc(it.verdict) + '</span>' +
-            '<span class="bb-sg-tier bb-sg-tier--' + (it.strength === 'established' ? 'high' : 'emerging') + '">' + esc(it.strength) + '</span>' +
-            (it.memberSafe ? '<span class="bb-sg-tier bb-sg-tier--high">shown to member</span>' : '') +
-          '</div>' +
-          '<p class="bb-sg-find__s" style="color:#e8e0cd">' + head + '</p>' +
-          (it.mechanism ? '<p class="bb-sg-find__s">' + esc(it.mechanism) + '</p>' : '') +
-          (obs ? '<ul style="margin:6px 0 0 16px;padding:0">' + obs + '</ul>' : '') +
-        '</div>';
-      }).join('');
-    } else {
-      out += '<div class="bb-rw-muted">' + esc((b.notes && b.notes[0]) || 'Nothing to bridge yet.') + '</div>';
-    }
-    out += '<div class="bb-sg-note">Each marker is compared against the 30 days of wearable data ENDING at its draw date, ' +
-      'measured against this client’s baseline outside that window. Discordant items are shown deliberately — the member only ever sees concordant ones.</div></div>';
-    return out;
-  }
-
-  function stat(v, label) {
-    return '<div class="bb-sg-stat"><b>' + (v == null || v === '' ? EM : esc(String(v))) + '</b><span>' + esc(label) + '</span></div>';
-  }
-
-  /** "p<0.0001" / "q=0.0231" — never "p=<0.0001", which reads as a formatting bug. */
-  function pq(name, v) {
-    if (v == null || !isFinite(Number(v))) return name + '=n/a';
-    return Number(v) < 0.0001 ? name + '&lt;0.0001' : name + '=' + nn(v, 4);
-  }
-
-  /** A baseline deviation tile: the change against this client's own normal. */
-  function devStat(label, dv) {
-    if (!dv || dv.pct == null) return stat(null, label);
-    var s = (dv.pct > 0 ? '+' : '') + nn(dv.pct, 1) + '%';
-    return '<div class="bb-sg-stat"><b>' + esc(s) + '</b><span>' + esc(label) + ' vs base</span></div>';
-  }
-})();
-</script>
-<!-- =================== END SIGNAL =================== -->
 
 <!-- WhatsApp FAB – public website -->
 <a class="wa-public-fab" href="https://wa.me/919502575669" target="_blank" rel="noopener noreferrer" aria-label="Chat with us on WhatsApp" title="Chat on WhatsApp">
