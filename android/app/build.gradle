@@ -19,7 +19,7 @@ android {
         applicationId "com.bodybank.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode ciVersionCode ? ciVersionCode.toInteger() : 24
+        versionCode ciVersionCode ? ciVersionCode.toInteger() : 30
         versionName ciVersionName ?: "1.7.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
