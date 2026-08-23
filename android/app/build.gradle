@@ -19,8 +19,8 @@ android {
         applicationId "com.bodybank.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode ciVersionCode ? ciVersionCode.toInteger() : 23
-        versionName ciVersionName ?: "1.7.0"
+        versionCode ciVersionCode ? ciVersionCode.toInteger() : 24
+        versionName ciVersionName ?: "1.7.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
