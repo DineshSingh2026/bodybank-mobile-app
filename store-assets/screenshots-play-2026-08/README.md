@@ -1,4 +1,4 @@
-# Play Store screenshots — August 2026 (v1.7.3)
+# Play Store screenshots — August 2026 (v1.7.4, versionCode 102)
 
 The listing was still showing captures from **May 2026**, taken before the member home,
 nutrition pane, coach thread and weekly review were rebuilt. These replace them.
@@ -21,8 +21,9 @@ All six are **1080 × 1920 PNG** (9:16, ~1.1–1.5 MB each) — inside Play's li
 
 ## What is in the pictures
 
-Every screenshot is the **real app**, captured from the current build against a local server
-— not a mockup. What is staged is only the *data*:
+Every screenshot is the **real app**, captured from web `main` at `9f2c3b4` against a local
+server — not a mockup. That commit is the day-card fix that ships as v1.7.4, so panels 1
+and 4 show the corrected "Today is complete" card, not the version that broke on a Tuesday. What is staged is only the *data*:
 
 - A demo member (`store.demo@bodybank.fit`, "Arjun Mehta") seeded locally with 27 days of
   check-ins, three logged meals, a coach thread and two weeks of readiness. The account and
