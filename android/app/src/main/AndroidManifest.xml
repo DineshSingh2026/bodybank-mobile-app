@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -43,9 +44,19 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.VIBRATE" />
 
-    <!-- Photo library: blood-report upload, avatar, meal photos.
-         Android 13+ uses READ_MEDIA_IMAGES; older devices fall back to READ_EXTERNAL_STORAGE
-         (capped at SDK 32 so newer devices don't see a redundant prompt). -->
-    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
+    <!-- Photo library: NO permission is declared, by design.
+         Image inputs (avatar, meal photos, blood-report images) go through the Android
+         photo picker; mixed image+PDF inputs go through the system document picker. Both
+         hand back a content:// URI the app may already read, so the broad media
+         permissions Google Play's Photo and Video Permissions policy prohibits are not
+         needed. See MainActivity#launchPhotoPicker.
+
+         The removals below are explicit so that no future library or Capacitor plugin can
+         merge these permissions back into the manifest and re-trigger the policy
+         rejection. tools:node="remove" strips them from the merged manifest outright. -->
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" tools:node="remove" />
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" tools:node="remove" />
+    <uses-permission android:name="android.permission.READ_MEDIA_VISUAL_USER_SELECTED" tools:node="remove" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" tools:node="remove" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" tools:node="remove" />
 </manifest>
