@@ -1,5 +1,12 @@
 # App Store Screenshots — plan and how to capture them on Windows
 
+> **Android/Play is already done.** The current Play set was recaptured from the v1.7.3 build
+> and lives in `screenshots-play-2026-08/` (six 1080×1920 captioned panels + a README with the
+> upload order and the scripts that rebuild them). The older `screenshots-store/` and
+> `screenshots-final/` folders are the superseded May 2026 set. This document is about the
+> **iOS** sizes, which still need capturing.
+
+
 App Store Connect requires screenshots in specific pixel dimensions. Your existing
 `store-assets/screenshots*` folders contain Play Store (Android) sizes — Apple's are
 different and need to be re-captured.
