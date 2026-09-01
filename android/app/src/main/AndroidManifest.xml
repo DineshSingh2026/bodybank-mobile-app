@@ -1,8 +1,21 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
+    <!-- allowBackup is deliberately false.
+         The signed-in session (a 7-day JWT) lives in the WebView's localStorage. With
+         backup enabled that store is copied into Android Auto Backup / Google Drive and
+         is recoverable from an `adb backup` on devices that permit it — a stolen backup
+         is a stolen session. Nothing here is worth restoring: the UI is bundled with the
+         APK and all real state lives on the server, so disabling backup costs the user
+         nothing. The two rule files additionally block device-to-device transfer cloning
+         (dataExtractionRules on Android 12+, fullBackupContent on 11 and below).
+         networkSecurityConfig pins the app to HTTPS explicitly rather than relying on
+         the targetSdk default. -->
     <application
-        android:allowBackup="true"
+        android:allowBackup="false"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:networkSecurityConfig="@xml/network_security_config"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  BodyBank network policy.
+
+  The app talks to exactly one origin, https://www.bodybank.fit, and bundles its UI
+  locally. Cleartext is refused everywhere so a downgrade to http:// cannot leak a
+  session token on a hostile network, and only the system + user CA stores are
+  trusted for that domain.
+
+  Note: cleartextTrafficPermitted="false" is already the default at targetSdk 28+;
+  stating it here makes the intent explicit and survives a future targetSdk change.
+-->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="false">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+
+    <domain-config cleartextTrafficPermitted="false">
+        <domain includeSubdomains="true">bodybank.fit</domain>
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </domain-config>
+</network-security-config>
