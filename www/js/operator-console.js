@@ -1367,13 +1367,208 @@ function opLeadsView(view) {
   document.querySelectorAll('#opLeadsSeg .op-chip').forEach(function (b) {
     b.classList.toggle('active', b.getAttribute('data-lv') === view);
   });
+  // Nutrition assessments are their own endpoint, not part of /api/operator/leads,
+  // so the first switch to that view fetches them and every later one is instant.
+  if (view === 'nutrition' && !opState.na) { loadOperatorNutritionAssessments(); return; }
   renderOperatorLeads();
+}
+
+/* Read-only by design: an operator can see and chase an assessment, but the
+   delete and the "mark reviewed" action stay on the admin console. */
+async function loadOperatorNutritionAssessments() {
+  var el = opEl('opLeadCards');
+  if (el) el.innerHTML = '<div class="op-empty pad">Loading\u2026</div>';
+  try {
+    var d = await apiCall('GET', '/api/nutrition-assessment/list?sort=flagged');
+    if (!d || d.error || !Array.isArray(d.rows)) {
+      if (el) el.innerHTML = '<div class="op-empty pad">' + opEsc((d && d.error) || 'Could not load assessments.') + '</div>';
+      return;
+    }
+    opState.na = d;
+    renderOperatorLeads();
+  } catch (e) {
+    if (el) el.innerHTML = '<div class="op-empty pad">Could not load assessments.</div>';
+  }
+}
+
+/**
+ * Copy this person's Part 2 link.
+ *
+ * `mark_sent` is deliberately NOT set here: an operator copying a link to chase
+ * someone must not silently record that the follow-up was done. Only the admin
+ * action stamps part2_sent_at.
+ */
+/** Clipboard with an honest fallback when the browser blocks it. */
+async function opCopyText(text, msg) {
+  if (!text) return;
+  try {
+    await navigator.clipboard.writeText(text);
+    alert(msg || 'Copied.');
+  } catch (e) {
+    window.prompt('Copy this link:', text);
+  }
+}
+
+async function opNaPart2(id) {
+  var row = ((opState.na || {}).rows || []).filter(function (r) { return r.id === id; })[0];
+  var who = (row && row.name) || 'this person';
+  var d;
+  try {
+    d = await apiCall('POST', '/api/nutrition-assessment/' + id + '/part2-link', {});
+  } catch (e) { d = null; }
+  if (!d || d.error || !d.url) {
+    alert((d && d.error) || 'Could not create the Part 2 link.');
+    return;
+  }
+  var copied = false;
+  try { await navigator.clipboard.writeText(d.url); copied = true; } catch (e) { /* clipboard blocked */ }
+  if (copied) alert('Part 2 link for ' + who + ' copied. It reopens their existing answers, so nothing is retyped.');
+  else window.prompt('Part 2 link for ' + who + ':', d.url);
+}
+
+function opNaBadges(r) {
+  // The assessment arrives in two parts. "Part 1 done" is the state an operator
+  // actually chases — it means the person is usable but the detail is still
+  // outstanding — so it gets its own badge rather than being lumped in with a
+  // half-finished form.
+  var progress;
+  if (r.part2_done || r.status === 'complete') {
+    progress = '<span class="op-tag ok">Both parts in</span>';
+  } else if (r.part1_done) {
+    progress = '<span class="op-tag warn"'
+      + (r.part2_sent_at ? ' title="Part 2 link sent"' : ' title="Part 2 link not sent yet"')
+      + '>Part 1 done' + (r.part2_sent_at ? '' : ' · not chased') + '</span>';
+  } else {
+    progress = '<span class="op-tag">Part 1 · step ' + r.last_step + '/' + r.total_steps + '</span>';
+  }
+  return (r.is_member ? '<span class="op-tag ok">Member</span>' : '<span class="op-tag warn">No account</span>')
+    + progress
+    + (r.flagged ? '<span class="op-tag warn" title="' + opEsc((r.flag_labels || []).join(', ')) + '">Needs review</span>' : '');
+}
+
+function opNaCard(r) {
+  var phone = r.mobile || '';
+  var wa = opWa(phone);
+  var actions = '<div class="op-card-actions">';
+  if (wa) actions += '<a class="op-qa wa" href="' + wa + '" target="_blank" rel="noopener" title="WhatsApp" onclick="event.stopPropagation()">'
+    + '<svg viewBox="0 0 24 24"><path d="M21 11.5a8.5 8.5 0 0 1-12.6 7.4L3 21l2.2-5.2A8.5 8.5 0 1 1 21 11.5Z"/></svg></a>';
+  if (r.email) actions += '<a class="op-qa" href="mailto:' + opEsc(r.email) + '" title="Email" onclick="event.stopPropagation()">'
+    + '<svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6"/></svg></a>';
+  // Only where it can be used: Part 1 in, Part 2 not. Operators are read-only on
+  // the assessment itself, but chasing is exactly their job, so the link is theirs.
+  if (r.awaiting_part2) {
+    actions += '<button type="button" class="op-qa" title="Copy the Part 2 link"'
+      + ' onclick="event.stopPropagation();opNaPart2(&quot;' + opAttr(r.id) + '&quot;)">'
+      + '<svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/>'
+      + '<path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg></button>';
+  }
+  actions += '</div>';
+
+  return '<article class="op-card" onclick="opNaOpen(\'' + opAttr(r.id) + '\')">'
+    + '<div class="op-card-top">' + opAvatar(null, r.name, 'lg')
+    + '<div class="op-card-id"><div class="op-card-name">' + opEsc(r.name) + '</div>'
+    + '<div class="op-card-mail">' + opEsc([r.email, phone].filter(Boolean).join(' \u00b7 ')) + '</div>'
+    + '<div class="op-card-tags">' + opNaBadges(r) + '</div></div></div>'
+    + '<div class="op-card-facts"><span>' + opEsc(opDate(r.submitted_at || r.updated_at || r.created_at)) + '</span>'
+    + (r.goal ? '<span>Goal: <b>' + opEsc(r.goal) + '</b></span>' : '')
+    + (r.tdee ? '<span>TDEE: <b>' + r.tdee + '</b></span>' : '') + '</div>'
+    + actions + '</article>';
+}
+
+async function opNaOpen(id) {
+  var row = ((opState.na || {}).rows || []).filter(function (x) { return String(x.id) === String(id); })[0];
+  if (!row) return;
+  opState.story = { kind: 'lead' };
+
+  var head = opStoryBackBtn() + opAvatar(null, row.name, 'xl')
+    + '<div class="op-story-id"><div class="op-story-title">' + opEsc(row.name) + '</div>'
+    + '<div class="op-story-sub">' + opEsc([row.email, row.mobile].filter(Boolean).join(' \u00b7 ')) + '</div></div>'
+    + '<div class="op-story-pills"><span class="op-tag">FitChef assessment</span></div>';
+
+  var wa = opWa(row.mobile);
+  var h = '<div class="op-actbar">';
+  if (wa) h += '<a class="op-btn wa" href="' + wa + '" target="_blank" rel="noopener">\ud83d\udcac WhatsApp</a>';
+  if (row.mobile) h += '<a class="op-btn quiet" href="tel:' + opEsc(String(row.mobile).replace(/[^0-9+]/g, '')) + '">\ud83d\udcde Call</a>';
+  if (row.email) h += '<a class="op-btn quiet" href="mailto:' + opEsc(row.email) + '">\u2709\ufe0f Email</a>';
+  h += '</div>';
+  h += '<div class="op-card-tags" style="margin-bottom:18px">' + opNaBadges(row) + '</div>';
+  h += '<div id="opNaDetail"><div class="op-empty">Loading the answers\u2026</div></div>';
+  opStoryOpen(head, h);
+
+  var d;
+  try { d = await apiCall('GET', '/api/nutrition-assessment/' + id); }
+  catch (e) { d = null; }
+  var host = opEl('opNaDetail');
+  if (!host) return;
+  if (!d || d.error) { host.innerHTML = '<div class="op-empty">Could not load the answers.</div>'; return; }
+
+  var out = '';
+  if ((d.flags || []).length) {
+    out += '<div class="op-sub" style="margin-top:0;color:#ff8a8a">Needs review before a plan goes out</div><div class="op-lines">'
+      + d.flags.map(function (f) {
+        return opKV(f.label + (f.clinician ? ' \u00b7 clinician' : ''), opEsc(f.detail));
+      }).join('') + '</div>';
+  }
+  var dv = d.derived || {};
+  if (dv.bmr) {
+    out += '<div class="op-sub">The numbers</div><div class="op-lines">'
+      + opKV('BMR', opEsc(String(dv.bmr)))
+      + opKV('TDEE', dv.tdee ? opEsc(String(dv.tdee)) : '')
+      + opKV('Calorie target', dv.calorie_target ? opEsc(String(dv.calorie_target)) : '')
+      + opKV('Protein', dv.protein_target_g ? opEsc(dv.protein_target_g.low + '\u2013' + dv.protein_target_g.high + ' g') : '')
+      + opKV('Waist-to-height', dv.whtr ? opEsc(String(dv.whtr)) : '')
+      + '</div>';
+  }
+  (d.sections || []).forEach(function (sec) {
+    out += '<div class="op-sub">' + opEsc(sec.title) + '</div><div class="op-lines">'
+      + sec.rows.map(function (r) { return opKV(r.label, opEsc(opNaValue(r.value))); }).join('')
+      + '</div>';
+  });
+  host.innerHTML = out || '<div class="op-empty">Nothing filled in yet.</div>';
+}
+
+function opNaValue(v) {
+  if (v == null) return '';
+  if (Array.isArray(v)) return v.join(', ');
+  if (typeof v === 'object') {
+    return Object.keys(v).map(function (k) {
+      var inner = v[k];
+      if (inner && typeof inner === 'object') return k + ': ' + [inner.at, inner.what].filter(Boolean).join(' ');
+      return k + ': ' + inner;
+    }).join(' \u00b7 ');
+  }
+  return String(v);
 }
 function renderOperatorLeads() {
   var el = opEl('opLeadCards'); if (!el) return;
   var d = opState.leads || {};
   var q = ((opEl('opLeadsSearch') || {}).value || '').trim();
   var rows;
+  if (opState.leadsView === 'nutrition') {
+    var na = ((opState.na || {}).rows || []).filter(function (p) { return bbContactMatches(q, [p.name, p.email], [p.mobile]); });
+    var sm = (opState.na || {}).summary || {};
+    var l0 = opEl('opLeadLine'), s0 = opEl('opLeadSub');
+    if (l0) l0.innerHTML = '<b>' + na.length + '</b> FitChef assessment' + (na.length === 1 ? '' : 's');
+    if (s0) s0.textContent = [
+      (sm.part1_done || 0) + ' Part 1 in', (sm.complete || 0) + ' Part 2 in',
+      (sm.awaiting_part2 || 0) + ' awaiting Part 2',
+      (sm.flagged || 0) + ((sm.flagged || 0) === 1 ? ' needs review' : ' need review')
+    ].join(' \u00b7 ');
+    // Operators chase people, so they need the same two links the admin has.
+    // Both are shareable: Part 2 asks which email was used for Part 1.
+    var naData = opState.na || {};
+    var origin = (window.BB_PUBLIC_ORIGIN || window.location.origin);
+    var u1 = naData.part1_share_url || naData.share_url || (origin + '/nutrition-assessment.html');
+    var u2 = naData.part2_share_url || (origin + '/nutrition-assessment.html?part=2');
+    var links = '<div class="op-na-links">'
+      + '<button type="button" class="op-bub more" onclick="opCopyText(&quot;' + opAttr(u1) + '&quot;,&quot;Part 1 link copied.&quot;)">Copy Part 1 link</button>'
+      + '<button type="button" class="op-bub more" onclick="opCopyText(&quot;' + opAttr(u2) + '&quot;,&quot;Part 2 link copied. It asks which email they used for Part 1.&quot;)">Copy Part 2 link</button>'
+      + '</div>';
+
+    el.innerHTML = links + (na.length ? na.map(opNaCard).join('')
+      : '<div class="op-empty pad">' + (q ? 'Nothing matches this search.' : 'No assessments yet.') + '</div>');
+    return;
+  }
   if (opState.leadsView === 'part2') {
     rows = (d.part2 || []).filter(function (p) { return bbContactMatches(q, [p.name, p.email], [p.mobile]); })
       .map(function (p) { return { kind: 'part2', id: p.id, raw: p }; });
@@ -1586,7 +1781,150 @@ async function loadOperatorOverview() {
       opAnimateBars(mEl);
     }
     opDrawTrendChart(data.trends);
+    opRenderAssessmentsAndWearables(data);
+    opRenderQuickAccess(data);
   } catch (e) { }
+}
+
+/**
+ * Nutrition assessments and wearable adoption on the operator pulse screen.
+ *
+ * Read-only by design, matching the rest of this console: an operator can see
+ * that six assessments need review and chase them, but clearing the flag stays on
+ * the admin side.
+ *
+ * Renders into #opExtras when the markup provides it, and otherwise appends a
+ * block after the meters, so this works whether or not index.html has been
+ * updated to carry a dedicated container.
+ */
+function opRenderAssessmentsAndWearables(data) {
+  var na = (data && data.nutritionAssessments) || null;
+  var wr = (data && data.wearables) || null;
+  // An older server build returns neither key. Render nothing rather than a row
+  // of zeros, which would read as "nobody has done this" instead of "unknown".
+  if (!na && !wr) return;
+
+  var host = opEl('opExtras');
+  if (!host) {
+    var mEl = opEl('opMeters');
+    if (!mEl || !mEl.parentNode) return;
+    host = document.createElement('div');
+    host.id = 'opExtras';
+    host.style.marginTop = '18px';
+    mEl.parentNode.insertBefore(host, mEl.nextSibling);
+  }
+
+  var h = '';
+
+  if (na) {
+    var needs = Number(na.needs_review) || 0;
+    h += '<div class="op-sub">FitChef assessments</div>'
+      + '<div class="op-kpi-row" style="display:flex;gap:14px;flex-wrap:wrap;margin-bottom:6px">'
+      + opExtraStat('Part 1 in', Number(na.part1_submitted) || 0)
+      + opExtraStat('Part 2 in', Number(na.part2_submitted) || 0, 'ok')
+      + opExtraStat('Awaiting Part 2', Number(na.awaiting_part2) || 0,
+        (Number(na.awaiting_part2) || 0) > 0 ? 'warn' : 'ok')
+      + opExtraStat('New · 7d', Number(na.new_7d) || 0)
+      + opExtraStat('Needs review', needs, needs > 0 ? 'warn' : 'ok')
+      + '</div>';
+    if (needs > 0) {
+      // These are safety flags a human has to clear — a clinician referral, a
+      // pregnancy, a disordered-eating signal — so they get a direct route.
+      h += '<button type="button" class="op-bub more" onclick="opNav(\'prospects\');opLeadsView(\'nutrition\')">'
+        + 'Review ' + needs + ' flagged FitChef assessment' + (needs === 1 ? '' : 's') + '</button>';
+    }
+  }
+
+  if (wr) {
+    var mix = Array.isArray(wr.by_device) ? wr.by_device : [];
+    h += '<div class="op-sub" style="margin-top:14px">Watch data</div>'
+      + '<div class="op-kpi-row" style="display:flex;gap:14px;flex-wrap:wrap;margin-bottom:6px">'
+      + opExtraStat('Members', Number(wr.members) || 0)
+      + opExtraStat('Adoption', (Number(wr.adoption_rate) || 0) + '%')
+      + opExtraStat('Active · 7d', Number(wr.active_7d) || 0)
+      + opExtraStat('Uploads · 7d', Number(wr.uploads_7d) || 0)
+      + '</div>';
+    if (mix.length) {
+      h += '<div style="font-size:12.5px;opacity:.9">' + mix.slice(0, 8).map(function (d) {
+        var name = String(d.provider || '').replace(/_/g, ' ');
+        // Say it plainly: a figure an AI read off a screenshot is not the same
+        // evidence as one parsed out of the device's own export.
+        var low = (d.provider === 'screenshot' || d.provider === 'manual')
+          ? ' <i style="opacity:.7">· lower confidence</i>' : '';
+        return '<div style="display:flex;justify-content:space-between;gap:10px;padding:4px 0">'
+          + '<span>' + opEsc(name.charAt(0).toUpperCase() + name.slice(1)) + low + '</span>'
+          + '<span>' + (Number(d.members) || 0) + '</span></div>';
+      }).join('') + '</div>';
+    } else {
+      h += '<div class="op-empty">No watch data imported yet.</div>';
+    }
+  }
+
+  host.innerHTML = h;
+}
+
+/**
+ * Quick access tiles on the operator home.
+ *
+ * Both destinations already existed but were effectively unreachable: the FitChef
+ * assessments sat behind a chip inside Prospects, and watch data only appeared on
+ * a member's own Readiness tab. These put a live count on the home screen and go
+ * straight there.
+ *
+ * The whole block stays hidden against an older server payload — a tile reading 0
+ * would claim "nobody has submitted one", which is a different statement from
+ * "this server does not report it yet".
+ */
+function opRenderQuickAccess(data) {
+  var block = opEl('opQuickBlock');
+  var host = opEl('opQuickAccess');
+  if (!block || !host) return;
+
+  var na = (data && data.nutritionAssessments) || null;
+  var wr = (data && data.wearables) || null;
+  if (!na && !wr) { block.style.display = 'none'; return; }
+  block.style.display = '';
+
+  var tile = function (n, label, sub, tone, onclick) {
+    return '<button type="button" class="op-mon-tile' + (tone ? ' ' + tone : '') + (Number(n) ? '' : ' zero') + '"'
+      + ' onclick="' + onclick + '">'
+      + '<span class="op-mon-n">' + (Number(n) || 0) + '</span>'
+      + '<span class="op-mon-l">' + opEsc(label) + '</span>'
+      + '<span class="op-mon-s">' + opEsc(sub) + '</span>'
+      + '</button>';
+  };
+
+  var h = '';
+  if (na) {
+    var needs = Number(na.needs_review) || 0;
+    var waiting = Number(na.awaiting_part2) || 0;
+    h += tile(na.part1_submitted, 'FitChef Part 1', 'submitted', 'info',
+      'opNav(&quot;prospects&quot;);opLeadsView(&quot;nutrition&quot;)');
+    h += tile(na.part2_submitted, 'FitChef Part 2',
+      waiting ? waiting + ' still to send' : 'all caught up', waiting ? 'warn' : 'ok',
+      'opNav(&quot;prospects&quot;);opLeadsView(&quot;nutrition&quot;)');
+    // Safety flags a human has to clear, so this one is red whenever it is non-zero.
+    h += tile(needs, 'Need review', needs ? 'before a plan goes out' : 'all clear',
+      needs > 0 ? 'bad' : 'ok',
+      'opNav(&quot;prospects&quot;);opLeadsView(&quot;nutrition&quot;)');
+  }
+  if (wr) {
+    var mix = Array.isArray(wr.by_device) ? wr.by_device : [];
+    var sub = mix.length
+      ? mix.slice(0, 2).map(function (d) { return String(d.provider || '').replace(/_/g, ' '); }).join(', ')
+        + (mix.length > 2 ? ' +' + (mix.length - 2) : '')
+      : 'none imported yet';
+    h += tile(wr.members, 'Watch data', sub, 'info', 'opNav(&quot;clients&quot;)');
+    h += tile(wr.uploads_7d, 'Imports', 'in the last 7 days', 'ok', 'opNav(&quot;pulse&quot;)');
+  }
+  host.innerHTML = h;
+}
+
+function opExtraStat(label, value, tone) {
+  return '<div class="op-kv" style="min-width:96px">'
+    + '<div style="font-size:11px;letter-spacing:1px;text-transform:uppercase;opacity:.65">' + opEsc(label) + '</div>'
+    + '<div class="op-tag ' + (tone || '') + '" style="font-size:16px;font-weight:700;background:none;padding:0">'
+    + opEsc(String(value)) + '</div></div>';
 }
 
 function opDrawTrendChart(trends) {
@@ -1833,6 +2171,11 @@ function renderOperatorHome() {
       + opMonTile('nosunday', 'Missed Sunday', 'no weekly check-in', 'amber')
       + opMonTile('newthisweek', 'New this week', 'joined in 7 days', 'info');
   }
+
+  // renderOperatorHome() is also called on its own (after a client action, on a
+  // filter change), not only behind loadOperatorOverview(). Re-render the quick
+  // access tiles from whatever overview we already hold so they do not blank out.
+  opRenderQuickAccess(opState.overview);
 
   opRenderHomeFeed();
 }

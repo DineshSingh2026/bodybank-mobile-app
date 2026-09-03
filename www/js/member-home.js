@@ -329,8 +329,109 @@ function renderMemberHome() {
       + item('💪', 'Muscle Ranking', 'See where you stand', 'muscle')
       + item('🖼️', 'Elite Feed', 'The tribe', 'elitefeed')
       + item('👤', 'My Profile', 'Goals and details', 'profile')
-      + item('✉️', 'Contact Us', 'We are here to help', 'contact');
+      + item('✉️', 'Contact Us', 'We are here to help', 'contact')
+      + '<button type="button" class="mh-navtile" onclick="mhOpenNutritionAssessment()">'
+        + '<span class="mh-navico" aria-hidden="true">🥗</span>'
+        + '<span class="mh-navmain"><b>Nutrition Assessment</b><i>Your FitChef plan starts here</i></span></button>';
   }
+}
+
+/* ---- FitChef nutrition assessment ----------------------------------------
+   A one-off, not a daily task, so it never joins the day's loop and never
+   costs a pip on the rail. It sits in the uploads block and states plainly
+   where the member got to, because a 10-step form abandoned at step 4 is only
+   resumable if the home screen says so. */
+
+/**
+ * Open the assessment at the part the member should actually be on. The server
+ * works this out too; passing it explicitly means the tile and the form can
+ * never disagree about which part is opening.
+ */
+function mhOpenNutritionAssessment(part) {
+  var p = Number(part) === 2 ? 2 : 0;
+  window.location.href = 'nutrition-assessment.html' + (p ? '?part=2' : '');
+}
+
+/**
+ * The two parts, always both listed.
+ *
+ * Part 2 is shown even before Part 1 is submitted — greyed out and labelled
+ * "locked" — because a member who does not know a Part 2 exists is surprised by
+ * it later. Each row goes straight to its own part; a finished part still opens,
+ * read-only, so they can check what they sent.
+ */
+function mhRenderNaParts(d) {
+  var host = mhEl('mhNaParts');
+  if (!host) return;
+  var p1 = !!(d && (d.part1_done || d.status === 'complete' || d.status === 'part1_complete'));
+  var p2 = !!(d && (d.part2_done || d.status === 'complete'));
+
+  function row(n, title, sub, done, open, state) {
+    var cls = 'mh-na-part' + (done ? ' is-done' : '') + (!done && open ? ' is-next' : '');
+    return '<button type="button" class="' + cls + '"' + (open || done ? '' : ' disabled')
+      + ' onclick="mhOpenNutritionAssessment(' + n + ')">'
+      + '<span class="mh-na-part-n">' + (done ? '✓' : n) + '</span>'
+      + '<span class="mh-na-part-t">' + mhEsc(title) + '<small>' + mhEsc(sub) + '</small></span>'
+      + '<span class="mh-na-part-s">' + mhEsc(state) + '</span>'
+      + '</button>';
+  }
+
+  host.innerHTML =
+    row(1, 'Part 1 — the essentials',
+      'You, your goal, your numbers and a short health check. 3–4 minutes.',
+      p1, true, p1 ? 'Done' : 'Start')
+    + row(2, 'Part 2 — the detail',
+      p1 ? 'How you train, eat and cook. This is what makes the plan yours.'
+        : 'Unlocks once Part 1 is in.',
+      p2, p1, p2 ? 'Done' : (p1 ? 'Continue' : 'Locked'));
+}
+
+async function mhLoadNutritionAssessment() {
+  var state = mhEl('mhNaState');
+  var btn = mhEl('mhNaBtn');
+  var hint = mhEl('mhNaHint');
+  if (!state || !btn) return;
+  var d;
+  try { d = await apiCall('GET', '/api/nutrition-assessment/mine'); }
+  catch (e) { d = null; }
+  if (!d || d.error) {
+    state.innerHTML = '';
+    hint.textContent = 'Part 1 first \u2014 we fill in everything we already know.';
+    return;
+  }
+  mhRenderNaParts(d);
+
+  // Both parts in.
+  if (d.status === 'complete' || d.part2_done) {
+    state.innerHTML = '<span class="mh-tag ok">Both parts submitted</span>';
+    btn.textContent = 'View what you sent';
+    btn.onclick = function () { mhOpenNutritionAssessment(); };
+    hint.textContent = 'Your report is being built. We will message you when it is ready.';
+    return;
+  }
+  // Part 1 in, Part 2 outstanding. The member can start it themselves rather than
+  // waiting on the link — that is the point of surfacing it here.
+  if (d.status === 'part1_complete' || (d.part1_done && !d.part2_done)) {
+    state.innerHTML = '<span class="mh-tag ok">Part 1 submitted</span>'
+      + '<span class="mh-tag warn">Part 2 to go</span>';
+    btn.textContent = 'Continue with Part 2';
+    btn.onclick = function () { mhOpenNutritionAssessment(2); };
+    hint.textContent = 'Part 1 gave us your targets. Part 2 adds how you train, eat and cook.';
+    return;
+  }
+  if (d.status === 'in_progress') {
+    var partN = Number(d.part) || 1;
+    state.innerHTML = '<span class="mh-tag warn">Part ' + partN + ' · step ' + d.last_step + ' of ' + d.total_steps + '</span>'
+      + (d.step_title ? '<span class="mh-tag">' + mhEsc(d.step_title) + '</span>' : '');
+    btn.textContent = 'Pick up where you left off';
+    btn.onclick = function () { mhOpenNutritionAssessment(partN); };
+    hint.textContent = 'Everything you have typed is saved.';
+    return;
+  }
+  state.innerHTML = '<span class="mh-tag warn">Not started</span>';
+  btn.textContent = 'Start Part 1';
+  btn.onclick = function () { mhOpenNutritionAssessment(); };
+  hint.textContent = 'Part 1 takes about 3-4 minutes \u2014 your profile, check-ins and blood report are already filled in for you to confirm. Part 2 comes later.';
 }
 
 /* ------------------------------------------------------------- uploads --- */
@@ -339,6 +440,17 @@ function mhPickBlood() {
   if (inp) { inp.value = ''; inp.click(); }
 }
 function mhPickWhoop() {
+  // Prefer the full device flow: it asks WHICH watch this is before reading the
+  // file, and it shows the member every extracted number before anything is
+  // saved. That review step matters most for the members this card used to serve
+  // worst — anyone on a band with no export, whose figures are read off a
+  // screenshot by AI and must be confirmed rather than trusted.
+  if (typeof window !== 'undefined' && typeof window.bbOpenWhoop === 'function') {
+    window.bbOpenWhoop();
+    return;
+  }
+  // Fallback for any page that does not carry the modal: the original Whoop-only
+  // path, which still works.
   var inp = mhEl('mhWhoopFile');
   if (inp) { inp.value = ''; inp.click(); }
 }
@@ -498,6 +610,7 @@ function mhSequence() {
 function mhBoot() {
   if (!mhEl('memberHome')) return;
   loadMemberHome();
+  mhLoadNutritionAssessment();
   // The legacy widgets are built by the shell's own loaders, so sequence once
   // they exist, then once more in case a slow one arrives late.
   setTimeout(mhSequence, 400);

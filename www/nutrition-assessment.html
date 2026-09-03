@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="/js/bb-app-config.js"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0e2f2b">
+<meta name="robots" content="noindex, nofollow">
+<title>FitChef Nutrition Assessment</title>
+<meta name="description" content="Your personalised FitChef nutrition assessment. Part 1 gives you your metabolic numbers; Part 2 turns them into a plan built around how you actually eat.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/nutrition-assessment.css?v=2">
+</head>
+<body>
+
+<header class="fc-top">
+  <div class="fc-top-in">
+    <h1 class="fc-brand">Fit<span>Chef</span></h1>
+    <span class="fc-top-tag">Nutrition Assessment</span>
+  </div>
+  <div class="fc-prog" id="fcProgWrap" hidden>
+    <div class="fc-prog-row">
+      <span class="fc-prog-step" id="fcProgStep">&nbsp;</span>
+      <span class="fc-prog-of" id="fcProgOf"></span>
+    </div>
+    <div class="fc-prog-track"><div class="fc-prog-fill" id="fcProgFill"></div></div>
+  </div>
+</header>
+
+<main class="fc-wrap">
+  <!-- boot -->
+  <div id="fcBoot" class="fc-center">Loading your assessment…</div>
+
+  <!-- intro: the time promise and the payoff, before the first question -->
+  <section id="fcIntro" class="fc-hidden">
+    <div class="fc-step-head">
+      <p class="fc-step-kicker">Personalised nutrition <span id="fcPartBadge" class="fc-part-badge" hidden></span></p>
+      <h2 class="fc-step-title" id="fcIntroTitle">Let's build a plan around the way you actually eat.</h2>
+      <p class="fc-step-blurb" id="fcIntroBlurb">
+        The essentials first: who you are, your goal, your numbers and a short health check.
+        About 3&ndash;4 minutes. You'll get your metabolic numbers as soon as you finish.
+      </p>
+    </div>
+    <div class="fc-note" id="fcIntroKnown" hidden></div>
+    <div class="fc-field">
+      <div class="fc-confirm-list">
+        <div class="fc-confirm-row"><span class="fc-confirm-k">What you get</span><span class="fc-confirm-v">Your calorie and protein targets, a current-vs-target comparison, a sample day, and a grocery plan.</span></div>
+        <div class="fc-confirm-row"><span class="fc-confirm-k">Your data</span><span class="fc-confirm-v">Read only by your coaching team. You can stop anywhere — we save as you go and you can pick up where you left off.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- the steps render here -->
+  <section id="fcStep" class="fc-hidden"></section>
+
+  <!-- finished -->
+  <section id="fcDone" class="fc-hidden">
+    <div class="fc-done">
+      <div class="fc-done-ring">✓</div>
+      <h2>That's everything.</h2>
+      <p id="fcDoneMsg">Your assessment is in. We'll build your report and send it to your email and WhatsApp.</p>
+      <div id="fcDoneFlag"></div>
+      <div id="fcDoneNumbers"></div>
+    </div>
+  </section>
+</main>
+
+<div class="fc-bar" id="fcBar" hidden>
+  <div class="fc-bar-in">
+    <button type="button" class="fc-btn fc-btn--ghost" id="fcBack">Back</button>
+    <button type="button" class="fc-btn fc-btn--primary" id="fcNext">Start</button>
+  </div>
+  <div class="fc-save" id="fcSave"></div>
+</div>
+
+<script src="js/nutrition-assessment-metrics.js?v=2"></script>
+<script src="js/nutrition-assessment.js?v=3"></script>
+</body>
+</html>
