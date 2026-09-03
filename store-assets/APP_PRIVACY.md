@@ -42,10 +42,17 @@ tracking = No**. Purpose codes:
 | Health *(blood-report values, body measurements, weight, body composition, dob/gender for RMR)* | AF, PP |
 | Fitness *(workout sets/reps/duration, activity logs)* | AF, PP |
 
-### Sensitive Info
-| Data Type | Purposes |
-|---|---|
-| Sensitive Info *(blood report contents are health-related sensitive data)* | AF, PP |
+### Sensitive Info — do NOT declare
+
+**Corrected 2026-09-03.** This file previously told you to tick **Sensitive Info** for blood
+reports. That is over-declaring. Apple defines that category narrowly: racial or ethnic
+data, sexual orientation, pregnancy, disability, religious beliefs, trade union membership,
+political opinion, genetic data, biometric data. General health data is **not** in it —
+that is exactly what the **Health** type above is for, and blood-report values are already
+covered there.
+
+Over-declaring invites reviewer questions just as under-declaring does, so leave
+**Sensitive Info** unticked.
 
 ### User Content
 | Data Type | Purposes |
