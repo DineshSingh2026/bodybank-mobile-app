@@ -1,74 +1,43 @@
 #!/usr/bin/env bash
 #
-# iOS code signing for Codemagic — force a FRESH App Store provisioning profile.
+# iOS code signing for Codemagic — apply the fetched profiles, then prove what
+# they contain.
 #
-# WHY THIS EXISTS
-# Apple marks a provisioning profile "Invalid" when the App ID's capabilities
-# change (e.g. enabling Sign In with Apple); it does NOT regenerate it. The
-# Developer portal hides invalid profiles, so they look deleted while still
-# existing via the API. `fetch-signing-files --create` then finds that stale
-# profile, reuses it, and the archive fails with:
+# The `ios_signing:` block in codemagic.yaml already ran before this script:
+# Codemagic generated the certificate private key, created/fetched the Apple
+# Distribution certificate and the App Store provisioning profile, and put them
+# on disk. This script only maps them onto the Xcode project and then PRINTS the
+# entitlements Apple actually granted.
+#
+# Why the printing matters: when signing silently produces nothing, Xcode
+# archives with no profile at all and reports it as
 #   "App" requires a provisioning profile with the Sign In with Apple feature.
-#
-# So: delete every App Store profile for this bundle id via the API first, then
-# create a new one that reflects the CURRENT capabilities.
+# which looks like an App ID capability problem and is not one. The dump below
+# distinguishes the two in one glance.
 #
 # iOS only. Nothing here touches the Android workflow.
 
 set -uo pipefail
 
-BUNDLE_ID="${BUNDLE_ID:-com.bodybank.app}"
+echo "=== [1/3] certificates in the build keychain"
+security find-identity -v -p codesigning 2>/dev/null || echo "    !! no code signing identities found"
 
-echo "=== [1/5] keychain initialize"
-keychain initialize
-
-echo "=== [2/5] existing App Store profiles for ${BUNDLE_ID} (via API, incl. invalid ones)"
-if app-store-connect list-profiles --bundle-id-identifier "$BUNDLE_ID" --profile-type IOS_APP_STORE --json > /tmp/profiles.json 2>/tmp/profiles.err; then
-  head -c 4000 /tmp/profiles.json
-  echo
-else
-  echo "list-profiles failed (continuing anyway):"
-  cat /tmp/profiles.err || true
-  echo "[]" > /tmp/profiles.json
-fi
-
-python3 - <<'PY' > /tmp/profile_ids.txt 2>/dev/null || : > /tmp/profile_ids.txt
-import json
-try:
-    data = json.load(open('/tmp/profiles.json'))
-except Exception:
-    data = []
-if isinstance(data, dict):
-    data = data.get('data', [])
-for p in data if isinstance(data, list) else []:
-    if isinstance(p, dict) and p.get('id'):
-        print(p['id'])
-PY
-
-echo "=== [3/5] deleting stale profiles"
-if [ -s /tmp/profile_ids.txt ]; then
-  while read -r pid; do
-    [ -z "$pid" ] && continue
-    echo "    deleting $pid"
-    app-store-connect delete-profile "$pid" || echo "    (delete failed for $pid, continuing)"
-  done < /tmp/profile_ids.txt
-else
-  echo "    none found"
-fi
-
-echo "=== [4/5] creating a fresh certificate + profile"
-app-store-connect fetch-signing-files "$BUNDLE_ID" --type IOS_APP_STORE --create
-keychain add-certificates
+echo "=== [2/3] mapping provisioning profiles onto the Xcode project"
 xcode-project use-profiles
 
-echo "=== [5/5] DIAGNOSTIC — entitlements Apple actually granted"
+echo "=== [3/3] DIAGNOSTIC — entitlements Apple actually granted"
 found=0
-for f in "$HOME/Library/MobileDevice/Provisioning Profiles/"*.mobileprovision; do
-  [ -e "$f" ] || continue
-  found=1
-  echo "--- $f"
-  security cms -D -i "$f" 2>/dev/null | plutil -p - 2>/dev/null | grep -i -A3 "applesignin" \
-    || echo "    !! NO applesignin entitlement in this profile"
+for dir in "$HOME/Library/MobileDevice/Provisioning Profiles" \
+           "$HOME/Library/Developer/Xcode/UserData/Provisioning Profiles"; do
+  for f in "$dir"/*.mobileprovision; do
+    [ -e "$f" ] || continue
+    found=1
+    echo "--- $f"
+    security cms -D -i "$f" 2>/dev/null | plutil -p - 2>/dev/null \
+      | grep -i -E "applesignin|\"Name\"|\"TeamIdentifier\"|application-identifier" -A2 \
+      || echo "    !! could not read this profile"
+  done
 done
-[ "$found" = "1" ] || echo "    !! no .mobileprovision files found on disk"
+[ "$found" = "1" ] && echo "    (if no 'applesignin' line appears above, Apple did not grant it)" \
+                   || echo "    !! NO .mobileprovision files on disk — signing produced nothing"
 echo "=== signing done"
