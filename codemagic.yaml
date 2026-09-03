@@ -89,10 +89,12 @@ workflows:
     integrations:
       app_store_connect: bodybank-appstore   # name of the App Store Connect key in Codemagic Integrations
     environment:
-      ios_signing:
-        distribution_type: app_store
-        bundle_identifier: com.bodybank.app
+      # NOTE: no `ios_signing:` block on purpose. Codemagic automatic signing only
+      # FETCHES existing profiles and dies with "No matching profiles found" on a brand
+      # new Apple account that has none yet. The explicit signing step below CREATES the
+      # distribution certificate and provisioning profile when they are missing.
       vars:
+        BUNDLE_ID: "com.bodybank.app"
         XCODE_WORKSPACE: "ios/App/App.xcworkspace"
         XCODE_SCHEME: "App"
         APP_STORE_APPLE_ID: 6808102656           # numeric Apple ID of the App Store Connect app record
@@ -108,8 +110,12 @@ workflows:
         script: |
           cd ios/App
           agvtool new-version -all "$BUILD_NUMBER"
-      - name: Set up provisioning profiles
-        script: xcode-project use-profiles
+      - name: Set up code signing (creates cert + profile if missing)
+        script: |
+          keychain initialize
+          app-store-connect fetch-signing-files "$BUNDLE_ID" --type IOS_APP_STORE --create
+          keychain add-certificates
+          xcode-project use-profiles
       - name: Build signed .ipa
         script: |
           xcode-project build-ipa \
