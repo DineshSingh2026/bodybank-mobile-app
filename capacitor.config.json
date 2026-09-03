@@ -10,7 +10,7 @@
   },
   "ios": {
     "backgroundColor": "#0a0a0a",
-    "contentInset": "always",
+    "contentInset": "never",
     "scrollEnabled": true,
     "includePlugins": [
       "@capacitor-community/apple-sign-in",
