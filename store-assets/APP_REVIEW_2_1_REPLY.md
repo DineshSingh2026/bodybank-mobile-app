@@ -102,6 +102,29 @@ PDF or a clear photo of one is accepted; the app extracts values and summarises 
 
 ---
 
+## 3b. User-generated content and moderation
+
+The Elite Feed is the only place members can publish content other members see. It carries
+the full set of controls Apple requires:
+
+- **Report.** Every post that is not your own shows a Report control. The member picks a
+  reason (nudity, harassment, violence, spam, false health information, other) and may add
+  a note. Reports reach staff immediately.
+- **Automatic removal.** Two independent reports hide a post from every member at once,
+  without waiting for a human. Staff can restore it if the reports were unfounded.
+- **Block.** Every post that is not your own shows a Block control. Blocking a member hides
+  all of their posts from that member permanently. The Blocked list in the feed header
+  shows who is blocked and allows unblocking.
+- **Staff moderation queue.** Administrators see a Reported posts queue above the feed with
+  Remove, Restore and Dismiss for each report. Reports are reviewed within 24 hours.
+- **Published contact.** support@bodybank.fit is shown in the app and on the website, and is
+  the address for reports that need escalation.
+
+Posting also requires an approved member account, so content cannot be published
+anonymously and every post is attributable to a real person known to the coaching team.
+
+---
+
 ## 4. External services used
 
 | Service | Used for |
