@@ -31,11 +31,11 @@ Capture, in this order:
 7. **Blood report** — upload a sample PDF, show the generated summary.
 8. **Workout** — open an assigned programme, log a session.
 9. **Coach messaging** — send a message to the Lifestyle Manager.
-10. **Elite Feed** — show a post, **and the report and block controls on it**.
-11. **Account deletion** — Profile tab, Danger zone, "Delete account", through the
+10. **Account deletion** — Profile tab, Danger zone, "Delete account", through the
     password confirmation to completion.
 
-Items 2, 10 and 11 are the ones Apple named explicitly. Do not skip them.
+Items 2 and 10 are the ones Apple named explicitly. Do not skip them. There is no
+user-generated content to demonstrate — see section 3b.
 
 ---
 
@@ -92,7 +92,6 @@ registering. Registration can still be demonstrated with any address — it will
 | Blood report upload | side menu → My Body → blood report section |
 | Workout logging | bottom nav → Train |
 | Coach messaging | bottom nav → Coach |
-| Elite Feed | side menu → Elite Feed |
 | Account deletion | bottom nav → Profile → Danger zone → Delete account |
 
 ### Sample files
@@ -102,26 +101,21 @@ PDF or a clear photo of one is accepted; the app extracts values and summarises 
 
 ---
 
-## 3b. User-generated content and moderation
+## 3b. User-generated content
 
-The Elite Feed is the only place members can publish content other members see. It carries
-the full set of controls Apple requires:
+**The app contains no user-generated content.** Nothing a member enters is visible to any
+other member.
 
-- **Report.** Every post that is not your own shows a Report control. The member picks a
-  reason (nudity, harassment, violence, spam, false health information, other) and may add
-  a note. Reports reach staff immediately.
-- **Automatic removal.** Two independent reports hide a post from every member at once,
-  without waiting for a human. Staff can restore it if the reports were unfounded.
-- **Block.** Every post that is not your own shows a Block control. Blocking a member hides
-  all of their posts from that member permanently. The Blocked list in the feed header
-  shows who is blocked and allows unblocking.
-- **Staff moderation queue.** Administrators see a Reported posts queue above the feed with
-  Remove, Restore and Dismiss for each report. Reports are reviewed within 24 hours.
-- **Published contact.** support@bodybank.fit is shown in the app and on the website, and is
-  the address for reports that need escalation.
+The Elite Feed, a community feed where members could post photographs, has been removed
+entirely — from the app, the admin dashboard and the website. There is no posting surface
+left in the app.
 
-Posting also requires an approved member account, so content cannot be published
-anonymously and every post is attributable to a real person known to the coaching team.
+Everything a member records — body photographs, meal photographs, measurements, blood
+reports, check-ins, workout logs — is private to that member and the coaching staff
+assigned to them. Messaging is one-to-one between a member and their Lifestyle Manager;
+there is no member-to-member channel of any kind.
+
+Guideline 1.2 therefore does not apply to this build.
 
 ---
 
