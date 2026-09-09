@@ -1,0 +1,38 @@
+1. PURPOSE AND AUDIENCE
+BodyBank is a lifestyle coaching platform. Each member is paired with a human coach, their "Lifestyle Manager", and the app is where that relationship lives day to day. Most fitness apps count and stop there; our members need structure and a professional reading their data. Members log daily habits (steps, water, protein, sleep), photograph meals for calorie and macro estimates, upload body progress photos and measurements, upload blood lab reports for a plain-English summary, follow workout programmes assigned by their coach, and message that coach directly. Audience: adults 25-45 wanting sustainable change and willing to pay for guidance. Based in India; nothing is region-locked.
+
+2. DEMO ACCOUNT AND ACCESS
+Email: apple-reviewer@bodybank.fit
+Password: <APPLE_REVIEW_PASS>
+One account type in the app: member. Admin and coach tools sit behind separate roles.
+Signups are held for manual approval so a coach can be assigned. The account above is pre-approved, so please sign in rather than register. Registration can still be shown with any address; it displays a "pending approval" screen, which is correct for a coaching service.
+Feature paths after sign-in:
+- Home / daily targets: opens on sign-in
+- Daily check-in: bottom nav > Check-in
+- Meal photo analysis: bottom nav > Check-in > meal photo slots
+- Body progress photos: side menu > My Body
+- Blood report upload: side menu > My Body > blood report section
+- Workout logging: bottom nav > Train
+- Coach messaging: bottom nav > Coach
+- Account deletion: bottom nav > Profile > Danger zone > Delete account
+Any meal photo works for nutrition analysis. Any lab PDF or a clear photo of one works for the blood report.
+
+3. USER-GENERATED CONTENT
+The app contains none. Nothing a member enters is visible to any other member. Photos, measurements, blood reports, check-ins and workout logs are private to that member and their assigned coaching staff. Messaging is one-to-one with their Lifestyle Manager; there is no member-to-member channel. Guideline 1.2 does not apply to this build.
+
+4. EXTERNAL SERVICES
+- Anthropic (Claude API): meal photo analysis, blood report extraction and summaries, coaching report drafts
+- Sign in with Apple: authentication, identity tokens verified server-side against Apple's public keys
+- Google Sign-In: authentication
+- Twilio: WhatsApp notifications to members and coaches
+- SMTP email: approvals, password resets, reports
+- Render: hosting and the PostgreSQL database
+- Firebase Cloud Messaging: Android push only. The plugin is excluded from the iOS build; iOS sends no push.
+No payment processor, no in-app purchases, no payment flow; subscriptions are arranged outside the app. No ad networks, analytics SDKs or third-party trackers, which is why App Privacy declares no tracking. AI processing is server-side; no member data trains any model.
+
+5. REGIONAL DIFFERENCES
+None. The app functions identically everywhere: no geo-gating, no region-specific content or features. Interface is English only. Country and timezone are member-chosen and affect only date display and reminder timing.
+
+6. REGULATED INDUSTRY AND THIRD-PARTY MATERIAL
+BodyBank provides no medical services and makes no medical claims; it is a lifestyle and fitness coaching product. Blood report summaries restate lab values in plain language with general lifestyle guidance on nutrition, sleep and activity. They do not diagnose, do not prescribe medication and do not replace a physician. The app tells members to consult a qualified doctor, and coaches refer to medical professionals rather than advise on treatment. It is not a medical device and is not marketed as one.
+All imagery in the app and listing is owned by BodyBank or used with the written consent of the members shown. No third-party copyrighted material is included.
