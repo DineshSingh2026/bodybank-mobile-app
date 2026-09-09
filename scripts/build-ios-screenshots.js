@@ -3,9 +3,9 @@
  * Builds App Store screenshots for every iPhone size App Store Connect asks for.
  *
  * Source: store-assets/screenshots-play-2026-08/source-captures/*.png
- *         (1170x2532 captures of the REAL app, from the live member shell
- *         against a seeded demo account - the same captures the Play listing
- *         uses. No mockups, no real member data.)
+ *         (1170x2532 captures of the REAL app AFTER the Elite Feed removal,
+ *         captured from the live member shell against a seeded demo account.
+ *         No mockups, no real member data.)
  *
  * Output: store-assets/screenshots-ios-2026-09/<size-label>/*.png
  *
@@ -22,7 +22,7 @@ const fs = require('fs');
 const sharp = require('sharp');
 
 const ROOT = path.resolve(__dirname, '..');
-const SRC = path.join(ROOT, 'store-assets', 'screenshots-play-2026-08', 'source-captures');
+const SRC = path.join(ROOT, 'store-assets', 'screenshots-ios-2026-09', 'source-captures');
 const DST = path.join(ROOT, 'store-assets', 'screenshots-ios-2026-09');
 
 const SIZES = [
@@ -36,24 +36,24 @@ const FONT = "Poppins, Montserrat, 'Segoe UI', 'Helvetica Neue', Arial, sans-ser
 
 // Order matters: the App Store shows only the first 1-3 in search results.
 const SCREENS = [
-  { src: '01-home.png', eyebrow: 'YOUR DAY',
+  { src: 'p-01-home.png', eyebrow: 'YOUR DAY',
     line1: 'Your whole day,', line2: 'on one screen.',
     sub: 'Streak, targets and what is still left the moment you open the app.' },
-  { src: '04-food-macros.png', eyebrow: 'NUTRITION',
-    line1: 'Snap the plate.', line2: 'Macros in seconds.',
-    sub: 'Photograph a meal and get calories and macros back automatically.' },
-  { src: '05-messages.png', eyebrow: 'COACHING',
-    line1: 'Your coach,', line2: 'in one thread.',
-    sub: 'A real Lifestyle Manager, not a chatbot and not a forum.' },
-  { src: '02-home-day.png', eyebrow: 'DAILY TARGETS',
+  { src: 'p-02-goals.png', eyebrow: 'DAILY TARGETS',
     line1: 'Today, measured', line2: 'against your goals.',
     sub: 'Steps, water, protein and sleep, tracked against what you set out to do.' },
-  { src: '07-weekly.png', eyebrow: 'WEEKLY REVIEW',
-    line1: 'The week,', line2: 'scored.',
-    sub: 'Every target reviewed, so progress is a number and not a feeling.' },
-  { src: '06-checkin.png', eyebrow: 'CHECK-IN',
+  { src: 'p-04-coach.png', eyebrow: 'COACHING',
+    line1: 'Your coach,', line2: 'in one thread.',
+    sub: 'A real Lifestyle Manager, not a chatbot and not a forum.' },
+  { src: 'p-05-checkin.png', eyebrow: 'CHECK-IN',
     line1: 'Four numbers.', line2: 'Ten seconds.',
     sub: 'A check-in short enough that you actually keep doing it.' },
+  { src: 'p-06-train.png', eyebrow: 'TRAINING',
+    line1: 'Log the session', line2: 'while it is fresh.',
+    sub: 'Programmes assigned by your coach, logged set by set.' },
+  { src: 'p-03-week.png', eyebrow: 'WEEKLY REVIEW',
+    line1: 'The week,', line2: 'scored.',
+    sub: 'Every target reviewed, so progress is a number and not a feeling.' },
 ];
 
 const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
