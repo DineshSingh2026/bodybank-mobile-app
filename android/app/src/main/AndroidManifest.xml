@@ -57,6 +57,33 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.VIBRATE" />
 
+    <!-- Microphone: the optional "Speak your answer" button on the long-form Sunday
+         check-in and Part-2 questions (public/js/bb-voice.js). Recording only ever
+         starts from an explicit tap on that button, and stops when the user taps stop.
+         There is no background listening and no hot-word.
+
+         The device's own speech service transcribes and returns TEXT. BodyBank never
+         receives, stores or uploads audio — there is no recording file, and no upload
+         endpoint exists. Only the text the user reads and confirms is saved, as part
+         of the same check-in they were already filling in by hand.
+
+         @capacitor-community/speech-recognition declares this in its own manifest, so
+         it would merge in either way. It is repeated here deliberately: after the
+         versionCode 100 rejection we do not want a runtime permission appearing in the
+         merged manifest with no stated reason beside it. -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
+    <!-- Package visibility (Android 11+ / API 30). Without this, SpeechRecognizer
+         reports "not available" on every modern device even with RECORD_AUDIO granted,
+         because the app cannot see the system's recognition service. targetSdk is 36,
+         so this is required, not optional. Also supplied by the plugin's manifest;
+         kept here so the requirement survives a plugin change. -->
+    <queries>
+        <intent>
+            <action android:name="android.speech.RecognitionService" />
+        </intent>
+    </queries>
+
     <!-- Photo library: NO permission is declared, by design.
          Image inputs (avatar, meal photos, blood-report images) go through the Android
          photo picker; mixed image+PDF inputs go through the system document picker. Both

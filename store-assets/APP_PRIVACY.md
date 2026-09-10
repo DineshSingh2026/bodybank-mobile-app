@@ -7,6 +7,8 @@ actually does — keep them accurate (under-declaring or over-declaring both cau
 rejection).
 
 > If you add Firebase Analytics, Sentry, Mixpanel, etc. later, **re-check this**.
+> Likewise if voice input is ever changed to upload audio to our own server or a
+> third-party transcription API — that would flip **Audio Data** to collected.
 
 ---
 
@@ -75,7 +77,14 @@ Over-declaring invites reviewer questions just as under-declaring does, so leave
 - Financial Info — no payments processed in the app
 - Purchases — no in-app purchases
 - Location *(precise or coarse GPS)* — we **do not** request location services. The "Country" in the profile is **user-entered**, not GPS.
-- Audio Data — `audio: false` everywhere we use getUserMedia
+- Audio Data — **still not collected, but read the note below before you tick anything.**
+  Since v1.7.9 the long check-in questions offer an optional "Speak your answer" button.
+  It uses Apple's own `SFSpeechRecognizer` through the OS: iOS captures and transcribes,
+  and hands BodyBank **text only**. No audio file is created, nothing is written to disk,
+  and no server endpoint accepts audio. Apple's definition of collection is data sent off
+  device **to you or your partners** — the system speech service is neither, so Audio Data
+  stays unticked. The resulting text is already covered by *Other User Content* above
+  (Sunday check-in answers). If a reviewer queries it, that is the answer verbatim.
 - Browsing History
 - Search History
 - Contacts *(your phone's address book)*

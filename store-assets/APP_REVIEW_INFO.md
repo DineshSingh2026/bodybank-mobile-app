@@ -52,7 +52,14 @@ Why we ask for permissions:
 • Camera + Photo Library — to capture body progress photos, meal photos for nutrition
   analysis, and to upload a blood-report image/PDF. All photos stay tied to the user's
   own account and are used only inside the app.
-• No location services, no microphone, no Bluetooth.
+• Microphone + Speech Recognition — optional dictation on the long written check-in
+  questions. A "Speak your answer" button sits under each long answer field; tapping it
+  records only until you tap stop, iOS transcribes it, and the text is shown for you to
+  edit and confirm before it enters the field. Typing is unchanged and always available.
+  No audio is stored or uploaded — BodyBank receives text only, and no server endpoint
+  accepts audio. To see it: Check-in > Sunday check-in > any question marked "detailed
+  answer please".
+• No location services, no Bluetooth.
 
 Sign in:
 • Email + password (use the demo account above).

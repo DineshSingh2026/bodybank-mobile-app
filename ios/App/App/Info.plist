@@ -14,6 +14,14 @@
 	<string>BodyBank lets you choose body, meal, and blood-report photos from your library to track progress and analyze nutrition.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>BodyBank saves your progress and nutrition share cards to your photo library.</string>
+	<!-- Both strings are required by the optional "Speak your answer" button on the
+	     long-form check-in questions. Recording starts only on an explicit tap and
+	     stops when you tap stop; iOS transcribes and returns text, and BodyBank saves
+	     only the text you review and confirm. No audio is stored or uploaded. -->
+	<key>NSMicrophoneUsageDescription</key>
+	<string>BodyBank uses the microphone only when you tap “Speak your answer”, so you can dictate your check-in answers instead of typing them. Recording stops as soon as you tap stop, and no audio is saved or uploaded.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>BodyBank uses speech recognition to turn your spoken check-in answer into text you can review and edit before saving. Only the text you confirm is saved — never the audio.</string>
 	<key>CFBundleIdentifier</key>
 	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
