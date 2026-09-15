@@ -9,7 +9,7 @@
     "build:assets:ios": "node scripts/build-assets.js && npx capacitor-assets generate --ios",
     "build:store-assets": "node scripts/build-store-assets.js",
     "sync": "npm run build:www && npx cap sync android",
-    "sync:ios": "npm run build:www && npx cap sync ios",
+    "sync:ios": "npm run build:www && npx cap sync ios && node scripts/ios-strip-store-refs.js",
     "build:release": "npm run sync && cd android && gradlew.bat bundleRelease",
     "cap:open": "npx cap open android",
     "cap:open:ios": "npx cap open ios",

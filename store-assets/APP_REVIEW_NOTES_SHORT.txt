@@ -27,7 +27,7 @@ The app contains none. Nothing a member enters is visible to any other member. P
 - Twilio: WhatsApp notifications to members and coaches
 - SMTP email: approvals, password resets, reports
 - Render: hosting and the PostgreSQL database
-- Firebase Cloud Messaging: Android push only. The plugin is excluded from the iOS build; iOS sends no push.
+- Push notifications: not used in this build; the app sends no push.
 No payment processor, no in-app purchases, no payment flow; subscriptions are arranged outside the app. No ad networks, analytics SDKs or third-party trackers, which is why App Privacy declares no tracking. AI processing is server-side; no member data trains any model.
 
 5. REGIONAL DIFFERENCES

@@ -113,6 +113,10 @@ workflows:
         script: npm ci
       - name: Capacitor sync iOS (copies www/ into the Xcode project, runs pod install)
         script: npx cap sync ios
+      - name: Strip Google Play references from the iOS bundle (App Review 2.3.10)
+        # Edits ios/App/App/public only — www/ and Android are untouched.
+        # Fails the build if any Google Play reference survives.
+        script: node scripts/ios-strip-store-refs.js
       - name: Set build number from Codemagic counter
         script: |
           cd ios/App
