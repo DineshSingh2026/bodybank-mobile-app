@@ -2,7 +2,6 @@ package com.bodybank.app;
 
 import android.net.Uri;
 import android.os.Bundle;
-import android.webkit.PermissionRequest;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
@@ -63,19 +62,18 @@ public class MainActivity extends BridgeActivity {
             .getWebView()
             .setWebChromeClient(
                 new BridgeWebChromeClient(bridge) {
-                    @Override
-                    public void onPermissionRequest(PermissionRequest request) {
-                        // Auto-grant camera / microphone permissions when web content requests
-                        // them via navigator.mediaDevices.getUserMedia (e.g. the AI Trainer
-                        // live-camera flow). Without this override the WebView silently
-                        // denies, and the page falls through to its "Allow camera in browser
-                        // settings" error - which is misleading inside an app.
-                        //
-                        // The Android runtime permission (declared in AndroidManifest) is
-                        // still requested by the system the first time the camera is used,
-                        // so the end user remains in control.
-                        request.grant(request.getResources());
-                    }
+                    // onPermissionRequest is deliberately NOT overridden here.
+                    //
+                    // Capacitor's BridgeWebChromeClient already implements it correctly: it
+                    // asks Android for the matching runtime permission (CAMERA for
+                    // VIDEO_CAPTURE, RECORD_AUDIO for AUDIO_CAPTURE) and grants the WebView
+                    // request only after the user allows it.
+                    //
+                    // This class used to override it with a bare request.grant(...). That
+                    // grants the request at the WebView layer but never triggers the OS
+                    // runtime prompt, so on a fresh install the AI Trainer's getUserMedia()
+                    // was allowed by the WebView and then refused by Android - no permission
+                    // dialog ever appeared and the camera never opened. Do not reintroduce it.
 
                     @Override
                     public boolean onShowFileChooser(
