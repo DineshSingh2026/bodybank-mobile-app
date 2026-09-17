@@ -15,6 +15,7 @@
     "includePlugins": [
       "@capacitor-community/apple-sign-in",
       "@capacitor-community/speech-recognition",
+      "@capacitor-firebase/messaging",
       "@capacitor/filesystem",
       "@capacitor/share",
       "@capacitor/splash-screen",
@@ -22,6 +23,9 @@
     ]
   },
   "plugins": {
+    "FirebaseMessaging": {
+      "presentationOptions": ["alert", "badge", "sound"]
+    },
     "SplashScreen": {
       "launchShowDuration": 3000,
       "launchAutoHide": true,

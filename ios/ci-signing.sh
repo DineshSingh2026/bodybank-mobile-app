@@ -50,12 +50,14 @@ for dir in "$HOME/Library/MobileDevice/Provisioning Profiles" \
     found=1
     echo "--- $f"
     security cms -D -i "$f" 2>/dev/null | plutil -p - 2>/dev/null \
-      | grep -i -E "applesignin|\"Name\"|application-identifier" -A2 \
+      | grep -i -E "applesignin|aps-environment|\"Name\"|application-identifier" -A2 \
       || echo "    !! could not read this profile"
   done
 done
 if [ "$found" = "1" ]; then
   echo "    (no 'applesignin' line above means Apple did not grant the capability)"
+  echo "    (no 'aps-environment' line above means the profile predates Push Notifications —"
+  echo "     delete that profile in the Apple Developer portal and rebuild)"
 else
   echo "    !! NO .mobileprovision files on disk — signing produced nothing"
 fi
