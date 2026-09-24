@@ -72,8 +72,11 @@ const TEXT_RULES = [
   // Google Play
   ['<!-- ================= GET THE APP — live on Google Play ================= -->', '<!-- ================= GET THE APP ================= -->'],
   ['direct users to the real app on Play Store / App Store', 'direct users to the real app'],
-  ['Now live on Google Play</p>', 'The BodyBank App</p>'],
-  ['The BodyBank app is live on the Google Play Store. ', ''],
+  // iOS went live 2026-09-24, so the website now names both stores in these two
+  // lines. The old single-store anchors are gone — keep these in step with
+  // bodybank/public/index.html or the scan below fails the build.
+  ['Now live on the App Store &amp; Google Play</p>', 'The BodyBank App</p>'],
+  ['The BodyBank app is live on the App Store and Google Play. ', ''],
   ['and as the BodyBank mobile application on Google Play.', 'and as the BodyBank mobile application for iPhone and iPad.'],
   // Android-only wording
   ['The BodyBank Android app requests permissions only as needed:', 'The BodyBank app requests permissions only as needed:'],
