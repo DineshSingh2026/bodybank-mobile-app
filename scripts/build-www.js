@@ -21,7 +21,10 @@ const CONFIG_SRC = path.join(SRC_WEB, 'bb-app-config.js');
 const SMOKE_SRC = path.join(SRC_WEB, '__smoke.html');
 
 const INJECT_TAG = '<script src="/js/bb-app-config.js"></script>';
-const INJECT_MARKER = 'bb-app-config.js'; // detect prior injection
+// Detect a prior injection by the TAG itself, not the bare file name: a page that
+// merely mentions "bb-app-config.js" in a comment used to be skipped, shipping
+// an app shell with no config (API calls to localhost). Caught 2026-09-30.
+const INJECT_MARKER = INJECT_TAG;
 
 function log(msg) { console.log('[build-www] ' + msg); }
 
@@ -33,7 +36,10 @@ function rmrf(dir) {
 // These are served from the live web instead (see bb-app-config.js URL rewrite),
 // or are runtime-generated user data that must never ship inside the app bundle.
 // reports/ = generated user weekly-report PDFs (privacy).
-const SKIP_TOP_LEVEL = new Set(['videos', 'reports']);
+// pricing.html = website-only plan prices + purchase CTAs. Apple 3.1.1 / Google Play
+// Payments: the apps must not show prices or point to an outside purchase, so the
+// page never ships in the bundle (its links are also hidden in-app via .bb-web-only).
+const SKIP_TOP_LEVEL = new Set(['videos', 'reports', 'pricing.html']);
 
 function copyDir(src, dst, skipTopLevel) {
   fs.mkdirSync(dst, { recursive: true });
