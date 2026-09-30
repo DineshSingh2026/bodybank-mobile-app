@@ -14,6 +14,7 @@
     "scrollEnabled": true,
     "includePlugins": [
       "@capacitor-community/apple-sign-in",
+      "@capgo/capacitor-social-login",
       "@capacitor-community/speech-recognition",
       "@capacitor-firebase/messaging",
       "@capacitor/filesystem",
@@ -24,7 +25,11 @@
   },
   "plugins": {
     "FirebaseMessaging": {
-      "presentationOptions": ["alert", "badge", "sound"]
+      "presentationOptions": [
+        "alert",
+        "badge",
+        "sound"
+      ]
     },
     "SplashScreen": {
       "launchShowDuration": 3000,
@@ -42,6 +47,14 @@
       "style": "DARK",
       "backgroundColor": "#0a0a0a",
       "overlaysWebView": false
+    },
+    "SocialLogin": {
+      "providers": {
+        "google": true,
+        "facebook": false,
+        "apple": false,
+        "twitter": false
+      }
     }
   }
 }

@@ -1,5 +1,8 @@
 import UIKit
 import Capacitor
+#if canImport(GoogleSignIn)
+import GoogleSignIn
+#endif
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -50,6 +53,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
         // Called when the app was launched with a url. Feel free to add additional processing here,
         // but if you want the App API to support tracking app url opens, make sure to keep this call
+        #if canImport(GoogleSignIn)
+        // Native Google sign-in returns through the reversed-client-id URL scheme.
+        if GIDSignIn.sharedInstance.handle(url) { return true }
+        #endif
         return ApplicationDelegateProxy.shared.application(app, open: url, options: options)
     }
 
