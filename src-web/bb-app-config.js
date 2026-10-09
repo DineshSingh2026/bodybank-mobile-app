@@ -109,6 +109,31 @@
     };
   }
 
+  // ---- 4b. Patch HTMLMediaElement.src ----
+  // `new Audio(); a.src = '/api/...'` never enters the DOM, so the observer
+  // below cannot see it and the URL resolves to https://localhost (this is
+  // what broke chat voice notes in Android 1.8.2 / iOS 1.0.6).
+  try {
+    var mediaProto = window.HTMLMediaElement && HTMLMediaElement.prototype;
+    var srcDesc = mediaProto && Object.getOwnPropertyDescriptor(mediaProto, 'src');
+    if (srcDesc && srcDesc.set && srcDesc.get) {
+      Object.defineProperty(mediaProto, 'src', {
+        configurable: true,
+        enumerable: srcDesc.enumerable,
+        get: function () { return srcDesc.get.call(this); },
+        set: function (v) { srcDesc.set.call(this, rewriteIfBackend(v)); }
+      });
+    }
+    if (typeof window.Audio === 'function') {
+      var OrigAudio = window.Audio;
+      var PatchedAudio = function (url) {
+        return arguments.length ? new OrigAudio(rewriteIfBackend(url)) : new OrigAudio();
+      };
+      PatchedAudio.prototype = OrigAudio.prototype;
+      window.Audio = PatchedAudio;
+    }
+  } catch (e) { /* ignore */ }
+
   // ---- 5. One-time DOM pass + observer to fix <img src="/uploads/..."> ----
   // Static <img src="/img/..."> stays local; only backend-served media is rewritten.
   function fixElementUrls(el) {
