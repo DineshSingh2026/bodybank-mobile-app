@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- BodyBank gold: tints the notification icon and app name in the notification header. -->
+    <color name="bodybank_notification">#C8A44E</color>
+</resources>

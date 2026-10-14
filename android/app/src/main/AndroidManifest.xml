@@ -41,6 +41,15 @@
             android:grantUriPermissions="true">
             <meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/file_paths" />
         </provider>
+
+        <!-- Push notifications: Android draws the small icon as a one-colour silhouette,
+             so without these it shows a generic shape instead of the BodyBank logo. -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/ic_stat_bodybank" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/bodybank_notification" />
     </application>
 
     <!-- Permissions -->
