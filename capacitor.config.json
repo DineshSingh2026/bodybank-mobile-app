@@ -17,6 +17,7 @@
       "@capgo/capacitor-social-login",
       "@capacitor-community/speech-recognition",
       "@capacitor-firebase/messaging",
+      "@capacitor/app",
       "@capacitor/filesystem",
       "@capacitor/share",
       "@capacitor/splash-screen",
