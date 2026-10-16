@@ -21,7 +21,8 @@
       "@capacitor/filesystem",
       "@capacitor/share",
       "@capacitor/splash-screen",
-      "@capacitor/status-bar"
+      "@capacitor/status-bar",
+      "@capawesome/capacitor-app-update"
     ]
   },
   "plugins": {

@@ -5,6 +5,7 @@
   "description": "BodyBank Android/iOS wrapper (Capacitor). Wraps the existing BodyBank web app served from www/.",
   "scripts": {
     "build:www": "node scripts/build-www.js",
+    "test:app-update": "node scripts/test-app-update.js",
     "build:assets": "node scripts/build-assets.js && npx capacitor-assets generate --android",
     "build:assets:ios": "node scripts/build-assets.js && npx capacitor-assets generate --ios",
     "build:store-assets": "node scripts/build-store-assets.js",
@@ -27,6 +28,7 @@
     "@capacitor/share": "^7.0.4",
     "@capacitor/splash-screen": "^7.0.5",
     "@capacitor/status-bar": "^7.0.6",
+    "@capawesome/capacitor-app-update": "7.2.0",
     "@capgo/capacitor-social-login": "^7.20.0",
     "firebase": "^11.10.0"
   },

@@ -18,13 +18,19 @@ const DEST_WWW = path.resolve(ROOT, 'www');
 const SRC_WEB = path.resolve(ROOT, 'src-web');
 
 const CONFIG_SRC = path.join(SRC_WEB, 'bb-app-config.js');
+// Store update alert (app builds only; a no-op on the web). Loads right after the config.
+const UPDATE_SRC = path.join(SRC_WEB, 'bb-app-update.js');
 const SMOKE_SRC = path.join(SRC_WEB, '__smoke.html');
 
 const INJECT_TAG = '<script src="/js/bb-app-config.js"></script>';
+const UPDATE_TAG = '<script src="/js/bb-app-update.js" defer></script>';
 // Detect a prior injection by the TAG itself, not the bare file name: a page that
 // merely mentions "bb-app-config.js" in a comment used to be skipped, shipping
 // an app shell with no config (API calls to localhost). Caught 2026-09-30.
+// Each tag is checked on its own, so a page that already has the config tag
+// still gets the update tag placed right after it.
 const INJECT_MARKER = INJECT_TAG;
+const UPDATE_MARKER = UPDATE_TAG;
 
 function log(msg) { console.log('[build-www] ' + msg); }
 
@@ -64,10 +70,16 @@ function walk(dir, predicate, out) {
 
 function injectIntoHtml(file) {
   let content = fs.readFileSync(file, 'utf8');
-  if (content.includes(INJECT_MARKER)) return false; // already present
-  const headRe = /<head\b[^>]*>/i;
-  if (!headRe.test(content)) return false;
-  content = content.replace(headRe, m => m + '\n' + INJECT_TAG);
+  const hasConfig = content.includes(INJECT_MARKER);
+  const hasUpdate = content.includes(UPDATE_MARKER);
+  if (hasConfig && hasUpdate) return false; // already present
+  if (hasConfig) {
+    content = content.replace(INJECT_TAG, INJECT_TAG + '\n' + UPDATE_TAG);
+  } else {
+    const headRe = /<head\b[^>]*>/i;
+    if (!headRe.test(content)) return false;
+    content = content.replace(headRe, m => m + '\n' + INJECT_TAG + (hasUpdate ? '' : '\n' + UPDATE_TAG));
+  }
   fs.writeFileSync(file, content, 'utf8');
   return true;
 }
@@ -79,6 +91,10 @@ if (!fs.existsSync(SOURCE_PUBLIC)) {
 }
 if (!fs.existsSync(CONFIG_SRC)) {
   console.error('[build-www] ERROR: bb-app-config.js not found at ' + CONFIG_SRC);
+  process.exit(1);
+}
+if (!fs.existsSync(UPDATE_SRC)) {
+  console.error('[build-www] ERROR: bb-app-update.js not found at ' + UPDATE_SRC);
   process.exit(1);
 }
 
@@ -93,6 +109,8 @@ log('Mirrored public/ -> www/  (skipped: ' + Array.from(SKIP_TOP_LEVEL).join(', 
 fs.mkdirSync(path.join(DEST_WWW, 'js'), { recursive: true });
 fs.copyFileSync(CONFIG_SRC, path.join(DEST_WWW, 'js', 'bb-app-config.js'));
 log('Copied bb-app-config.js into www/js/');
+fs.copyFileSync(UPDATE_SRC, path.join(DEST_WWW, 'js', 'bb-app-update.js'));
+log('Copied bb-app-update.js into www/js/');
 
 // Smoke page (optional)
 if (fs.existsSync(SMOKE_SRC)) {
@@ -107,4 +125,17 @@ for (const f of htmlFiles) {
   if (injectIntoHtml(f)) injected++;
 }
 log(`Injected config script into ${injected} / ${htmlFiles.length} HTML files`);
+// Every page with a <head> must carry both tags, config first. A miss ships an app
+// page with no API base or no update check, so fail the build instead.
+const missing = htmlFiles.filter(f => {
+  const c = fs.readFileSync(f, 'utf8');
+  if (!/<head\b[^>]*>/i.test(c)) return false;
+  const a = c.indexOf(INJECT_TAG);
+  const b = c.indexOf(UPDATE_TAG);
+  return a < 0 || b < 0 || b < a;
+});
+if (missing.length) {
+  console.error('[build-www] ERROR: app script tags missing or out of order in: ' + missing.map(f => path.relative(DEST_WWW, f)).join(', '));
+  process.exit(1);
+}
 log('Done.');
