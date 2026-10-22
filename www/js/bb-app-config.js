@@ -198,6 +198,15 @@
         done = true;
         SplashScreen.hide({ fadeOutDuration: 250 }).catch(function () {});
       };
+      // index.html draws its own launch loader (#bbBoot): the same splash image plus a
+      // progress bar. Once it is on screen the native splash can go at once, so the
+      // bar covers the rest of the start-up instead of a still image.
+      var hasLoader = function () { return !!document.getElementById('bbBoot') && document.documentElement.classList.contains('bb-boot-on'); };
+      if (document.readyState !== 'loading' && hasLoader()) {
+        setTimeout(doHide, 50);
+      } else if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function () { if (hasLoader()) setTimeout(doHide, 50); }, { once: true });
+      }
       if (document.readyState === 'complete') {
         setTimeout(doHide, 80);
       } else {
